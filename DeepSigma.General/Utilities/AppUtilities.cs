@@ -8,6 +8,7 @@ namespace DeepSigma.General.Utilities
 {
     public static class AppUtilities
     {
+
         public static void ExitApp()
         {
             Environment.Exit(1);
@@ -17,11 +18,15 @@ namespace DeepSigma.General.Utilities
         /// Returns the current directory of this application.
         /// </summary>
         /// <returns></returns>
-        public static string GetCurrentLocationOfTheAppInstallerApp()
+        public static string GetCurrentDirectory()
         {
             return AppDomain.CurrentDomain.BaseDirectory;
         }
 
+        /// <summary>
+        /// Returns assembly version of the application.
+        /// </summary>
+        /// <returns></returns>
         public static string GetAppVersion()
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
