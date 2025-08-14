@@ -13,7 +13,12 @@ namespace DeepSigma.General.Extensions
             return new SortableBindingList<T>(enumerable.ToList());
         }
 
-        public static SortedList<T, V> ToSortedList<T, V>(this IEnumerable<KeyValuePair<T, V>> enumerable)
+        public static string ToCommaSeparatedString<T>(this IEnumerable<T> enumerable, string separator = ", ")
+        {
+            return string.Join(separator, enumerable);
+        }
+
+        public static SortedList<T, V> ToSortedList<T, V>(this IEnumerable<KeyValuePair<T, V>> enumerable) where T : notnull
         {
             var list = new SortedList<T, V>();
             foreach (var item in enumerable)

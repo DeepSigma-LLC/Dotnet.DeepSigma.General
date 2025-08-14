@@ -134,7 +134,7 @@ namespace DeepSigma.General.Extensions
                                    date.Month,
                                    DateTime.DaysInMonth(date.Year, date.Month));
 
-            if (weekday && !endOfMonth.IsWeekday())
+            if (weekday && endOfMonth.IsWeekday() == false)
             {
                 endOfMonth = endOfMonth.PreviousWeekday();
             }
@@ -142,7 +142,7 @@ namespace DeepSigma.General.Extensions
         }
 
         public static bool IsWeekday(this DateTime date)
-        {
+        { 
             return (date.DayOfWeek != DayOfWeek.Saturday &
                    date.DayOfWeek != DayOfWeek.Sunday);
         }
