@@ -6,12 +6,13 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>DeepSigma.General</Title>
-    <Version>$(AssemblyVersion)</Version>
+    <Version>1.0.0.1</Version>
     <Authors>DeepSigma LLC</Authors>
     <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General.git</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General.git</RepositoryUrl>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <FileVersion>$(Version)</FileVersion>
     <Description>C# library for general utilities and language extensions.</Description>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

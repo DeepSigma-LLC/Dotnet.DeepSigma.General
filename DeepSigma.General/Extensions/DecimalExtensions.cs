@@ -1,5 +1,4 @@
-﻿using System;
-using DeepSigma.General.Enums;
+﻿using DeepSigma.General.Enums;
 
 namespace DeepSigma.General.Extensions 
 {

@@ -1,6 +1,6 @@
 ﻿using OneOf;
 
-namespace DeepSigma.OperatingSystem
+namespace DeepSigma.General
 {
     /// <summary>
     /// Generic <see cref="ResultMonad{T}"/> type that encapsulates the result of an operation.

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace DeepSigma.General.Extensions
+namespace DeepSigma.General
 {
     /// <summary>
     /// Provides a sortable binding list that can be used in data binding scenarios.

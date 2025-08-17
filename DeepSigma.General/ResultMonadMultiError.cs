@@ -1,11 +1,6 @@
 ﻿using OneOf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DeepSigma.OperatingSystem
+namespace DeepSigma.General
 {
     /// <summary>
     /// Generic <see cref="ResultMonad{T}"/> type that encapsulates the result of an operation.

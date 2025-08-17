@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using DeepSigma.General.Extensions;
+﻿using DeepSigma.General.Extensions;
+using DeepSigma.General.Enums;
 
-namespace DeepSigma.General.Enums
+namespace DeepSigma.General
 {
     public class SelfAligningTimeStep
     {
