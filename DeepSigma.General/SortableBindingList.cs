@@ -4,19 +4,30 @@ using System.ComponentModel;
 
 namespace DeepSigma.General.Extensions
 {
+    /// <summary>
+    /// Provides a sortable binding list that can be used in data binding scenarios.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class SortableBindingList<T> : BindingList<T>
     {
         private bool isSortedValue;
         ListSortDirection sortDirectionValue;
         PropertyDescriptor? sortPropertyValue;
 
+        /// <summary>
+        /// Provides a sortable binding list that can be used in data binding scenarios.
+        /// </summary>
         public SortableBindingList(){}
 
+        /// <summary>
+        /// Provides a sortable binding list that can be used in data binding scenarios.
+        /// </summary>
+        /// <param name="list"></param>
         public SortableBindingList(IList<T> list)
         {
-            foreach (var item in list)
+            foreach (T item in list)
             {
-                this.Add((T)item);
+                this.Add(item);
             }
         }
 

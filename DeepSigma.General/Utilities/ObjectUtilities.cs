@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Utilities
 {
+    /// <summary>
+    /// Utility class for object-related operations.
+    /// </summary>
     public static class ObjectUtilities
     {
 
@@ -27,14 +30,14 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="F">From Type</typeparam>
         /// <typeparam name="T">To Type</typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <returns></returns>
         /// <exception cref="InvalidCastException">If unable to convert object type and exception will be thrown.</exception>
-        public static T CastAs<F, T>(F objectInstance)
+        public static T CastAs<F, T>(F object_instance)
         {
-            if (objectInstance is T)
+            if (object_instance is T)
             {
-                return (T)Convert.ChangeType(objectInstance, typeof(T));
+                return (T)Convert.ChangeType(object_instance, typeof(T));
             }
             else
             {
@@ -47,13 +50,14 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="V"></typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static V GetPropertyValue<T, V>(T objectInstance, Expression<Func<T, object>> predicate) 
+        public static V? GetPropertyValue<T, V>(T object_instance, Expression<Func<T, object>> predicate) 
         {
-            string propertyName = GetPropertyName(predicate);
-            return (V)objectInstance.GetType().GetProperty(propertyName).GetValue(objectInstance, null);
+            if(object_instance is null) return default;
+            string property_name = Getproperty_name(predicate);
+            return (V?)object_instance.GetType()?.GetProperty(property_name)?.GetValue(object_instance, null);
         }
 
         /// <summary>
@@ -61,39 +65,40 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="V"></typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static V GetFieldValue<T, V>(T objectInstance, Expression<Func<T, object>> predicate)
+        public static V? GetFieldValue<T, V>(T object_instance, Expression<Func<T, object>> predicate) 
         {
-            string propertyName = GetPropertyName(predicate);
-            return (V)objectInstance.GetType().GetField(propertyName).GetValue(objectInstance);
+            if(object_instance is null) return default;
+            string property_name = Getproperty_name(predicate);
+            return (V?)object_instance.GetType()?.GetField(property_name)?.GetValue(object_instance);
         }
 
         /// <summary>
         /// Gets a hash set list of properies of an object instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <returns></returns>
-        public static HashSet<PropertyInfo> GetAllPropertyInfos<T>(T objectInstance)
+        public static HashSet<PropertyInfo> GetAllPropertyInfos<T>(T object_instance)
         {
-            if(objectInstance is null)
+            if(object_instance is null)
             {
                 return [];
             }
-            return objectInstance.GetType().GetProperties().ToHashSet();
+            return object_instance.GetType().GetProperties().ToHashSet();
         }
 
         /// <summary>
         /// Gets a hash set list of properies of an object instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <returns></returns>
-        public static HashSet<string> GetAllPropertyNames<T>(T objectInstance)
+        public static HashSet<string> GetAllproperty_names<T>(T object_instance)
         {
-            HashSet<PropertyInfo> properties = GetAllPropertyInfos(objectInstance).ToHashSet();
+            HashSet<PropertyInfo> properties = GetAllPropertyInfos(object_instance).ToHashSet();
             HashSet<string> names = new HashSet<string>();
             foreach (PropertyInfo propertyInfo in properties)
             {
@@ -108,7 +113,7 @@ namespace DeepSigma.General.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string GetPropertyName<T>(Expression<Func<T, object>> property)
+        public static string Getproperty_name<T>(Expression<Func<T, object>> property)
         {
             if (property.Body is MemberExpression)
             {
@@ -121,10 +126,10 @@ namespace DeepSigma.General.Utilities
             }
         }
 
-        public static Expression<Func<T, object>> PropertyNameToExpression<T>(string propertyName)
+        public static Expression<Func<T, object>> property_nameToExpression<T>(string property_name)
         {
             ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
-            MemberExpression property = Expression.Property(parameter, propertyName);
+            MemberExpression property = Expression.Property(parameter, property_name);
             Expression converted = Expression.Convert(property, typeof(object));
             return Expression.Lambda<Func<T, object>>(converted, parameter);
         }
@@ -136,9 +141,9 @@ namespace DeepSigma.General.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="DTOs"></param>
         /// <returns></returns>
-        public static IEnumerable<T> ConvertToNewObject<F, T>(IEnumerable<F> DTOs)
+        public static IEnumerable<T> ConvertToNewObject<F, T>(IEnumerable<F> dtos)
         {
-            foreach (F dto in DTOs)
+            foreach (F dto in dtos)
             {
                 var instance = Activator.CreateInstance(typeof(T), dto);
                 if(instance is null)
@@ -156,9 +161,9 @@ namespace DeepSigma.General.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="DTOs"></param>
         /// <returns></returns>
-        public static T ConvertToNewObject<F, T>(F dto)
+        public static T? ConvertToNewObject<F, T>(F dto) where F : notnull 
         {
-            return (T)Activator.CreateInstance(typeof(T), dto);
+            return (T?)Activator.CreateInstance(typeof(T), dto);
         }
 
         /// <summary>
@@ -166,12 +171,12 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="MethodName"></param>
+        /// <param name="method_name"></param>
         /// <returns></returns>
-        public static bool HasMethod<T>(T obj, string MethodName)
+        public static bool HasMethod<T>(T obj, string method_name) where T : notnull
         {
             var type = obj.GetType();
-            return type.GetMethod(MethodName) != null;
+            return type.GetMethod(method_name) != null;
         }
 
         /// <summary>
@@ -179,12 +184,12 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="PropertyName"></param>
+        /// <param name="property_name"></param>
         /// <returns></returns>
-        public static bool HasProperty<T>(T obj, string PropertyName)
+        public static bool HasProperty<T>(T obj, string property_name) where T : notnull
         {
             var type = obj.GetType();
-            return type.GetProperty(PropertyName) != null;
+            return type.GetProperty(property_name) != null;
         }
 
         /// <summary>
@@ -192,12 +197,12 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="FieldName"></param>
+        /// <param name="field_name"></param>
         /// <returns></returns>
-        public static bool HasField<T>(T obj, string FieldName)
+        public static bool HasField<T>(T obj, string field_name) where T : notnull
         {
             var type = obj.GetType();
-            return type.GetField(FieldName) != null;
+            return type.GetField(field_name) != null;
         }
 
 
@@ -206,39 +211,41 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj">Object instance</param>
-        /// <param name="AttributeName">Name of prperty or field </param>
+        /// <param name="attribute_name">Name of prperty or field </param>
         /// <returns></returns>
-        public static T GetPropertyOrFieldValue<T>(object obj, string AttributeName)
+        public static T? GetPropertyOrFieldValue<T>(object obj, string attribute_name)
         {
-            if(HasProperty(obj, AttributeName) == true)
+            if(HasProperty(obj, attribute_name) == true)
             {
-                return GetPropertyValue<T>(obj, AttributeName);
+                return GetPropertyValue<T>(obj, attribute_name);
             }
-            return GetFieldValue<T>(obj, AttributeName);
+            return GetFieldValue<T>(obj, attribute_name);
         }
 
         /// <summary>
         /// Gets the property value from an object by name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="selectedObject"></param>
-        /// <param name="PropertyName"></param>
+        /// <param name="selected_object"></param>
+        /// <param name="property_name"></param>
         /// <returns></returns>
-        public static T GetPropertyValue<T>(object selectedObject, string PropertyName)
+        public static T? GetPropertyValue<T>(object selected_object, string property_name)
         {
-            return (T)selectedObject.GetType().GetProperty(PropertyName).GetValue(selectedObject, null);
+            if(selected_object is null) return default;
+            return (T?)selected_object.GetType()?.GetProperty(property_name)?.GetValue(selected_object, null);
         }
 
         /// <summary>
         /// Gets the field value from an object by name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="selectedObject"></param>
-        /// <param name="FieldName"></param>
+        /// <param name="selected_object"></param>
+        /// <param name="field_name"></param>
         /// <returns></returns>
-        public static T GetFieldValue<T>(object selectedObject, string FieldName)
+        public static T? GetFieldValue<T>(object selected_object, string field_name)
         {
-            return (T)selectedObject.GetType().GetField(FieldName).GetValue(selectedObject);
+            if(selected_object is null) return default;
+            return (T?)selected_object.GetType()?.GetField(field_name)?.GetValue(selected_object);
         }
 
         /// <summary>
@@ -246,11 +253,11 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="Z"></typeparam>
-        /// <param name="objectInstance"></param>
+        /// <param name="object_instance"></param>
         /// <returns></returns>
-        public static bool HasPropertyOfType<T, Z>(T objectInstance)
+        public static bool HasPropertyOfType<T, Z>(T object_instance) where T : notnull
         {
-            PropertyInfo[] propertyInfos = objectInstance.GetType().GetProperties();
+            PropertyInfo[] propertyInfos = object_instance.GetType().GetProperties();
             foreach(PropertyInfo propertyInfo in propertyInfos)
             {
                 if(propertyInfo.PropertyType == typeof(Z))

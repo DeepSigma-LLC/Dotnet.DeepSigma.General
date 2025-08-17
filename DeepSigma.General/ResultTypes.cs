@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace DeepSigma.OperatingSystem
 {
     public record Success<T>(T? Result);
-    public record Error(ExceptionLog Exception);
-    public record Errors(IEnumerable<ExceptionLog> Exceptions);
+    public record Error(ExceptionLogItem Exception);
+    public record Errors(IEnumerable<ExceptionLogItem> Exceptions);
 }

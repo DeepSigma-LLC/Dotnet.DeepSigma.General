@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace DeepSigma.General.Utilities
 {
+    /// <summary>
+    /// Utility class for method-related operations.
+    /// </summary>
     public static class MethodUtilities
     {
         /// <summary>
@@ -14,7 +18,7 @@ namespace DeepSigma.General.Utilities
         /// <param name="method"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static string? GetParameterName(System.Reflection.MethodInfo method, int index)
+        public static string? GetParameterName(MethodInfo method, int index)
         {
             string? retrieved_value = null;
             if (method != null && method.GetParameters().Length > index)
@@ -30,7 +34,7 @@ namespace DeepSigma.General.Utilities
         /// <param name="method"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static Type? GetParameterType(System.Reflection.MethodInfo method, int index)
+        public static Type? GetParameterType(MethodInfo method, int index)
         {
             Type? parameterType = null;
             if (method != null && method.GetParameters().Length > index)

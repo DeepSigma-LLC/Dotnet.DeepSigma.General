@@ -9,8 +9,17 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Extensions
 {
+    /// <summary>
+    /// Extension methods for enums to retrieve their description strings.
+    /// </summary>
     public static class EnumExtention
     {
+        /// <summary>
+        /// Converts an enum value to its description string, using the DescriptionAttribute or DisplayAttribute if available.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="fallbackToName"></param>
+        /// <returns></returns>
         public static string ToDescriptionString(this Enum value, bool fallbackToName = true)
         {
             var type = value.GetType();

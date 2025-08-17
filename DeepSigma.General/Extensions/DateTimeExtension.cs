@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Extensions
 {
+    /// <summary>
+    /// Extension methods for DateTime operations.
+    /// </summary>
     public static class DateTimeExtension
     {
         private static string _dateStringFormat { get; } = "MM-dd-yyyy 'T 'HH-mm-ss";
@@ -68,17 +71,32 @@ namespace DeepSigma.General.Extensions
             return date.NextWeekday();
         }
 
+        /// <summary>
+        /// Returns the previous weekday of the date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static DateTime PreviousWeekday(this DateTime date)
         {
             return date.AddWeekdays(-1);
         }
 
+        /// <summary>
+        /// Returns the next weekday of the date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static DateTime NextWeekday(this DateTime date)
         {
             return date.AddWeekdays(1);
         }
 
-
+        /// <summary>
+        /// Adds a specified number of weekdays to the date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="Days"></param>
+        /// <returns></returns>
         public static DateTime AddWeekdays(this DateTime date, int Days)
         {
             int AbsoluteValueOfDays = Math.Abs(Days);
@@ -95,6 +113,12 @@ namespace DeepSigma.General.Extensions
             return date;
         }
 
+        /// <summary>
+        /// Returns the next specified day of the week from the given date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="dayOfWeek"></param>
+        /// <returns></returns>
         public static DateTime NextDayOfWeekSpecified(this DateTime date, DayOfWeek dayOfWeek)
         {
             for (int i = 0; i < 8; i++)
@@ -112,6 +136,13 @@ namespace DeepSigma.General.Extensions
             return default(DateTime);
         }
 
+        /// <summary>
+        /// Returns the start of the month for the given date, optionally adding months and ensuring it is a weekday.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="monthsToAdd"></param>
+        /// <param name="weekday"></param>
+        /// <returns></returns>
         public static DateTime StartOfMonth(this DateTime date, int monthsToAdd = 0, bool weekday = false)
         {
             date = date.AddMonths(monthsToAdd);
@@ -125,7 +156,13 @@ namespace DeepSigma.General.Extensions
             return startOfMonth;
         }
 
-
+        /// <summary>
+        /// Returns the end of the month for the given date, optionally adding months and ensuring it is a weekday.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="monthsToAdd"></param>
+        /// <param name="weekday"></param>
+        /// <returns></returns>
         public static DateTime EndOfMonth(this DateTime date, int monthsToAdd = 0, bool weekday = false)
         {
             date = date.AddMonths(monthsToAdd);
@@ -141,23 +178,46 @@ namespace DeepSigma.General.Extensions
             return endOfMonth;
         }
 
+        /// <summary>
+        /// Checks if the date is a weekday (Monday to Friday).
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static bool IsWeekday(this DateTime date)
         { 
             return (date.DayOfWeek != DayOfWeek.Saturday &
                    date.DayOfWeek != DayOfWeek.Sunday);
         }
 
+        /// <summary>
+        /// Checks if the date is a weekend (Saturday or Sunday).
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static bool IsWeekend(this DateTime date)
         {
             return (date.DayOfWeek == DayOfWeek.Saturday ||
                    date.DayOfWeek == DayOfWeek.Sunday);
 
         }
+
+        /// <summary>
+        /// Returns the number of weekdays between two dates, excluding the start date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="Date"></param>
+        /// <returns></returns>
         public static int WeekdaysFromDate(this DateTime date, DateTime Date)
         {
             return WeekdaysBetweenDates(date, Date);
         }
 
+        /// <summary>
+        /// Returns the number of weekdays between two dates, excluding the start date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="Date"></param>
+        /// <returns></returns>
         private static int WeekdaysBetweenDates(DateTime date, DateTime Date)
         {
             var dayDifference = (int)Date.Subtract(date).TotalDays;

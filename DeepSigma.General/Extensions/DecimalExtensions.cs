@@ -3,8 +3,18 @@ using DeepSigma.General.Enums;
 
 namespace DeepSigma.General.Extensions 
 {
+    /// <summary>
+    /// Provides extension methods for decimal values, including rounding, formatting, and precision handling.
+    /// </summary>
     public static class DecimalExtensions
     {
+        /// <summary>
+        /// Rounds a decimal value based on the specified rounding type.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="roundType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static decimal Round(this decimal value,  RoundType roundType = RoundType.Normal)
         {
             switch (roundType)
@@ -26,16 +36,32 @@ namespace DeepSigma.General.Extensions
             }
         }
 
+        /// <summary>
+        /// Drops unnecessary precision from a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static decimal DropUnnessaryPrecision(this decimal value)
         {
             return value / 1.000000000000000000000000000000000m;
         }
 
+        /// <summary>
+        /// Converts a decimal value to a percentage string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="decimalCount"></param>
+        /// <returns></returns>
         public static string ToPercentage(this decimal value, int decimalCount = 3)
         {
             return value.ToString("P" + decimalCount.ToString());
         }
 
+        /// <summary>
+        /// Converts a decimal value to a comma-separated string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ToCommaSeperated(this decimal value)
         {
             decimal decimalsOnly = value - Math.Truncate(value);
@@ -48,11 +74,23 @@ namespace DeepSigma.General.Extensions
             return Math.Truncate(value) + decimalText;
         }
 
+        /// <summary>
+        /// Converts a decimal value to a dollar value string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="decimalCount"></param>
+        /// <returns></returns>
         public static string ToDollarValue(this decimal value, int decimalCount = 2)
         {
             return value.ToString("N" + decimalCount.ToString());
         }
 
+        /// <summary>
+        /// Converts a nullable decimal value to a percentage string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="decimalCount"></param>
+        /// <returns></returns>
         public static string ToPercentage(this decimal? value, int decimalCount = 3)
         {
             if (value == null)
@@ -63,6 +101,11 @@ namespace DeepSigma.General.Extensions
             return convertedValue.ToPercentage(decimalCount);
         }
 
+        /// <summary>
+        /// Converts a nullable decimal value to a comma-separated string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ToCommaSeperated(this decimal? value)
         {
             if(value == null)
@@ -73,6 +116,12 @@ namespace DeepSigma.General.Extensions
             return convertedValue.ToCommaSeperated();
         }
 
+        /// <summary>
+        /// Converts a nullable decimal value to a dollar value string representation.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="decimalCount"></param>
+        /// <returns></returns>
         public static string ToDollarValue(this decimal? value, int decimalCount = 2)
         {
             if (value == null)

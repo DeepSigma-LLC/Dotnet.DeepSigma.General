@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Extensions
 {
+    /// <summary>
+    /// Extension methods for byte arrays.
+    /// </summary>
     public static class ByteArrayExtension
     {
+        /// <summary>
+        /// Combines two byte arrays into one.
+        /// </summary>
+        /// <param name="Data"></param>
+        /// <param name="NewData"></param>
+        /// <returns></returns>
         public static byte[] Combine(this byte[] Data, byte[] NewData)
         {
             return Combine2ByteArrays(Data, NewData);

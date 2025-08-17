@@ -13,7 +13,7 @@ namespace DeepSigma.General
         T ElementAt(int Index);
         T? Peek();
         T? Pop();
-        IEnumerable<Z> Select<Z>(Func<T, Z> func);
-        IEnumerable<T> Where(Func<T, bool> func);
+        IEnumerable<Z> Select<Z>(Func<T, Z> function);
+        IEnumerable<T> Where(Func<T, bool> function);
     }
 }

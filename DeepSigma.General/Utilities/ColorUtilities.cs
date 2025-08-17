@@ -2,11 +2,19 @@
 
 namespace DeepSigma.General.Utilities
 {
+    /// <summary>
+    /// Utility class for color-related operations.
+    /// </summary>
     public static class ColorUtilities
     {
-        public static Color FromRGBIntArray(int[] RGBColorArray)
+        /// <summary>
+        /// Builds a Color object from integer values representing each primary color.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static Color FromRGBIntArray((int red, int green, int blue) values)
         {
-            return Color.FromArgb(RGBColorArray[0], RGBColorArray[1], RGBColorArray[2]);
+            return Color.FromArgb(values.red, values.green, values.blue);
         }
     }
 }

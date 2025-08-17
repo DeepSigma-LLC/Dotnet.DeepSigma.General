@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Extensions
 {
+    /// <summary>
+    /// Extension methods for string operations.
+    /// </summary>
     public static class StringExtension
     {
         /// <summary>
