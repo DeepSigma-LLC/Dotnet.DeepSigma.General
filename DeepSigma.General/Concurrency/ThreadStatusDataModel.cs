@@ -7,17 +7,54 @@ namespace DeepSigma.General.Concurrency
     /// Data model for tracking the status of a thread's execution.
     /// </summary>
     public class ThreadStatusDataModel
-     {  
-         public Guid Guid { get; } = Guid.NewGuid();
-         public bool IsTaskStarted { get; private set; } = false;
-         public bool IsTaskRunning { get; private set; } = false;
-         public bool IsTaskComplete { get; private set; } = false;
-         public DateTime? StartDateTime { get; private set; }
-         public DateTime? EndDateTime { get; private set; }
-         public int ExecutionManagedThreadId { get; private set; }
-         public string? CurrentThreadName { get; private set; }
-         public int CurrentProcessorId { get; private set; }
-         public ConcurrentQueue<string> TaskMessageLog { get; set; } = [];
+     {
+        /// <summary>
+        /// Unique identifier for the task instance.
+        /// </summary>
+        public Guid Guid { get; } = Guid.NewGuid();
+        /// <summary>
+        /// Indicates whether the task has started.
+        /// </summary>
+        public bool IsTaskStarted { get; private set; } = false;
+        /// <summary>
+        /// Indicates whether the task is currently running.
+        /// </summary>
+        public bool IsTaskRunning { get; private set; } = false;
+
+        /// <summary>
+        /// Indicates whether the task has been completed.
+        /// </summary>
+        public bool IsTaskComplete { get; private set; } = false;
+
+        /// <summary>
+        /// Start date and time of the task execution.
+        /// </summary>
+        public DateTime? StartDateTime { get; private set; }
+
+        /// <summary>
+        /// End date and time of the task execution.
+        /// </summary>
+        public DateTime? EndDateTime { get; private set; }
+
+        /// <summary>
+        /// Managed thread ID of the task execution.
+        /// </summary>
+        public int ExecutionManagedThreadId { get; private set; }
+
+        /// <summary>
+        /// Name of the current thread executing the task.
+        /// </summary>
+        public string? CurrentThreadName { get; private set; }
+
+        /// <summary>
+        /// Current processor ID where the task is running.
+        /// </summary>
+        public int CurrentProcessorId { get; private set; }
+
+        /// <summary>
+        /// Queue to log messages related to the task execution.
+        /// </summary>
+        public ConcurrentQueue<string> TaskMessageLog { get; set; } = [];
          
          private Stopwatch _taskStopWatch = new();
 

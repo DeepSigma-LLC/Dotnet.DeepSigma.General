@@ -23,9 +23,22 @@ namespace DeepSigma.General.Monads
     /// <typeparam name="T">The wrapped success value type.</typeparam>
     public class ResultMonadMultiError<T> : OneOfBase<Success<T>, Errors>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultMonadMultiError{T}"/> class with a successful result.
+        /// </summary>
+        /// <param name="input"></param>
         public ResultMonadMultiError(OneOf<Success<T>, Errors> input) : base(input) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultMonadMultiError{T}"/> class with a successful result.
+        /// </summary>
+        /// <param name="success"></param>
         public static implicit operator ResultMonadMultiError<T>(Success<T> success) => new(success);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultMonadMultiError{T}"/> class with errors.
+        /// </summary>
+        /// <param name="errors"></param>
         public static implicit operator ResultMonadMultiError<T>(Errors errors) => new(errors);
     }
 }

@@ -51,7 +51,7 @@ namespace DeepSigma.General.Utilities
         public static V? GetPropertyValue<T, V>(T object_instance, Expression<Func<T, object>> predicate) 
         {
             if(object_instance is null) return default;
-            string property_name = Getproperty_name(predicate);
+            string property_name = GetPropertyName(predicate);
             return (V?)object_instance.GetType()?.GetProperty(property_name)?.GetValue(object_instance, null);
         }
 
@@ -66,7 +66,7 @@ namespace DeepSigma.General.Utilities
         public static V? GetFieldValue<T, V>(T object_instance, Expression<Func<T, object>> predicate) 
         {
             if(object_instance is null) return default;
-            string property_name = Getproperty_name(predicate);
+            string property_name = GetPropertyName(predicate);
             return (V?)object_instance.GetType()?.GetField(property_name)?.GetValue(object_instance);
         }
 
@@ -91,7 +91,7 @@ namespace DeepSigma.General.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="object_instance"></param>
         /// <returns></returns>
-        public static HashSet<string> GetAllproperty_names<T>(T object_instance)
+        public static HashSet<string> GetAllPropertyNames<T>(T object_instance)
         {
             HashSet<PropertyInfo> properties = GetAllPropertyInfos(object_instance).ToHashSet();
             HashSet<string> names = new HashSet<string>();
@@ -108,7 +108,7 @@ namespace DeepSigma.General.Utilities
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string Getproperty_name<T>(Expression<Func<T, object>> property)
+        public static string GetPropertyName<T>(Expression<Func<T, object>> property)
         {
             if (property.Body is MemberExpression)
             {
@@ -121,7 +121,13 @@ namespace DeepSigma.General.Utilities
             }
         }
 
-        public static Expression<Func<T, object>> property_nameToExpression<T>(string property_name)
+        /// <summary>
+        /// Converts a property name to an expression that can be used in LINQ queries.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="property_name"></param>
+        /// <returns></returns>
+        public static Expression<Func<T, object>> PropertyNameToExpression<T>(string property_name)
         {
             ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
             MemberExpression property = Expression.Property(parameter, property_name);
@@ -134,7 +140,7 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="F"></typeparam>
         /// <typeparam name="T"></typeparam>
-        /// <param name="DTOs"></param>
+        /// <param name="dtos"></param>
         /// <returns></returns>
         public static IEnumerable<T> ConvertToNewObject<F, T>(IEnumerable<F> dtos)
         {
@@ -154,7 +160,7 @@ namespace DeepSigma.General.Utilities
         /// </summary>
         /// <typeparam name="F"></typeparam>
         /// <typeparam name="T"></typeparam>
-        /// <param name="DTOs"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         public static T? ConvertToNewObject<F, T>(F dto) where F : notnull 
         {

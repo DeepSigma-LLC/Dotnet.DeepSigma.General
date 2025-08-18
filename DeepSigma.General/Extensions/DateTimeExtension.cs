@@ -7,15 +7,22 @@ namespace DeepSigma.General.Extensions
     public static class DateTimeExtension
     {
         private static string _dateStringFormat { get; } = "MM-dd-yyyy 'T 'HH-mm-ss";
+
+        /// <summary>
+        /// Converts a DateTime to a string in the format "MM-dd-yyyy T HH-mm-ss".
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static string ToStringFileFormat(this DateTime date)
         {
             return date.ToString(_dateStringFormat);
         }
 
         /// <summary>
-        /// Checks if date is weekend. If it is weekend it returne the prior or next weekeday based on specifi. This is good for applications where you need a date to be a weekday but you do not know what date will be selected.
+        ///  Checks if date is weekend. If it is weekend it returne the prior or next weekeday based on specifi. This is good for applications where you need a date to be a weekday but you do not know what date will be selected.
         /// </summary>
         /// <param name="date"></param>
+        /// <param name="MustBeWeekday"></param>
         /// <returns></returns>
         public static DateTime MustBeWeekdayMoveForward(this DateTime date, bool MustBeWeekday)
         {
@@ -38,6 +45,7 @@ namespace DeepSigma.General.Extensions
         /// Checks if date is weekend. If it is weekend it returne the prior or next weekeday based on specifi. This is good for applications where you need a date to be a weekday but you do not know what date will be selected.
         /// </summary>
         /// <param name="date"></param>
+        /// <param name="MustBeWeekday"></param>
         /// <returns></returns>
         public static DateTime MustBeWeekdayMoveBackward(this DateTime date, bool MustBeWeekday)
         {

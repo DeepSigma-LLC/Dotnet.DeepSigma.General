@@ -7,7 +7,14 @@ namespace DeepSigma.General.Concurrency
     /// </summary>
     public class TaskCollection
     {
+        /// <summary>
+        /// A collection of messages logged during task execution.
+        /// </summary>
         public ConcurrentQueue<string> MessageLog { get; set; } = [];
+
+        /// <summary>
+        /// A collection of data models containing thread status information.
+        /// </summary>
         public ConcurrentQueue<ThreadStatusDataModel> ThreadStatusDataModels { get; set; } = [];
 
         /// <summary>

@@ -2,6 +2,10 @@
 
 namespace DeepSigma.General.Concurrency
 {
+    /// <summary>
+    /// Represents the result of a method executed in a separate thread.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ThreadMethodResult<T>
     {
         /// <summary>

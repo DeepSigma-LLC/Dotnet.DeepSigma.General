@@ -2,6 +2,10 @@
 
 namespace DeepSigma.General
 {
+    /// <summary>
+    /// Abstract class for an inventory collection that provides basic functionality for managing a collection of items.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class InventoryCollectionAbstract<T> : IInventoryCollection<T>
     {
         private protected LinkedList<T> Collection { get; set; } = new LinkedList<T>();

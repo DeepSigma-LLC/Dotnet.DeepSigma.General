@@ -3,7 +3,7 @@
 namespace DeepSigma.General
 {
     /// <summary>
-    /// Methods for class extension for JSON serialization and deserialization.
+    /// Methods for class functionality extension for JSON serialization and deserialization.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IJSONIO<T>

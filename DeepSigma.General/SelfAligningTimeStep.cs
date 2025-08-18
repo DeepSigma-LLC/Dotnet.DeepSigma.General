@@ -3,11 +3,21 @@ using DeepSigma.General.Enums;
 
 namespace DeepSigma.General
 {
+    /// <summary>
+    /// A class that provides functionality to align date times based on specified periodicity and time intervals.
+    /// </summary>
     public class SelfAligningTimeStep
     {
         private Periodicity Periodicity { get; set; }
         private TimeInterval TimeInterval { get; set; }
         private bool MustBeWeekday { get; set; } = false;
+
+        /// <summary>
+        /// Initializes a new instance of the time stepper with specified periodicity, time interval, and weekday requirement.
+        /// </summary>
+        /// <param name="Periodicity"></param>
+        /// <param name="Interval"></param>
+        /// <param name="MustBeWeekday"></param>
         public SelfAligningTimeStep(Periodicity Periodicity, TimeInterval Interval, bool MustBeWeekday = true)
         { 
             this.Periodicity = Periodicity;
@@ -54,6 +64,11 @@ namespace DeepSigma.General
         }
 
 
+        /// <summary>
+        /// Checks if the provided date time is a valid time step based on the periodicity and time interval.
+        /// </summary>
+        /// <param name="EvaluationDateTime"></param>
+        /// <returns></returns>
         public bool IsValidTimeStep(DateTime EvaluationDateTime)
         {
             if(EvaluationDateTime == CalculateTimeStep(EvaluationDateTime, false))
