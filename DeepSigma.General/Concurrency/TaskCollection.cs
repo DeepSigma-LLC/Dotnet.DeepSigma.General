@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace DeepSigma.General.Concurrent
+namespace DeepSigma.General.Concurrency
 {
     /// <summary>
     /// Represents a collection of tasks.

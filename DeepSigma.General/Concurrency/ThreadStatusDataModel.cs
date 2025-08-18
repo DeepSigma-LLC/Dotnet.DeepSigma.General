@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace DeepSigma.General.Concurrent
+namespace DeepSigma.General.Concurrency
 {
     /// <summary>
     /// Data model for tracking the status of a thread's execution.
