@@ -1,6 +1,6 @@
 ﻿using OneOf;
 
-namespace DeepSigma.General
+namespace DeepSigma.General.Monads
 {
     /// <summary>
     /// Generic <see cref="ResultMonad{T}"/> type that encapsulates the result of an operation.
@@ -21,11 +21,11 @@ namespace DeepSigma.General
     /// </code>
     /// </summary>
     /// <typeparam name="T">The wrapped success value type.</typeparam>
-    public class ResultMonadMultiError<T> : OneOfBase<Success<T>, Errors>
+    public class ResultMonad<T> : OneOfBase<Success<T>, Error>
     {
-        public ResultMonadMultiError(OneOf<Success<T>, Errors> input) : base(input) { }
+        public ResultMonad(OneOf<Success<T>, Error> input) : base(input) { }
 
-        public static implicit operator ResultMonadMultiError<T>(Success<T> success) => new(success);
-        public static implicit operator ResultMonadMultiError<T>(Errors errors) => new(errors);
+        public static implicit operator ResultMonad<T>(Success<T> success) => new(success);
+        public static implicit operator ResultMonad<T>(Error error) => new(error);
     }
 }
