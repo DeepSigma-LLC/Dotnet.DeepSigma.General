@@ -6,7 +6,7 @@ namespace DeepSigma.General.Utilities
     /// <summary>
     /// Utility class for object-related operations.
     /// </summary>
-    public static class ObjectUtilities
+    public class ObjectUtilities
     {
 
         /// <summary>
@@ -269,5 +269,15 @@ namespace DeepSigma.General.Utilities
             return false;
         }
 
+        /// <summary>
+        /// Converts an expression to a function delegate.
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static Func<TDelegate> ExpressionToExecutableFunction<TDelegate>(Expression<Func<TDelegate>> method)
+        {
+            return method.Compile();
+        }
     }
 }
