@@ -270,14 +270,15 @@ namespace DeepSigma.General.Utilities
         }
 
         /// <summary>
-        /// Converts an expression to a function delegate.
+        /// Converts an expression to a function delegate. For example, you can use this to convert an expression like x => x.PropertyName to a function that can be executed.
+        /// 
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="method"></param>
+        /// <param name="expression"></param>
         /// <returns></returns>
-        public static Func<TDelegate> ExpressionToExecutableFunction<TDelegate>(Expression<Func<TDelegate>> method)
+        public static TDelegate ExpressionToExecutableFunction<TDelegate>(Expression<TDelegate> expression) where TDelegate : Delegate
         {
-            return method.Compile();
+            return expression.Compile();
         }
     }
 }
