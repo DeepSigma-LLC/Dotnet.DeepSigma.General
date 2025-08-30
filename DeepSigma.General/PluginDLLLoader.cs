@@ -14,9 +14,8 @@ namespace DeepSigma.General
         /// Loads and returns all plugins of type T from the specified directory.
         /// </summary>
         /// <param name="directory"></param>
-        /// <param name="is_required_serivce"></param>
         /// <returns></returns>
-        public static IEnumerable<T> LoadPlugins<T>(string directory, bool is_required_serivce = false) where T : class
+        public static IEnumerable<T> LoadPluginsAllAvailable<T>(string directory) where T : class
         {
             ServiceProvider serviceProvider = GetServiceProviderForPlugInLoader(directory);
 
@@ -30,7 +29,7 @@ namespace DeepSigma.General
         /// <param name="directory"></param>
         /// <param name="is_required_serivce"></param>
         /// <returns></returns>
-        public static T? LoadPlugin<T>(string directory, bool is_required_serivce = false) where T : class
+        public static T? LoadPluginSingle<T>(string directory, bool is_required_serivce = false) where T : class
         {
             ServiceProvider serviceProvider = GetServiceProviderForPlugInLoader(directory);
 

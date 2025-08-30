@@ -1,5 +1,4 @@
-﻿
-namespace DeepSigma.General
+﻿namespace DeepSigma.General.Inventory
 {
     public interface IInventoryCollection<T>
     {

@@ -1,5 +1,4 @@
-﻿
-namespace DeepSigma.General
+﻿namespace DeepSigma.General.Inventory
 {
     /// <summary>
     /// Implementation of custom inventory collection to achieve Last-In-First-Out functionality under a consistent interface to an inventory queue.

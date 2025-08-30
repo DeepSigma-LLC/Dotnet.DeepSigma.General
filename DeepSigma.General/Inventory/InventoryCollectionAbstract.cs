@@ -1,6 +1,4 @@
-﻿
-
-namespace DeepSigma.General
+﻿namespace DeepSigma.General.Inventory
 {
     /// <summary>
     /// Abstract class for an inventory collection that provides basic functionality for managing a collection of items.
