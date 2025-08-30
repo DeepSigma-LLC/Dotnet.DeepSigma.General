@@ -11,6 +11,10 @@ namespace DeepSigma.General.DistributedData.Interface
     /// </summary>
     public interface IBloomFilterRemovable: IBloomFilter
     {
+        /// <summary>
+        /// Removes an item from the bloom filter.
+        /// </summary>
+        /// <param name="item"></param>
         void Remove(string item);
     }
 }

@@ -29,6 +29,12 @@ namespace DeepSigma.General
             }
         }
 
+        /// <summary>
+        /// Applies sort.
+        /// </summary>
+        /// <param name="prop"></param>
+        /// <param name="direction"></param>
+        /// <exception cref="NotSupportedException"></exception>
         protected override void ApplySortCore(PropertyDescriptor prop,
             ListSortDirection direction)
         {
@@ -78,21 +84,33 @@ namespace DeepSigma.General
             }
         }
 
+        /// <summary>
+        /// Returns sort property decription object.
+        /// </summary>
         protected override PropertyDescriptor? SortPropertyCore
         {
             get { return sortPropertyValue; }
         }
 
+        /// <summary>
+        /// Indicates the sort direction.
+        /// </summary>
         protected override ListSortDirection SortDirectionCore
         {
             get { return sortDirectionValue; }
         }
 
+        /// <summary>
+        /// Indicates if sorting is supported.
+        /// </summary>
         protected override bool SupportsSortingCore
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// Indicates if list is sorted.
+        /// </summary>
         protected override bool IsSortedCore
         {
             get { return isSortedValue; }
