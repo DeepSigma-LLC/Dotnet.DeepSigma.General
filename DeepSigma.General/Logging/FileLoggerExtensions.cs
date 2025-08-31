@@ -1,0 +1,29 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DeepSigma.General.Logging
+{
+    /// <summary>
+    /// Extension methods for adding a file logger to the logging builder.
+    /// </summary>
+    public static class FileLoggerExtensions
+    {
+        /// <summary>
+        /// Adds a file logger to the logging builder with configuration options.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static ILoggingBuilder AddFileLoggerBuilder(this ILoggingBuilder builder, Action<FileLoggerOptions> configure)
+        {
+            builder.Services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
+            builder.Services.Configure(configure);
+            return builder;
+        }
+    }
+}
