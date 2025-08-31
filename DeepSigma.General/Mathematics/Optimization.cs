@@ -7,7 +7,10 @@ using NLoptNet;
 
 namespace DeepSigma.General.Mathematics
 {
-    internal class Optimization
+    /// <summary>
+    /// Optimization utilities.
+    /// </summary>
+    public class Optimization
     {
         /// <summary>
         /// Test optimization: min (x−0.2)² + (y−0.8)² subject to x + y = 1 | 0 ≤ x,y ≤ 1
@@ -20,7 +23,7 @@ namespace DeepSigma.General.Mathematics
 
             // Equality constraint: x + y - 1 = 0 (with tolerance)
             solver.AddEqualZeroConstraint((variable, partial_differential) => {
-                if (partial_differential != null)
+                if (partial_differential != null) // Gradients may be required for some algorithms. If so, set them here. 
                 {
                     partial_differential[0] = 1.0;
                     partial_differential[1] = 1.0; 
@@ -31,7 +34,7 @@ namespace DeepSigma.General.Mathematics
             // Objective (with gradient)
             solver.SetMinObjective((variable, partial_differential) => 
             {
-                if (partial_differential != null)
+                if (partial_differential != null) // Gradients may be required for some algorithms. If so, set them here. 
                 {
                     partial_differential[0] = 2 * (variable[0] - 0.2);
                     partial_differential[1] = 2 * (variable[1] - 0.8); 
