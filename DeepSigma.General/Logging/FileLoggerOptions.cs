@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace DeepSigma.General.Logging
 {
+    /// <summary>
+    /// Custom file logger option properties.
+    /// </summary>
     public class FileLoggerOptions
     {
-        public virtual required string FilePath { get; set; }
+        /// <summary>
+        /// Target file name.
+        /// </summary>
+        public virtual required string FileName { get; set; }
+        /// <summary>
+        /// Directory path storing the log files.
+        /// </summary>
         public virtual required string FolderPath { get; set; }
     }
 }

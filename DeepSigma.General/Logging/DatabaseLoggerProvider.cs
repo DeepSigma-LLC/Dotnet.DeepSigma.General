@@ -10,28 +10,22 @@ using System.Threading.Tasks;
 namespace DeepSigma.General.Logging
 {
     /// <summary>
-    /// A provider for creating file-based loggers.
+    /// A provider for creating a custom database logger.
     /// </summary>
-    [ProviderAlias("FileLogger")]
-    public class FileLoggerProvider : ILoggerProvider
+    public class DatabaseLoggerProvider : ILoggerProvider
     {
         /// <summary>
-        /// The options for configuring the file logger.
+        /// The options for configuring the custom database logger.
         /// </summary>
-        public readonly FileLoggerOptions Options;
+        public readonly DatabaseLoggerOptions Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileLoggerProvider"/> class with the specified options.
+        /// Initializes a new instance of the <see cref="DatabaseLoggerProvider"/> class with the specified options.
         /// </summary>
         /// <param name="options"></param>
-        public FileLoggerProvider(IOptions<FileLoggerOptions> options)
+        public DatabaseLoggerProvider(IOptions<DatabaseLoggerOptions> options)
         {
             Options = options.Value;
-
-            if(!Directory.Exists(Options.FolderPath))
-            {
-                Directory.CreateDirectory(Options.FolderPath);
-            }
         }
         
         /// <summary>
@@ -41,7 +35,7 @@ namespace DeepSigma.General.Logging
         /// <returns></returns>
         public ILogger CreateLogger(string categoryName)
         {
-            return new FileLogger(this);
+            return new DatabaseLogger(this);
         }
 
         /// <summary>

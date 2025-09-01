@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace DeepSigma.General.Logging
 {
     /// <summary>
-    /// Extension methods for adding a file logger to the logging builder.
+    /// Extension methods for adding a custom database logger to the logging builder.
     /// </summary>
-    public static class FileLoggerExtensions
+    public static class DatabaseLoggerExtensions
     {
         /// <summary>
-        /// Adds a file logger to the logging builder with configuration options.
+        /// Adds a custom database logger to the logging builder with configuration options.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="configure"></param>
         /// <returns></returns>
-        public static ILoggingBuilder AddFileLogger(this ILoggingBuilder builder, Action<FileLoggerOptions> configure)
+        public static ILoggingBuilder AddDatbaseLogger(this ILoggingBuilder builder, Action<DatabaseLoggerOptions> configure)
         {
-            builder.Services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
+            builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
             builder.Services.Configure(configure);
             return builder;
         }

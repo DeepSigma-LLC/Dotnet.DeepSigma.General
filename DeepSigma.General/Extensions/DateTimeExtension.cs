@@ -6,10 +6,10 @@ namespace DeepSigma.General.Extensions
     /// </summary>
     public static class DateTimeExtension
     {
-        private static string _dateStringFormat { get; } = "MM-dd-yyyy 'T 'HH-mm-ss";
+        private static string _dateStringFormat { get; } = "yyyy-MM-dd 'T 'HH-mm-ss";
 
         /// <summary>
-        /// Converts a DateTime to a string in the format "MM-dd-yyyy T HH-mm-ss".
+        /// Converts a DateTime to a string in the format "yyyy-MM-dd T HH-mm-ss".
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>

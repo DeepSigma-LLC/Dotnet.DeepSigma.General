@@ -12,7 +12,7 @@ namespace DeepSigma.General
         /// Exports the current instance of the class to a JSON string.
         /// </summary>
         /// <returns></returns>
-        public string ExportToJSON()
+        public string ToJSON()
         {
             return SerializationUtilities.GetSerializedString(this);
         }
@@ -22,7 +22,7 @@ namespace DeepSigma.General
         /// </summary>
         /// <param name="JSONText"></param>
         /// <returns></returns>
-        public static T? CreateFromJSON(string JSONText)
+        public static T? FromJSON(string JSONText)
         {
             return SerializationUtilities.GetDeserializedObject<T>(JSONText);
         }

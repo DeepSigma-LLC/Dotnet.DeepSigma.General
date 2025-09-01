@@ -4,29 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DeepSigma.General.Extensions;
-using DeepSigma.General;
 
 namespace DeepSigma.General.Logging
 {
     /// <summary>
-    /// A logger that writes log messages to a file.
+    /// A logger that writes log messages to a database.
     /// </summary>
-    public class FileLogger : ILogger
+    [ProviderAlias("DatabaseLogger")]
+    public class DatabaseLogger : ILogger
     {
-        /// <summary>
-        /// File logger provider.
-        /// </summary>
-        protected readonly FileLoggerProvider _provider;
 
         /// <summary>
-        /// Initializes an instance of the class.
+        /// The provider that created this logger.
+        /// </summary>
+        protected readonly DatabaseLoggerProvider _provider;
+
+        /// <summary>
+        /// Initializes a instance of the class.
         /// </summary>
         /// <param name="provider"></param>
-        public FileLogger(FileLoggerProvider provider)
+        public DatabaseLogger(DatabaseLoggerProvider provider)
         {
             _provider = provider;
-
         }
 
         /// <summary>
@@ -62,15 +61,18 @@ namespace DeepSigma.General.Logging
         /// <param name="formatter"></param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            if (!IsEnabled(logLevel)){ return;}
+            if(!IsEnabled(logLevel))
+            {
+                return;
+            }
+            LogCollection log = LogUtilities.GetLog(logLevel,eventId,state,exception);
+            string json = log.ToJSON();
 
-            string full_file_path = Path.Combine(_provider.Options.FolderPath, _provider.Options.FileName + "-" + DateTime.UtcNow.ToStringFileFormat() + ".JSON");
-
-            LogCollection logs = LogUtilities.GetLog(logLevel, eventId, state, exception);
-            string json = logs.ToJSON();
-
-            using var stream = new StreamWriter(full_file_path, false);
-            stream.WriteLine(json);
+            if(_provider.Options.LogToDatabase is null)
+            {
+                throw new NotImplementedException("The log to database logic has not yet been set.");
+            }
+            _provider.Options.LogToDatabase(log);
         }
     }
 }

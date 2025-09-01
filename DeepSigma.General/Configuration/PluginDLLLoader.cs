@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DeepSigma.General
+namespace DeepSigma.General.Configuration
 {
     /// <summary>
     /// A generic class for loading plugins from DLL files in a specified directory.
