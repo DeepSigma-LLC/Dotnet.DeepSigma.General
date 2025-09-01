@@ -64,7 +64,8 @@ namespace DeepSigma.General.Logging
         {
             if (!IsEnabled(logLevel)){ return;}
 
-            string full_file_path = Path.Combine(_provider.Options.FolderPath, _provider.Options.FileName + "-" + DateTime.UtcNow.ToStringFileFormat() + ".JSON");
+            string new_file_name = _provider.Options.FileName.Replace("{Date}", DateTime.UtcNow.ToStringFileFormat()).Replace("{Username}", Environment.UserName);
+            string full_file_path = Path.Combine(_provider.Options.FolderPath, new_file_name);
 
             LogCollection logs = LogUtilities.GetLog(logLevel, eventId, state, exception);
             string json = logs.ToJSON();
