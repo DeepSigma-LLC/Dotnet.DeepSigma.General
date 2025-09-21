@@ -23,7 +23,6 @@ namespace DeepSigma.General.Tests.Tests
         public void ConvertToBinaryTest()
         {
             byte[] binary_data = BinarySerializer.Serialize(GetTestPeople(), WritePerson, 0);
-            File.WriteAllBytes(@"C:\Users\brend\Downloads\Data.ml", binary_data);
             Assert.NotNull(binary_data);
         }
 
