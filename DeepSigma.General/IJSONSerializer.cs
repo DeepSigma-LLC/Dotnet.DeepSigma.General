@@ -6,7 +6,7 @@ namespace DeepSigma.General
     /// Methods for class functionality extension for JSON serialization and deserialization.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IJSONIO<T>
+    public interface IJSONSerializer<T>
     {
         /// <summary>
         /// Exports the current instance of the class to a JSON string.

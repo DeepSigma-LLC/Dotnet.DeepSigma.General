@@ -10,7 +10,7 @@ namespace DeepSigma.General.Logging
     /// <summary>
     /// A class representing a log entry with various properties.
     /// </summary>
-    public class LogEntry : IJSONIO<LogEntry>
+    public class LogEntry : IJSONSerializer<LogEntry>
     {
         /// <summary>
         /// Log date and time in UTC.

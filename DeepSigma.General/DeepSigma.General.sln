@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepSigma.General", "DeepSigma.General.csproj", "{861EBB8F-DC68-4C32-8614-425D8B860CDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeepSigma.General.Tests", "..\DeepSigma.General.Tests\DeepSigma.General.Tests.csproj", "{E6DFB188-39DE-4AC1-A3A6-0004F16A34C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{861EBB8F-DC68-4C32-8614-425D8B860CDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{861EBB8F-DC68-4C32-8614-425D8B860CDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{861EBB8F-DC68-4C32-8614-425D8B860CDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6DFB188-39DE-4AC1-A3A6-0004F16A34C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6DFB188-39DE-4AC1-A3A6-0004F16A34C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6DFB188-39DE-4AC1-A3A6-0004F16A34C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6DFB188-39DE-4AC1-A3A6-0004F16A34C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
