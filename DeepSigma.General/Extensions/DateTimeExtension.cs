@@ -9,6 +9,37 @@ namespace DeepSigma.General.Extensions
         private static string _dateStringFormat { get; } = "yyyy-MM-dd 'T 'HH-mm-ss";
 
         /// <summary>
+        /// Checks if the year of the given date is a leap year.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static bool IsLeapYear(this DateTime date)
+        {
+            return DateTime.IsLeapYear(date.Year);
+        }
+
+
+        /// <summary>
+        /// Returns the number of days in the month of the given date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static int GetDaysInMonth(this DateTime date)
+        {
+            return DateTime.DaysInMonth(date.Year, date.Month);
+        }
+
+        /// <summary>
+        /// Returns the number of days in the year of the given date.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static int GetDaysInYear(this DateTime date)
+        {
+            return date.IsLeapYear() ? 366 : 365;
+        }
+
+        /// <summary>
         /// Converts a DateTime to a string in the format "yyyy-MM-dd T HH-mm-ss".
         /// </summary>
         /// <param name="date"></param>
