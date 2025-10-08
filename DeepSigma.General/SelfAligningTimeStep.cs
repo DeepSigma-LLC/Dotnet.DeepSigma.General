@@ -194,7 +194,7 @@ public class SelfAligningTimeStep
             result = NextIntradayDateTime(SelectedDateTime);
             if (MustBeWeekday && result.IsWeekend() == true)
             {
-                return result.MustBeWeekdayMoveForward(MustBeWeekday).Date;
+                return result.MustBeWeekdayElseMoveForward(MustBeWeekday).Date;
             }
             return result;
         }
@@ -203,7 +203,7 @@ public class SelfAligningTimeStep
             result = PriorIntradayDateTime(SelectedDateTime);
             if (MustBeWeekday == true && result.IsWeekend() == true)
             {
-                result = result.MustBeWeekdayMoveBackward(MustBeWeekday).Date.AddHours(24);
+                result = result.MustBeWeekdayElseMoveBackward(MustBeWeekday).Date.AddHours(24);
                 return PriorIntradayDateTime(result);
             }
             return result;
@@ -250,16 +250,16 @@ public class SelfAligningTimeStep
     {
         if (MoveForward == true && IsValidYearEnd(SelectedDateTime) == false)
         {
-            return new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayMoveBackward(MustBeWeekday);
+            return new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday);
         }
         int YearScalar = GetDirectionScalar(MoveForward);
-        return new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayMoveBackward(MustBeWeekday);
+        return new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday);
     }
 
     private bool IsValidYearEnd(DateTime SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        if (SelectedDateTime.Date == new DateTime(Year, 12, 31).MustBeWeekdayMoveBackward(MustBeWeekday))
+        if (SelectedDateTime.Date == new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
         {
             return true;
         }
@@ -342,11 +342,11 @@ public class SelfAligningTimeStep
     private bool IsValidSemiAnnualEnd(DateTime SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        if (SelectedDateTime.Date == new DateTime(Year, 6, 30).MustBeWeekdayMoveBackward(MustBeWeekday))
+        if (SelectedDateTime.Date == new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday))
         {
             return true;
         }
-        else if (SelectedDateTime.Date == new DateTime(Year, 12, 31).MustBeWeekdayMoveBackward(MustBeWeekday))
+        else if (SelectedDateTime.Date == new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
         {
             return true;
         }

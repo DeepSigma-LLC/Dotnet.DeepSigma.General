@@ -141,7 +141,7 @@ public static class DateTimeExtension
     /// <param name="date"></param>
     /// <param name="MustBeWeekday"></param>
     /// <returns></returns>
-    public static DateTime MustBeWeekdayMoveForward(this DateTime date, bool MustBeWeekday)
+    public static DateTime MustBeWeekdayElseMoveForward(this DateTime date, bool MustBeWeekday)
     {
         if (MustBeWeekday == true)
         {
@@ -164,7 +164,7 @@ public static class DateTimeExtension
     /// <param name="date"></param>
     /// <param name="MustBeWeekday"></param>
     /// <returns></returns>
-    public static DateTime MustBeWeekdayMoveBackward(this DateTime date, bool MustBeWeekday)
+    public static DateTime MustBeWeekdayElseMoveBackward(this DateTime date, bool MustBeWeekday)
     {
         if (MustBeWeekday == true)
         {
