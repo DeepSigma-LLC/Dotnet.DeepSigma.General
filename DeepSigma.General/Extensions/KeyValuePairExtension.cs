@@ -1,21 +1,20 @@
 ﻿
-namespace DeepSigma.General.Extensions
+namespace DeepSigma.General.Extensions;
+
+/// <summary>
+/// Extension methods for KeyValuePairs.
+/// </summary>
+public static class KeyValuePairExtension
 {
     /// <summary>
-    /// Extension methods for KeyValuePairs.
+    /// Converts a KeyValuePair to a tuple.
     /// </summary>
-    public static class KeyValuePairExtension
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="kvp"></param>
+    /// <returns></returns>
+    public static (TKey Key, TValue Value) ToTuple<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
     {
-        /// <summary>
-        /// Converts a KeyValuePair to a tuple.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="kvp"></param>
-        /// <returns></returns>
-        public static (TKey Key, TValue Value) ToTuple<TKey, TValue>(this KeyValuePair<TKey, TValue> kvp)
-        {
-            return (kvp.Key, kvp.Value);
-        }
+        return (kvp.Key, kvp.Value);
     }
 }

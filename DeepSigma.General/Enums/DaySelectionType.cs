@@ -1,19 +1,18 @@
 ﻿
+namespace DeepSigma.General.Enums;
 
-namespace DeepSigma.General.Enums
+/// <summary>
+/// Represents the type of day selection for scheduling or filtering purposes.
+/// </summary>
+public enum DaySelectionType
 {
     /// <summary>
-    /// Represents the type of day selection for scheduling or filtering purposes.
+    /// Day selection is not specified.
     /// </summary>
-    public enum DaySelectionType
-    {
-        /// <summary>
-        /// Day selection is not specified.
-        /// </summary>
-        AnyDay,
-        /// <summary>
-        /// Day selection must be a weekday.
-        /// </summary>
-        Weekday
-    }
+    AnyDay,
+    /// <summary>
+    /// Day selection must be a weekday.
+    /// </summary>
+    Weekday
 }
+

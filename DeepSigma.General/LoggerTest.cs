@@ -13,7 +13,5 @@ namespace DeepSigma.General
             _logger.LogWarning("This is a warning message from LoggerTest.");
             _logger.LogError("This is an error message from LoggerTest.");
         }
-
-
     }
 }

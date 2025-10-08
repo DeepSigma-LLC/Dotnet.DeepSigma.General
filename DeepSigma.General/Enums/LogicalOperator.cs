@@ -1,18 +1,17 @@
 ﻿
-namespace DeepSigma.General.Enums
+namespace DeepSigma.General.Enums;
+
+/// <summary>
+/// Represents logical operators used in filtering or querying data.
+/// </summary>
+public enum LogicalOperator
 {
     /// <summary>
-    /// Represents logical operators used in filtering or querying data.
+    /// Represents a logical AND operation.
     /// </summary>
-    public enum LogicalOperator
-    {
-        /// <summary>
-        /// Represents a logical AND operation.
-        /// </summary>
-        And,
-        /// <summary>
-        /// Represents a logical OR operation.
-        /// </summary>
-        Or
-    }
+    And,
+    /// <summary>
+    /// Represents a logical OR operation.
+    /// </summary>
+    Or
 }
