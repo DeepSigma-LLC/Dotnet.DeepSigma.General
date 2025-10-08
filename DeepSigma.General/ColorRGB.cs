@@ -25,7 +25,7 @@ public struct ColorRGB
     /// Initializes a new instance of the ColorRGB structure.
     /// </summary>
     /// <param name="red"></param>
-    /// <param name="green"></param>
+    /// <param name="green"></param
     /// <param name="blue"></param>
     public ColorRGB(byte red, byte green, byte blue)
     {
