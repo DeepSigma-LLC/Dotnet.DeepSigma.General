@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DeepSigma.General.Encode;
 
-internal static class Base32
+internal static class Base32Encoder
 {
     private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 

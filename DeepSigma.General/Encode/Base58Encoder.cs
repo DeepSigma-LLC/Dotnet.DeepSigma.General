@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DeepSigma.General.Encode;
 
-internal static class Base58
+internal static class Base58Encoder
 {
     private const string Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 

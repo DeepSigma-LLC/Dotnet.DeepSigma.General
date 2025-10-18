@@ -22,8 +22,8 @@ public static class Encoder
             EncodingType.UTF8 => System.Text.Encoding.UTF8.GetString(data),
             EncodingType.UTF32 => System.Text.Encoding.UTF32.GetString(data),
             EncodingType.ASCII => System.Text.Encoding.ASCII.GetString(data),
-            EncodingType.Base58 => Base58.Encode(data),
-            EncodingType.Base32 => Base32.Encode(data),
+            EncodingType.Base58 => Base58Encoder.Encode(data),
+            EncodingType.Base32 => Base32Encoder.Encode(data),
             _ => throw new ArgumentOutOfRangeException(nameof(encodingType), "Unsupported encoding type"),
         };
     }
@@ -44,8 +44,8 @@ public static class Encoder
             EncodingType.UTF8 => System.Text.Encoding.UTF8.GetBytes(encodedData),
             EncodingType.UTF32 => System.Text.Encoding.UTF32.GetBytes(encodedData),
             EncodingType.ASCII => System.Text.Encoding.ASCII.GetBytes(encodedData),
-            EncodingType.Base58 => Base58.Decode(encodedData),
-            EncodingType.Base32 => Base32.Decode(encodedData),
+            EncodingType.Base58 => Base58Encoder.Decode(encodedData),
+            EncodingType.Base32 => Base32Encoder.Decode(encodedData),
             _ => throw new ArgumentOutOfRangeException(nameof(encodingType), "Unsupported encoding type"),
         };
     }
