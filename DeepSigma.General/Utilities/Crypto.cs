@@ -1,4 +1,5 @@
 ﻿
+using DeepSigma.General.Encode;
 using System.Security.Cryptography;
 
 namespace DeepSigma.General.Utilities;
@@ -27,74 +28,73 @@ public static class Crypto
     /// <param name="plainText"></param>
     /// <param name="publicKey"></param>
     /// <returns></returns>
-    public static string RSAEncrypt(string plainText, RSAParameters publicKey)
+    public static byte[] RSAEncrypt(string plainText, RSAParameters publicKey, EncodingType text_encoding_type = EncodingType.UTF8)
     {
         using RSA rsa = RSA.Create();
         rsa.ImportParameters(publicKey);
-        byte[] plainBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+        byte[] plainBytes = Encoder.DecodeFromString(plainText, text_encoding_type);
         byte[] encryptedBytes = rsa.Encrypt(plainBytes, RSAEncryptionPadding.OaepSHA256);
-        return Convert.ToBase64String(encryptedBytes);
+        return encryptedBytes;
     }
 
     /// <summary>
     /// Decrypts the given encrypted text using the provided RSA private key.
     /// </summary>
-    /// <param name="encryptedText"></param>
+    /// <param name="encryptedBytes"></param>
     /// <param name="privateKey"></param>
     /// <returns></returns>
-    public static string RSADecrypt(string encryptedText, RSAParameters privateKey)
+    public static byte[] RSADecrypt(byte[] encryptedBytes, RSAParameters privateKey)
     {
         using RSA rsa = RSA.Create();
         rsa.ImportParameters(privateKey);
 
-        byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
         byte[] decryptedBytes = rsa.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA256);
-        return System.Text.Encoding.UTF8.GetString(decryptedBytes);
-    }
-
-    /// <summary>
-    /// Decrypts the given cipher text using the provided AES key and IV.
-    /// </summary>
-    /// <param name="cipherText"></param>
-    /// <param name="key"></param>
-    /// <param name="iv"></param>
-    /// <returns></returns>
-    public static string AESDecrypt(string cipherText, byte[] key, byte[] iv)
-    {
-        using Aes aes = Aes.Create();
-        aes.Key = key;
-        aes.IV = iv;
-
-        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-        byte[] cipherBytes = Convert.FromBase64String(cipherText);
-        using var ms = new System.IO.MemoryStream(cipherBytes);
-        using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
-        using var sr = new System.IO.StreamReader(cs);
-        return sr.ReadToEnd();
+        return decryptedBytes;
     }
 
     /// <summary>
     /// Encrypts the given plain text using the provided AES key and IV.
     /// </summary>
-    /// <param name="plainText"></param>
+    /// <param name="plain_text"></param>
     /// <param name="key"></param>
     /// <param name="iv"></param>
     /// <returns></returns>
-    public static string AESEncrypt(string plainText, byte[] key, byte[] iv)
+    public static byte[] AESEncrypt(string plain_text, byte[] key, byte[] iv)
     {
         using Aes aes = Aes.Create();
         aes.Key = key;
         aes.IV = iv;
 
         ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-        using var ms = new System.IO.MemoryStream();
-        using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
-        using var sw = new System.IO.StreamWriter(cs);
-        sw.Write(plainText);
+        using MemoryStream ms = new();
+        using CryptoStream cs = new(ms, encryptor, CryptoStreamMode.Write);
+        using StreamWriter sw = new(cs);
+        sw.Write(plain_text);
         sw.Flush();
         cs.FlushFinalBlock();
-        return Convert.ToBase64String(ms.ToArray());
+        return ms.ToArray();
     }
+
+    /// <summary>
+    /// Decrypts the given cipher text using the provided AES key and IV.
+    /// </summary>
+    /// <param name="cipher_text"></param>
+    /// <param name="key"></param>
+    /// <param name="iv"></param>
+    /// <returns></returns>
+    public static string AESDecrypt(byte[] cipher_text, byte[] key, byte[] iv)
+    {
+        using Aes aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+
+        ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+        using MemoryStream ms = new(cipher_text);
+        using CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Read);
+        using StreamReader sr = new(cs);
+        return sr.ReadToEnd();
+    }
+
 
     /// <summary>
     /// Generates a new AES key and IV.
@@ -118,29 +118,29 @@ public static class Crypto
     /// <param name="data"></param>
     /// <param name="privateKey"></param>
     /// <returns></returns>
-    public static string EllipticCurveDigitalSignData(string data, ECDsa privateKey)
+    public static string EllipticCurveDigitalSignData(string data, ECDsa privateKey, EncodingType encodingType = EncodingType.Base64)
     {
         byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
         byte[] signature = privateKey.SignData(dataBytes, HashAlgorithmName.SHA256);
-        return Convert.ToBase64String(signature);
+        return Encoder.EncodeToString(signature, encodingType);
     }
 
     /// <summary>
     /// Verifies the given signature for the data using the provided ECDsa public key.
     /// </summary>
     /// <param name="data"></param>
-    /// <param name="signatureBase64"></param>
+    /// <param name="signature"></param>
     /// <param name="publicKey"></param>
     /// <returns></returns>
-    public static bool EllipticCurveDigitalVerifyData(string data, string signatureBase64, ECDsa publicKey)
+    public static bool EllipticCurveDigitalVerifyData(string data, string signature, ECDsa publicKey, EncodingType signiture_encoding_type = EncodingType.Base64)
     {
         byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
-        byte[] signatureBytes = Convert.FromBase64String(signatureBase64);
+        byte[] signatureBytes = Encoder.DecodeFromString(signature, signiture_encoding_type);
         return publicKey.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256);
     }
 
     /// <summary>
-    /// 
+    /// Generates a new ECDsa key pair.
     /// </summary>
     /// <returns></returns>
     public static (ECDsa publicKey, ECDsa privateKey) GenerateECDsaKeys()

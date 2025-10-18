@@ -7,7 +7,6 @@ namespace DeepSigma.General.Utilities;
 /// </summary>
 public static class HashUtilities
 {
-
     /// <summary>
     /// Computes the hash of the given input string using the specified hash algorithm.
     /// </summary>
