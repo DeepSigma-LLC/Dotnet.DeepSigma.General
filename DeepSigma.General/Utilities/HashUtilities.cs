@@ -10,11 +10,11 @@ public static class HashUtilities
     /// <summary>
     /// Computes the hash of the given input string using the specified hash algorithm.
     /// </summary>
-    /// <param name="input"></param>
+    /// <param name="input">Input string assumes UTF8 encoded string.</param>
     /// <param name="algorithm_name"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public static string ComputeHash(string input, HashAlgorithmName algorithm_name)
+    public static byte[] ComputeHash(string input, HashAlgorithmName algorithm_name)
     {
         HashAlgorithm hashAlgorithm = algorithm_name.Name switch
         {
@@ -30,7 +30,7 @@ public static class HashUtilities
         {
             byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
             byte[] hashBytes = hashAlgorithm.ComputeHash(inputBytes);
-            return Convert.ToHexStringLower(hashBytes);
+            return hashBytes;
         }
     }
 }
