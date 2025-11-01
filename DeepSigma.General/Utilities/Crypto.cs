@@ -27,6 +27,7 @@ public static class Crypto
     /// </summary>
     /// <param name="plainText"></param>
     /// <param name="publicKey"></param>
+    /// <param name="text_encoding_type"></param>
     /// <returns></returns>
     public static byte[] RSAEncrypt(string plainText, RSAParameters publicKey, EncodingType text_encoding_type = EncodingType.UTF8)
     {
@@ -117,6 +118,7 @@ public static class Crypto
     /// </summary>
     /// <param name="data"></param>
     /// <param name="privateKey"></param>
+    /// <param name="encodingType"></param>
     /// <returns></returns>
     public static string EllipticCurveDigitalSignData(string data, ECDsa privateKey, EncodingType encodingType = EncodingType.Base64)
     {
@@ -126,17 +128,43 @@ public static class Crypto
     }
 
     /// <summary>
+    /// Signs the given data using the provided ECDsa private key.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="privateKey"></param>
+    /// <returns></returns>
+    public static byte[] EllipticCurveDigitalSignData(byte[] data, ECDsa privateKey)
+    {
+        byte[] signed_data = privateKey.SignData(data, HashAlgorithmName.SHA256);
+        return signed_data;
+    }
+
+    /// <summary>
     /// Verifies the given signature for the data using the provided ECDsa public key.
     /// </summary>
     /// <param name="data"></param>
     /// <param name="signature"></param>
     /// <param name="publicKey"></param>
+    /// <param name="signiture_encoding_type"></param>
     /// <returns></returns>
     public static bool EllipticCurveDigitalVerifyData(string data, string signature, ECDsa publicKey, EncodingType signiture_encoding_type = EncodingType.Base64)
     {
         byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
         byte[] signatureBytes = Encoder.DecodeFromString(signature, signiture_encoding_type);
         return publicKey.VerifyData(dataBytes, signatureBytes, HashAlgorithmName.SHA256);
+    }
+
+    /// <summary>
+    /// Verifies the given signature for the data using the provided ECDsa public key.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="signature"></param>
+    /// <param name="publicKey"></param>
+    /// <param name="hash_algorithm"></param>
+    /// <returns></returns>
+    public static bool EllipticCurveDigitalVerifyData(byte[] data, byte[] signature, ECDsa publicKey, HashAlgorithmName hash_algorithm)
+    {
+        return publicKey.VerifyData(data, signature, hash_algorithm);
     }
 
     /// <summary>
