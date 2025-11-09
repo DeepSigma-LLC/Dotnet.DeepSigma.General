@@ -9,10 +9,10 @@ public class Crypto_Tests
     [Fact]
     public void AESTest()
     {
-        (byte[] key, byte[] IV) keys = Crypto.GenerateAESKeyAndIV(32, 16);
+        (byte[] key, byte[] IV) keys = CryptoUtilities.GenerateAESKeyAndIV(32, 16);
         string message = "This is a secret message.";
-        byte[] encrypted = Crypto.AESEncrypt(message, keys.key, keys.IV);
-        string decrypted = Crypto.AESDecrypt(encrypted, keys.key, keys.IV);
+        byte[] encrypted = CryptoUtilities.AESEncrypt(message, keys.key, keys.IV);
+        string decrypted = CryptoUtilities.AESDecrypt(encrypted, keys.key, keys.IV);
         string encrypted_text = System.Text.Encoding.UTF8.GetString(encrypted);
         
         Assert.Equal(message, decrypted);
@@ -22,10 +22,10 @@ public class Crypto_Tests
     [Fact]
     public void RSATest()
     {
-        (RSAParameters pub, RSAParameters priv) keys = Crypto.GenerateRSAKeys(2048);
+        (RSAParameters pub, RSAParameters priv) keys = CryptoUtilities.GenerateRSAKeys(2048);
         string message = "This is a secret message.";
-        byte[] encrypted = Crypto.RSAEncrypt(message, keys.pub);
-        byte[] decrypted = Crypto.RSADecrypt(encrypted, keys.priv);
+        byte[] encrypted = CryptoUtilities.RSAEncrypt(message, keys.pub);
+        byte[] decrypted = CryptoUtilities.RSADecrypt(encrypted, keys.priv);
         string decrypted_text = System.Text.Encoding.UTF8.GetString(decrypted);
 
         Assert.Equal(message, decrypted_text);
@@ -36,13 +36,13 @@ public class Crypto_Tests
     [Fact]
     public void EllipticCurveSignitureShouldBeTrue()
     {
-        (ECDsa pubic, ECDsa priv) wrong_key = Crypto.GenerateECDsaKeys();
-        (ECDsa pubic, ECDsa priv) keys = Crypto.GenerateECDsaKeys();
+        (ECDsa pubic, ECDsa priv) wrong_key = CryptoUtilities.GenerateECDsaKeys();
+        (ECDsa pubic, ECDsa priv) keys = CryptoUtilities.GenerateECDsaKeys();
         string message = "This is a secret message.";
 
-        string signature = Crypto.EllipticCurveDigitalSignData(message, keys.priv);
-        bool valid_sig = Crypto.EllipticCurveDigitalVerifyData(message, signature, keys.pubic);
-        bool invalid_sig = Crypto.EllipticCurveDigitalVerifyData(message, signature, wrong_key.pubic);
+        string signature = CryptoUtilities.EllipticCurveDigitalSignData(message, keys.priv);
+        bool valid_sig = CryptoUtilities.EllipticCurveDigitalVerifyData(message, signature, keys.pubic);
+        bool invalid_sig = CryptoUtilities.EllipticCurveDigitalVerifyData(message, signature, wrong_key.pubic);
 
         Assert.True(valid_sig);
         Assert.False(invalid_sig);

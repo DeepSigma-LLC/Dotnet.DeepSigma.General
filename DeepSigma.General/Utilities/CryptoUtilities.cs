@@ -7,7 +7,7 @@ namespace DeepSigma.General.Utilities;
 /// <summary>
 /// Provides utility methods for cryptographic operations such as RSA and AES encryption/decryption, key generation, and digital signatures.
 /// </summary>
-public static class Crypto
+public static class CryptoUtilities
 {
     /// <summary>
     /// Generates a new RSA key pair.

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using DeepSigma.General.Serialization;
+using System.IO;
 using Xunit;
 
 namespace DeepSigma.General.Tests.Tests

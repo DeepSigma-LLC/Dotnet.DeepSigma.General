@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace DeepSigma.General.Utilities;
+namespace DeepSigma.General.Serialization;
 
 /// <summary>
 /// Utility class for serialization and deserialization of objects to and from JSON strings.
 /// </summary>
-public static class SerializationUtilities
+public static class JsonSerializer
 {
     /// <summary>
     /// Serializes an object to a JSON string.

@@ -1,5 +1,4 @@
-﻿using DeepSigma.General.Utilities;
-using System.Runtime.CompilerServices;
+﻿using DeepSigma.General.Serialization;
 
 namespace DeepSigma.General;
 
@@ -15,7 +14,7 @@ public interface IJSONSerializer<T>
     /// <returns></returns>
     public string ToJSON()
     {
-        return SerializationUtilities.GetSerializedString(this);
+        return JsonSerializer.GetSerializedString(this);
     }
 
     /// <summary>
@@ -25,7 +24,7 @@ public interface IJSONSerializer<T>
     /// <returns></returns>
     public static T? Create(string JSONText)
     {
-        return SerializationUtilities.GetDeserializedObject<T>(JSONText);
+        return JsonSerializer.GetDeserializedObject<T>(JSONText);
     }
 }
 

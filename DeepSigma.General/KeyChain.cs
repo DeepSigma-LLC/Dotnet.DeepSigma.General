@@ -1,4 +1,4 @@
-﻿using DeepSigma.General.Utilities;
+﻿using DeepSigma.General.Serialization;
 
 namespace DeepSigma.General;
 
@@ -64,7 +64,7 @@ public class KeyChain()
     public void ExportToNewKeyChainFile(Dictionary<string, KeyChainItem> KeyChain, string full_file_path)
     {
         ValidateNewFilePath(full_file_path);
-        string text = SerializationUtilities.GetSerializedString(KeyChain);
+        string text = JsonSerializer.GetSerializedString(KeyChain);
         File.WriteAllText(full_file_path, text);
     }
 
@@ -74,14 +74,14 @@ public class KeyChain()
     public void SaveKeyChainByOverwritingExistingFile()
     {
         ValidateNewFilePath(FullJsonFilePath);
-        string text = SerializationUtilities.GetSerializedString(this);
+        string text = JsonSerializer.GetSerializedString(this);
         File.WriteAllText(FullJsonFilePath, text);
     }
 
     private void LoadKeysFromFile()
     {
         string json_text = File.ReadAllText(FullJsonFilePath);
-        Keys = SerializationUtilities.GetDeserializedObject<Dictionary<string, KeyChainItem>>(json_text) ?? [];
+        Keys = JsonSerializer.GetDeserializedObject<Dictionary<string, KeyChainItem>>(json_text) ?? [];
     }
 
     private static void ValidateExistingFilePath(string full_file_path)
