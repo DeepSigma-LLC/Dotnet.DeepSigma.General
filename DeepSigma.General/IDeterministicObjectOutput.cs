@@ -23,3 +23,32 @@ public interface IDeterministicObjectOutput
     /// <returns></returns>
     public byte[] ToDeterministicHash(HashAlgorithmName hashAlgorithmName) => DeterministicSerializer.ToDeterministicHash(this, hashAlgorithmName);
 }
+
+
+/// <summary>
+/// Extensions for object with Deterministic Object Output functionality.
+/// </summary>
+public static class IDeterministicObjectOutputExtensions
+{
+    extension(IDeterministicObjectOutput source)
+    {
+        /// <summary>
+        /// Converts an object to a deterministic byte array representation.
+        /// </summary>
+        /// <returns></returns>
+        public byte[] ToDeterministicBytes()
+        {
+            return source.ToDeterministicBytes();
+        }
+
+        /// <summary>
+        /// Converts an object to a hash using the specified hash algorithm.
+        /// </summary>
+        /// <param name="hashAlgorithmName"></param>
+        /// <returns></returns>
+        public byte[] ToDeterministicHash(HashAlgorithmName hashAlgorithmName)
+        {
+            return source.ToDeterministicHash(hashAlgorithmName);
+        }
+    }
+}

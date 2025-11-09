@@ -23,7 +23,7 @@ public static class DeterministicSerializer
         string json = System.Text.Json.JsonSerializer.Serialize(obj, Options);
 
         // Normalize property order alphabetically
-        using var doc = JsonDocument.Parse(json);
+        using JsonDocument? doc = JsonDocument.Parse(json);
         string canonicalJson = System.Text.Json.JsonSerializer.Serialize<object?>(SortProperties(doc.RootElement));
 
         return Encoding.UTF8.GetBytes(canonicalJson);
