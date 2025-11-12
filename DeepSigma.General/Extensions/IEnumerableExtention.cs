@@ -8,6 +8,9 @@ public static class IEnumerableExtention
 {
     /// <summary>
     /// Gets the most common element from a collection.
+    /// If no element is most common, such as in the case of a tie, returns default.
+    /// Note: Elements must be comparable for grouping. This means that for custom types, Equals and GetHashCode should be properly overridden.
+    /// Record types in C# automatically provide these implementations. Structs also provide value-based equality by default.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
@@ -33,6 +36,9 @@ public static class IEnumerableExtention
 
     /// <summary>
     /// Gets the majority element from a collection, if one exists (i.e., an element that appears more than 50% of the time).
+    /// If no majority element exists, returns default.
+    /// Note: Elements must be comparable for grouping. This means that for custom types, Equals and GetHashCode should be properly overridden.
+    /// Record types in C# automatically provide these implementations. Structs also provide value-based equality by default.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="data"></param>
@@ -55,6 +61,26 @@ public static class IEnumerableExtention
         double percent = (double)top.Count / list.Count;
 
         return percent > 0.5 ? top.Element : default;
+    }
+
+    private static readonly Random _random = new();
+
+    /// <summary>
+    /// Chooses a random element from an IEnumerable.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static T ChooseRandomElement<T>(this IEnumerable<T> source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        var list = source as IList<T> ?? source.ToList();
+        if (list.Count == 0) throw new InvalidOperationException("Sequence contains no elements");
+
+        return list[_random.Next(list.Count)];
     }
 
     /// <summary>
