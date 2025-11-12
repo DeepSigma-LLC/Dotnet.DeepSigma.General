@@ -7,6 +7,57 @@ namespace DeepSigma.General.Extensions;
 public static class IEnumerableExtention
 {
     /// <summary>
+    /// Gets the most common element from a collection.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static T? GetMostCommonElement<T>(this IEnumerable<T> data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        var groups = data
+            .GroupBy(x => x)
+            .Select(g => new { Element = g.Key, Count = g.Count() })
+            .OrderByDescending(g => g.Count)
+            .ToList();
+
+        if (groups.Count == 0)  return default;
+
+        // Handle tie or single element
+        if (groups.Count == 1 || groups[0].Count != groups[1].Count)
+            return groups[0].Element;
+
+        return default; // Tie case
+    }
+
+    /// <summary>
+    /// Gets the majority element from a collection, if one exists (i.e., an element that appears more than 50% of the time).
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static T? GetMajorityElement<T>(this IEnumerable<T> data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        List<T> list = data.ToList();
+
+        if (list.Count == 0) return default;
+
+        var groups = list
+            .GroupBy(x => x)
+            .Select(g => new { Element = g.Key, Count = g.Count() })
+            .OrderByDescending(g => g.Count)
+            .ToList();
+
+        var top = groups.First();
+        double percent = (double)top.Count / list.Count;
+
+        return percent > 0.5 ? top.Element : default;
+    }
+
+    /// <summary>
     /// Converts an IEnumerable to a SortableBindingList.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -22,11 +73,12 @@ public static class IEnumerableExtention
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="enumerable"></param>
-    /// <param name="separator"></param>
+    /// <param name="seperator"></param>
     /// <returns></returns>
-    public static string ToCommaSeparatedString<T>(this IEnumerable<T> enumerable, string separator = ", ")
+    public static string ToCommaSeparatedString<T>(this IEnumerable<T> enumerable, char seperator = ',')
     {
-        return string.Join(separator, enumerable);
+        string demlimiter = seperator.ToString();
+        return string.Join(demlimiter, enumerable);
     }
 
     /// <summary>
