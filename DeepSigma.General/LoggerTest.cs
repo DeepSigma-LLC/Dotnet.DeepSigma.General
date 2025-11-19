@@ -6,7 +6,7 @@ namespace DeepSigma.General
     internal class LoggerTest
     {
         private readonly ILogger<LoggerTest> _logger;
-        public LoggerTest(ILogger<LoggerTest> logger)
+        internal LoggerTest(ILogger<LoggerTest> logger)
         {
             _logger = logger;
             _logger.LogInformation("LoggerTest instance created.");
