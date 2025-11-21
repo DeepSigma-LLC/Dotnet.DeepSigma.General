@@ -381,7 +381,7 @@ public static class StringExtension
     /// <exception cref="ArgumentException"></exception>
     public static string Multiply(this string value, int MultiplicationCount)
     {
-        if (MultiplicationCount < 0) throw new ArgumentException("You my only multiply a string by a positive integer");
+        if (MultiplicationCount < 0) throw new ArgumentException("You may only multiply a string by a positive integer");
 
         return String.Concat(Enumerable.Repeat(value, MultiplicationCount));
     }
