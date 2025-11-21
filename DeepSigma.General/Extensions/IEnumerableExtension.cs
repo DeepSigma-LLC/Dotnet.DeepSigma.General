@@ -4,7 +4,7 @@ namespace DeepSigma.General.Extensions;
 /// <summary>
 /// Extension methods for IEnumerable collections.
 /// </summary>
-public static class IEnumerableExtention
+public static class IEnumerableExtension
 {
     /// <summary>
     /// Gets the most common element from a collection.

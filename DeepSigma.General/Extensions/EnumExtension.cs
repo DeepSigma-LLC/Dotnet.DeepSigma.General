@@ -7,7 +7,7 @@ namespace DeepSigma.General.Extensions;
 /// <summary>
 /// Extension methods for enums to retrieve their description strings.
 /// </summary>
-public static class EnumExtention
+public static class EnumExtension
 {
     /// <summary>
     /// Converts an enum value to its description string, using the DescriptionAttribute or DisplayAttribute if available.
