@@ -1,6 +1,6 @@
 ﻿
 using System.Globalization;
-using System.Net.NetworkInformation;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DeepSigma.General.Extensions;
@@ -64,7 +64,7 @@ public static class StringExtension
     /// <returns></returns>
     public static string CapitalizeFirstLetter(this string value)
     {
-        if (string.IsNullOrEmpty(value)) return value;
+        if (value.IsNullOrEmpty()) return value;
         return char.ToUpper(value[0]) + value.Substring(1);
     }
 
@@ -75,8 +75,9 @@ public static class StringExtension
     /// <returns></returns>
     public static string ToSnakeCase(this string value)
     {
-        if (string.IsNullOrEmpty(value)) return value;
-        var stringBuilder = new System.Text.StringBuilder();
+        if (value.IsNullOrEmpty()) return value;
+
+        StringBuilder stringBuilder = new();
         for (int i = 0; i < value.Length; i++)
         {
             char c = value[i];
@@ -103,8 +104,8 @@ public static class StringExtension
     /// <returns></returns>
     public static string ToCamelCase(this string value)
     {
-        if (string.IsNullOrEmpty(value)) return value;
-        var words = value.Split(['_', ' '], StringSplitOptions.RemoveEmptyEntries);
+        if (value.IsNullOrEmpty()) return value;
+        string[] words = value.Split(['_', ' '], StringSplitOptions.RemoveEmptyEntries);
         for (int i = 1; i < words.Length; i++)
         {
             words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
@@ -182,7 +183,7 @@ public static class StringExtension
     /// <returns></returns>
     public static string Reverse(this string value)
     {
-        if (string.IsNullOrEmpty(value)) return value;
+        if (value.IsNullOrEmpty()) return value;
         char[] charArray = value.ToCharArray();
 
         Array.Reverse(charArray);
@@ -222,32 +223,16 @@ public static class StringExtension
     }
 
     /// <summary>
-    /// Converts a string to an enum of type T.
+    /// Converts a string to an enum of type T. Returns defaultValue if conversion fails.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="value"></param>
     /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static T? ToEnum<T>(this T value)
+    public static T? ToEnum<T>(this string? value) where T : struct, Enum
     {
-        if (!typeof(T).IsEnum)
-        {
-            throw new ArgumentException("Generic type T must be an enum.");
-        }
+        if (value.IsNullOrWhiteSpace()) return null;
 
-        if (value == null)
-        {
-            return default;
-        }
-
-        try
-        {
-            return (T?)Enum.Parse(typeof(T), value.ToString() ?? string.Empty, true);
-        }
-        catch
-        {
-            return default;
-        }
+        return Enum.TryParse<T>(value, true, out var result) ? result : null;
     }
 
     /// <summary>
@@ -346,7 +331,7 @@ public static class StringExtension
     /// <returns></returns>
     public static string Truncate(this string value, int maxLength, string truncationSuffix = "…")
     {
-        if (string.IsNullOrEmpty(value)) return value;
+        if (value.IsNullOrEmpty()) return value;
 
         if (value.Length <= maxLength)
         {
@@ -361,7 +346,7 @@ public static class StringExtension
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string GetExtention(this string value)
+    public static string GetFileExtention(this string value)
     {
         string[] strings = value.Split('.');
 
