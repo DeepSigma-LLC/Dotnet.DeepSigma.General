@@ -1,4 +1,5 @@
 ﻿using DeepSigma.General.Enums;
+using System.Globalization;
 
 namespace DeepSigma.General.Extensions;
 
@@ -7,6 +8,39 @@ namespace DeepSigma.General.Extensions;
 /// </summary>
 public static class DecimalExtensions
 {
+
+    /// <summary>
+    /// Calculates the percentage of a value relative to a total.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="total"></param>
+    /// <returns></returns>
+    public static decimal PercentOf(this decimal value, decimal total) => total == 0 ? 0 : (value / total) * 100;
+
+    /// <summary>
+    /// Calculates the specified percentage of a decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="percent"></param>
+    /// <returns></returns>
+    public static decimal Percent(this decimal value, decimal percent) => (value * percent) / 100;
+
+    /// <summary>
+    /// Adds the specified percentage to a decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="percent"></param>
+    /// <returns></returns>
+    public static decimal AddPercent(this decimal value, decimal percent)  => value + value.Percent(percent);
+
+    /// <summary>
+    /// Subtracts the specified percentage from a decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="percent"></param>
+    /// <returns></returns>
+    public static decimal SubtractPercent(this decimal value, decimal percent) => value - value.Percent(percent);
+
     /// <summary>
     /// Rounds a decimal value based on the specified rounding type.
     /// </summary>
@@ -129,5 +163,26 @@ public static class DecimalExtensions
         }
         decimal convertedValue = Convert.ToDecimal(value);
         return convertedValue.ToDollarValue(decimalCount);
+    }
+
+    /// <summary>
+    /// Converts a decimal value to a currency string representation based on the specified culture.
+    /// </summary>
+    /// <remarks>
+    /// <code>
+    /// decimal amount = 1234.56m;
+    /// string usCurrency = amount.ToCurrency("en-US"); // $1,234.56
+    /// string ukCurrency = amount.ToCurrency("en-GB"); // £1,234.56
+    /// </code>
+    /// </remarks>
+    /// <param name="value"></param>
+    /// <param name="culture"></param>
+    /// <returns></returns>
+    public static string ToCurrency(this decimal value, string? culture = null)
+    {
+        var info = culture is null
+            ? CultureInfo.CurrentCulture
+            : new CultureInfo(culture);
+        return string.Format(info, "{0:C}", value);
     }
 }

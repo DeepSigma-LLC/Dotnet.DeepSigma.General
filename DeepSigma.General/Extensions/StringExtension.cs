@@ -346,15 +346,12 @@ public static class StringExtension
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static string GetFileExtention(this string value)
+    public static string? GetFileExtention(this string value)
     {
         string[] strings = value.Split('.');
 
-        if (strings.Length <= 1)
-        {
-            return String.Empty;
-        }
-        return strings[strings.Length - 1];
+        if (strings.Length <= 1) return null;
+        return strings[^1];
     }
 
     /// <summary>
