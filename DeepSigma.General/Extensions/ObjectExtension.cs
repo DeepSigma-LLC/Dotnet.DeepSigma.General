@@ -14,7 +14,7 @@ public static class ObjectExtension
     /// Convert an object to JSON string.
     /// </summary>
     /// <param name="value"></param>
-    public static string ToJSON<T>(this T value)
+    public static string ToJSON<T>(this T value) where T : class
     {
         ArgumentNullException.ThrowIfNull(value);
         return JsonSerializer.GetSerializedString(value);
@@ -26,8 +26,11 @@ public static class ObjectExtension
     /// <typeparam name="T"></typeparam>
     /// <param name="json"></param>
     /// <returns></returns>
-    public static T? FromJson<T>(this string json) => JsonSerializer.GetDeserializedObject<T>(json);
-
+    public static T? FromJson<T>(this string json) where T : class, new()
+    {
+        if(!json.IsValidJson()) return null;
+        return JsonSerializer.GetDeserializedObject<T>(json);
+    }
     /// <summary>
     /// Convert a single object to an enumerable containing that object.
     /// </summary>
