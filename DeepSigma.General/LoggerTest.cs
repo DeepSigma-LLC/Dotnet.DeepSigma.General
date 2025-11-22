@@ -11,7 +11,6 @@ namespace DeepSigma.General
             _logger = logger;
         }
 
-
         internal void LogMesssage()
         {
             _logger.LogInformation("LoggerTest instance created.");
