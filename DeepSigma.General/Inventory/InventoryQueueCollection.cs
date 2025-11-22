@@ -7,10 +7,8 @@
 public class InventoryQueueCollection<T> : InventoryCollectionAbstract<T>
 {
 
-    /// <summary>
-    /// Implementation of custom inventory collection to acheieve First-In-First-Out functionality under a consistent interface to a inventory stack.
-    /// </summary>
-    public InventoryQueueCollection() { }
+    /// <inheritdoc cref="InventoryQueueCollection{T}"/>
+    internal InventoryQueueCollection() { }
 
     /// <summary>
     ///  Returns the next item in the inventory collection without removing it.

@@ -6,10 +6,8 @@
 /// <typeparam name="T"></typeparam>
 public class InventoryStackCollection<T> : InventoryCollectionAbstract<T>
 {
-    /// <summary>
-    /// Implementation of custom inventory collection to acheieve Last-In-First-Out functionality under a consistent interface to a inventory queue.
-    /// </summary>
-    public InventoryStackCollection() { }
+    /// <inheritdoc cref="InventoryStackCollection{T}"/>
+    internal InventoryStackCollection() { }
 
     /// <summary>
     /// Adds range of elements to the inventory collection.
