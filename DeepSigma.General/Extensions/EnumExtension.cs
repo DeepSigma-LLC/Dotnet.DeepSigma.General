@@ -9,6 +9,26 @@ namespace DeepSigma.General.Extensions;
 /// </summary>
 public static class EnumExtension
 {
+    public enum Status
+    {
+        /// <summary>
+        /// The operation is currently running or in progress.
+        /// </summary>
+        [Description("In Progress")]
+        InProgress,
+
+        /// <summary>
+        /// The operation has finished successfully.
+        /// </summary>
+        [Display(Name = "Completed Successfully")]
+        Completed,
+
+        /// <summary>
+        /// The operation encountered an error and did not finish successfully.
+        /// </summary>
+        Failed
+    }
+
 
     /// <summary>
     /// Checks if the enum value is defined in the enum type.
@@ -52,7 +72,7 @@ public static class EnumExtension
     /// <param name="value"></param>
     /// <param name="fallbackToName"></param>
     /// <returns></returns>
-    public static string ToDescriptionString(this Enum value, bool fallbackToName = true)
+    public static string ToDescriptionString<T>(this T value, bool fallbackToName = true) where T : struct, Enum
     {
         var type = value.GetType();
         var name = Enum.GetName(type, value);
@@ -67,7 +87,6 @@ public static class EnumExtension
             ?? field.GetCustomAttribute<DisplayAttribute>()?.Name
             ?? (fallbackToName ? name : string.Empty);
     }
-
 
     /// <summary>
     /// Checks if the enum value matches any of the provided options.
@@ -130,6 +149,13 @@ public static class EnumExtension
     /// <returns></returns>
     public static long ToLong<T>(this T value) where T : struct, Enum => Convert.ToInt64(value);
 
+    /// <summary>
+    /// Converts an integer to its corresponding enum value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static T ToEnum<T>(this int value) where T : struct, Enum => (T)Enum.ToObject(typeof(T), value);
 
     /// <summary>
     /// Converts an integer to its corresponding enum value.
@@ -137,32 +163,117 @@ public static class EnumExtension
     /// <typeparam name="T"></typeparam>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static T EnumFromInt<T>(int value) where T : struct, Enum => (T)Enum.ToObject(typeof(T), value);
+    public static T ToEnum<T>(this long value) where T : struct, Enum => (T)Enum.ToObject(typeof(T), value);
+
 
     /// <summary>
-    /// Gets a dictionary mapping enum values to their string representations.
-    /// Helpful for populating dropdowns or selection lists.
+    /// Checks if the enum value has the specified flag set (for [Flags] enums).
+    /// This is an allocation-free and fast alternative to Enum.HasFlag. 
+    /// Note: This method works for enums decorated with the [Flags] attribute.
+    /// Flags are enum values that can be multiple values combined using bitwise OR operations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="flag"></param>
     /// <returns></returns>
-    public static Dictionary<T, string> ToDictionary<T>() where T : struct, Enum =>
-    Enum.GetValues(typeof(T))
-        .Cast<T>()
-        .ToDictionary(v => v, v => v.ToString());
+    public static bool HasFlagFast<T>(this T value, T flag) where T : struct, Enum
+    {
+        var val = Convert.ToUInt64(value);
+        var flg = Convert.ToUInt64(flag);
+        return (val & flg) == flg;
+    }
 
     /// <summary>
-    /// Gets all enum names of the specified enum type.
+    /// Adds the specified flag to the enum value (for [Flags] enums).
+    /// Note: This method works for enums decorated with the [Flags] attribute.
+    /// Flags are enum values that can be multiple values combined using bitwise OR operations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="flag"></param>
     /// <returns></returns>
-    public static IEnumerable<string> GetNames<T>() where T : struct, Enum => Enum.GetNames(typeof(T));
+    public static T AddFlag<T>(this T value, T flag) where T : struct, Enum
+    {
+        var val = Convert.ToUInt64(value);
+        var flg = Convert.ToUInt64(flag);
+        return (T)Enum.ToObject(typeof(T), val | flg);
+    }
 
     /// <summary>
-    /// Gets all enum values of the specified enum type.
+    /// Removes the specified flag from the enum value (for [Flags] enums).
+    /// Note: This method works for enums decorated with the [Flags] attribute.
+    /// Flags are enum values that can be multiple values combined using bitwise OR operations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="flag"></param>
     /// <returns></returns>
-    public static IEnumerable<T> GetAllEnums<T>() where T : struct, Enum => Enum.GetValues(typeof(T)).Cast<T>();
+    public static T RemoveFlag<T>(this T value, T flag) where T : struct, Enum
+    {
+        var val = Convert.ToUInt64(value);
+        var flg = Convert.ToUInt64(flag);
+        return (T)Enum.ToObject(typeof(T), val & ~flg);
+    }
 
+    /// <summary>
+    /// Toggles the specified flag on the enum value (for [Flags] enums).
+    /// Toggle means if the flag is set, it will be removed; if it is not set, it will be added.
+    /// Note: This method works for enums decorated with the [Flags] attribute.
+    /// Flags are enum values that can be multiple values combined using bitwise OR operations.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="flag"></param>
+    /// <returns></returns>
+    public static T ToggleFlag<T>(this T value, T flag) where T : struct, Enum
+    {
+        var val = Convert.ToUInt64(value);
+        var flg = Convert.ToUInt64(flag);
+        return (T)Enum.ToObject(typeof(T), val ^ flg);
+    }
 
+    /// <summary>
+    /// Checks if the enum value has any of the specified flags set (for [Flags] enums).
+    /// Note: This method works for enums decorated with the [Flags] attribute.
+    /// Flags are enum values that can be multiple values combined using bitwise OR operations.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="flags"></param>
+    /// <returns></returns>
+    public static bool HasAnyFlag<T>(this T value, params T[] flags) where T : struct, Enum
+    {
+        var val = Convert.ToUInt64(value);
+        foreach (var flag in flags)
+            if ((val & Convert.ToUInt64(flag)) != 0)
+                return true;
+        return false;
+    }
+
+    extension<T>(T) where T : struct, Enum
+    {
+        /// <summary>
+        /// Gets all enum values of the specified enum type.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<T> GetAllValues() => Enum.GetValues(typeof(T)).Cast<T>();
+
+        /// <summary>
+        /// Gets all enum names of the specified enum type.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetNames() => Enum.GetNames(typeof(T));
+
+        /// <summary>
+        /// Gets a dictionary mapping enum values to their string representations.
+        /// Helpful for populating dropdowns or selection lists.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static Dictionary<T, string> ToDictionary() =>
+        Enum.GetValues(typeof(T))
+            .Cast<T>()
+            .ToDictionary(v => v, v => v.ToString());
+    }
 }
+
