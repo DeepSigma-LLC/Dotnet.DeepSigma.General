@@ -13,7 +13,7 @@ public static class DictionaryExtension
     /// <typeparam name="Z"></typeparam>
     /// <param name="dictionary"></param>
     /// <returns></returns>
-    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this Dictionary<T, Z> dictionary) where T : notnull
+    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this IDictionary<T, Z> dictionary) where T : notnull
     {
         return new SortedDictionary<T, Z>(dictionary);
     }
@@ -44,12 +44,10 @@ public static class DictionaryExtension
     {
         if (dict.ContainsKey(key))
         {
-            dict[key] += amount;
+            dict[key] += amount; 
+            return;
         }         
-        else
-        {
-            dict[key] = amount;
-        }
+        dict[key] = amount;
     }
 
     /// <summary>

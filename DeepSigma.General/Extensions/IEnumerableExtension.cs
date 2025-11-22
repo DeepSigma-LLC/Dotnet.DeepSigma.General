@@ -1,4 +1,5 @@
-﻿
+﻿using Newtonsoft.Json.Linq;
+
 namespace DeepSigma.General.Extensions;
 
 /// <summary>
@@ -234,11 +235,11 @@ public static class IEnumerableExtension
     /// <summary>
     /// Joins the elements of an IEnumerable into a single string with the specified separator.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     /// <param name="source"></param>
     /// <param name="separator"></param>
     /// <returns></returns>
-    public static string JoinAsString<T>(this IEnumerable<T> source, string separator = ", ") => string.Join(separator, source);
+    public static string JoinAsString<TObject>(this IEnumerable<TObject> source, string separator = ", ") => string.Join(separator, source);
 
 
     /// <summary>
@@ -251,28 +252,12 @@ public static class IEnumerableExtension
     /// var squares = numbers.Map(n => n * n); // Result: { 1, 4, 9 }
     /// </code>
     /// </remarks>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     /// <typeparam name="TResult"></typeparam>
     /// <param name="source"></param>
     /// <param name="selector"></param>
     /// <returns></returns>
-    public static IEnumerable<TResult> Map<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => source.Select(selector);
-
-    /// <summary>
-    /// Filters an IEnumerable based on a predicate.
-    /// </summary>
-    /// <remarks>
-    /// <code>
-    /// // Example usage:
-    /// var numbers = new List&lt;int&gt; { 1, 2, 3, 4, 5 };
-    /// var evenNumbers = numbers.Filter(n => n % 2 == 0); // Result: { 2, 4 }
-    /// </code>
-    /// </remarks>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="predicate"></param>
-    /// <returns></returns>
-    public static IEnumerable<T> Filter<T>(this IEnumerable<T> source, Func<T, bool> predicate) =>  source.Where(predicate);
+    public static IEnumerable<TResult> Map<TObject, TResult>(this IEnumerable<TObject> source, Func<TObject, TResult> selector) => source.Select(selector);
 
     /// <summary>
     /// Divides an IEnumerable into chunks of a specified size.
@@ -284,17 +269,17 @@ public static class IEnumerableExtension
     /// var chunks = numbers.ChunkBy(2); // Result: { {1, 2}, {3, 4}, {5} }
     /// </code>
     /// </remarks>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     /// <param name="source"></param>
     /// <param name="size"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public static IEnumerable<IEnumerable<T>> ChunkBy<T>(this IEnumerable<T> source, int size)
+    public static IEnumerable<IEnumerable<TObject>> ChunkBy<TObject>(this IEnumerable<TObject> source, int size)
     {
         if (size <= 0) throw new ArgumentException("Size must be greater than zero.", nameof(size));
 
-        List<T> chunk = new(size);
-        foreach (T item in source)
+        List<TObject> chunk = new(size);
+        foreach (TObject item in source)
         {
             chunk.Add(item);
             if (chunk.Count == size)
@@ -311,10 +296,10 @@ public static class IEnumerableExtension
     /// <summary>
     /// Projects each element of an IEnumerable into a tuple containing the element and its index.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     /// <param name="source"></param>
     /// <returns></returns>
-    public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> source) => source.Select((item, index) => (item, index));
+    public static IEnumerable<(TObject item, int index)> WithIndex<TObject>(this IEnumerable<TObject> source) => source.Select((item, index) => (item, index));
 
     /// <summary>
     /// Partitions an IEnumerable into two collections based on a predicate.
@@ -374,13 +359,17 @@ public static class IEnumerableExtension
     /// <typeparam name="T"></typeparam>
     /// <param name="source"></param>
     /// <param name="action"></param>
+    /// <param name="on_exception">On exception method.</param>
     /// <returns></returns>
-    public static IEnumerable<T> TryAction<T>(this IEnumerable<T> source, Action<T> action)
+    public static IEnumerable<T> TryAction<T>(this IEnumerable<T> source, Action<T> action, Action<Exception>? on_exception = null)
     {
-        foreach (var item in source)
+        foreach (T item in source)
         {
             try { action(item); }
-            catch { /* swallow or log */ }
+            catch (Exception ex)
+            {
+                if (on_exception != null) on_exception(ex);
+            }
         }
         return source;
     }
@@ -439,20 +428,20 @@ public static class IEnumerableExtension
     /// var weightedAvg = items.WeightedAverage(i => i.Value, i => i.Weight); // Result: 16
     /// </code>
     /// </remarks>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TObject"></typeparam>
     /// <param name="source"></param>
     /// <param name="valueSelector"></param>
     /// <param name="weightSelector"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static decimal WeightedAverage<T>(this IEnumerable<T> source, Func<T, decimal> valueSelector, Func<T, decimal> weightSelector)
+    public static decimal WeightedAverage<TObject>(this IEnumerable<TObject> source, Func<TObject, decimal> valueSelector, Func<TObject, decimal> weightSelector)
     {
         ArgumentNullException.ThrowIfNull(source);
 
         decimal weightedSum = 0;
         decimal totalWeight = 0;
 
-        foreach (T item in source)
+        foreach (TObject item in source)
         {
             decimal value = valueSelector(item);
             decimal weight = weightSelector(item);
@@ -473,17 +462,17 @@ public static class IEnumerableExtension
     /// var runningTotals = numbers.RunningTotal(n => n); // Result: { 1.0m, 3.0m, 6.0m }
     /// </code>
     /// </remarks>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     /// <param name="source"></param>
     /// <param name="selector"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static IEnumerable<decimal> RunningTotal<T>(this IEnumerable<T> source, Func<T, decimal> selector)
+    public static IEnumerable<decimal> RunningTotal<TValue>(this IEnumerable<TValue> source, Func<TValue, decimal> selector)
     {
         ArgumentNullException.ThrowIfNull(source);
 
         decimal sum = 0;
-        foreach (T item in source)
+        foreach (TValue item in source)
         {
             sum += selector(item);
             yield return sum;
@@ -493,14 +482,14 @@ public static class IEnumerableExtension
     /// <summary>
     /// Converts an IEnumerable of KeyValuePairs to a SortedList.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="V"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     /// <param name="enumerable"></param>
     /// <returns></returns>
-    public static SortedList<T, V> ToSortedList<T, V>(this IEnumerable<KeyValuePair<T, V>> enumerable) where T : notnull
+    public static SortedList<TKey, TValue> ToSortedList<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable) where TKey : notnull
     {
-        var list = new SortedList<T, V>();
-        foreach (var item in enumerable)
+        SortedList<TKey, TValue> list = [];
+        foreach (KeyValuePair<TKey, TValue> item in enumerable)
         {
             list.Add(item.Key, item.Value);
         }
@@ -508,27 +497,114 @@ public static class IEnumerableExtension
     }
 
     /// <summary>
-    /// Converts an IEnumerable of KeyValuePairs to a SortedDictionary.
+    /// Converts an IEnumerable of KeyValuePairs to a Dictionary, safely handling duplicate keys by overwriting existing entries.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="V"></typeparam>
+    /// /// <remarks>
+    /// Since existing keys are overwritten, no exception will be thrown for duplicate keys and the last occurrence encountered will be retained.
+    /// </remarks>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     /// <param name="enumerable"></param>
     /// <returns></returns>
-    public static SortedDictionary<T, V> ToSortedDictionary<T, V>(this IEnumerable<KeyValuePair<T, V>> enumerable) where T : notnull
+    public static Dictionary<TKey, TValue> ToDictionaryKeepLast<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable) where TKey : notnull
     {
-        return new SortedDictionary<T, V>(enumerable.ToDictionary(x => x.Key, x => x.Value));
+        Dictionary<TKey, TValue> dict = [];
+        foreach (KeyValuePair<TKey, TValue> kvp in enumerable)
+        {
+            dict[kvp.Key] = kvp.Value; // overwrite on duplicate keys
+        }
+        return dict;
+    }
+
+    /// <inheritdoc cref="ToDictionaryKeepLast{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})"/>
+    public static Dictionary<TKey, TValue> ToDictionaryKeepLast<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
+    {
+        Dictionary<TKey, TValue> dict = [];
+        foreach (TSource item in source)
+        {
+            TKey key = keySelector(item);
+            dict[key] = valueSelector(item); // overwrite on duplicate keys
+        }
+        return dict;
+    }
+
+    /// <summary>
+    /// Converts an IEnumerable of tuples to a Dictionary, safely handling duplicate keys by keeping the first occurrence.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="enumerable"></param>
+    /// <returns></returns>
+    public static Dictionary<TKey, TValue> ToDictionaryKeepFirst<TKey, TValue>(this IEnumerable<(TKey Key, TValue Value)> enumerable) where TKey : notnull
+    {
+        Dictionary<TKey, TValue> dict = [];
+        foreach (var (Key, Value) in enumerable)
+        {
+            if (!dict.ContainsKey(Key))
+            {
+                dict[Key] = Value; // keep first occurrence
+            }
+        }
+        return dict;
+    }
+
+    /// <inheritdoc cref="ToDictionaryKeepFirst{TKey, TValue}(IEnumerable{System.ValueTuple{TKey, TValue}})" />
+    public static Dictionary<TKey, TValue> ToDictionaryKeepFirst<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
+    {
+        Dictionary<TKey, TValue> dict = [];
+        foreach (TSource item in source)
+        {
+            TKey key = keySelector(item);
+            if (!dict.ContainsKey(key))
+            {
+                dict[key] = valueSelector(item);
+            }
+        }
+        return dict;
+    }
+
+    /// <summary>
+    /// Converts an IEnumerable of KeyValuePairs to a SortedDictionary.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="enumerable"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable) where TKey : notnull
+    {
+        return new SortedDictionary<TKey, TValue>(enumerable.ToDictionary(x => x.Key, x => x.Value));
     }
 
     /// <summary>
     /// Converts an IEnumerable of tuples to a SortedDictionary.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="V"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     /// <param name="enumerable"></param>
     /// <returns></returns>
-    public static SortedDictionary<T, V> ToSortedDictionary<T, V>(this IEnumerable<(T Key, V Value)> enumerable) where T : notnull
+    public static SortedDictionary<TKey, TValue> ToSortedDictionary<TKey, TValue>(this IEnumerable<(TKey Key, TValue Value)> enumerable) where TKey : notnull
     {
-        return new SortedDictionary<T, V>(enumerable.ToDictionary(x => x.Key, x => x.Value));
+        return new SortedDictionary<TKey, TValue>(enumerable.ToDictionary(x => x.Key, x => x.Value));
+    }
+
+    /// <summary>
+    /// Creates a SortedDictionary from an IEnumerable by projecting each element into a key and a value.
+    /// </summary>
+    /// <remarks>If the source sequence contains duplicate keys, an exception will be thrown. The resulting
+    /// dictionary is sorted according to the comparer for TKey.</remarks>
+    /// <typeparam name="TSource">The type of the elements in the source sequence.</typeparam>
+    /// <typeparam name="TKey">The type of the keys in the resulting dictionary. Must be non-nullable.</typeparam>
+    /// <typeparam name="TValue">The type of the values in the resulting dictionary.</typeparam>
+    /// <param name="source">The sequence of elements to convert into a SortedDictionary.</param>
+    /// <param name="keySelector">A function to extract a key from each element in the source sequence. Each key must be unique and not null.</param>
+    /// <param name="valueSelector">A function to extract a value from each element in the source sequence.</param>
+    /// <returns>A SortedDictionary containing keys and values projected from the source sequence.</returns>
+    public static SortedDictionary<TKey, TValue> ToSortedDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
+    {
+        return new SortedDictionary<TKey, TValue>(source.ToDictionary(keySelector, valueSelector));
     }
 
     /// <summary>
