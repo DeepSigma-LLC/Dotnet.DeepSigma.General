@@ -1,6 +1,7 @@
 ﻿
 using DeepSigma.General.Serialization;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DeepSigma.General.Extensions;
@@ -31,6 +32,24 @@ public static class ObjectExtension
         if(!json.IsValidJson()) return null;
         return JsonSerializer.GetDeserializedObject<T>(json);
     }
+
+    /// <summary>
+    /// Converts an object to a deterministic byte array representation.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static byte[] ToDeterministicBytes<T>(this T value) where T : class  => DeterministicSerializer.ToDeterministicBytes(value);
+
+    /// <summary>
+    /// Converts an object to a hash using the specified hash algorithm.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="hash_algorithm_name"></param>
+    /// <returns></returns>
+    public static byte[] ToDeterministicHash<T>(this T value, HashAlgorithmName hash_algorithm_name) where T : class => DeterministicSerializer.ToDeterministicHash(value, hash_algorithm_name);
+
     /// <summary>
     /// Convert a single object to an enumerable containing that object.
     /// </summary>
