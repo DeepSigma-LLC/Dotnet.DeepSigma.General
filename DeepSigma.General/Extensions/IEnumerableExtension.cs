@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Numerics;
 
 namespace DeepSigma.General.Extensions;
 
@@ -605,6 +606,42 @@ public static class IEnumerableExtension
         Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
     {
         return new SortedDictionary<TKey, TValue>(source.ToDictionary(keySelector, valueSelector));
+    }
+
+    /// <summary>
+    /// Creates a SortedDictionary from an IEnumerable by projecting each element into a key and a value,
+    /// Handles duplicate keys by retaining the first occurrence and ignoring subsequent ones ensuring no exception is thrown.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="keySelector"></param>
+    /// <param name="valueSelector"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> ToSortedDictionaryKeepFirst<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
+    {
+        
+        return new SortedDictionary<TKey, TValue>(source.ToDictionaryKeepFirst(keySelector, valueSelector));
+    }
+
+    /// <summary>
+    /// Creates a SortedDictionary from an IEnumerable by projecting each element into a key and a value,
+    /// Handles duplicate keys by overwriting existing entries with the last occurrence ensuring no exception is thrown.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="keySelector"></param>
+    /// <param name="valueSelector"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> ToSortedDictionaryKeepLast<TSource, TKey, TValue>(this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector) where TKey : notnull
+    {
+
+        return new SortedDictionary<TKey, TValue>(source.ToDictionaryKeepLast(keySelector, valueSelector));
     }
 
     /// <summary>
