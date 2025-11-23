@@ -4,35 +4,22 @@ namespace DeepSigma.General;
 /// <summary>
 /// ColorRGB is a structure that represents a color in RGB format.
 /// </summary>
-public struct ColorRGB
+public readonly struct ColorRGB(byte red, byte green, byte blue)
 {
     /// <summary>
     /// The red component of the color, ranging from 0 to 255.
     /// </summary>
-    public byte Red { get; }
+    public byte Red { get; }  = red;
 
     /// <summary>
     /// The green component of the color, ranging from 0 to 255.
     /// </summary>
-    public byte Green { get; }
+    public byte Green { get; } = green;
 
     /// <summary>
     /// The blue component of the color, ranging from 0 to 255.
     /// </summary>
-    public byte Blue { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the ColorRGB structure.
-    /// </summary>
-    /// <param name="red"></param>
-    /// <param name="green"></param
-    /// <param name="blue"></param>
-    public ColorRGB(byte red, byte green, byte blue)
-    {
-        Red = red;
-        Green = green;
-        Blue = blue;
-    }
+    public byte Blue { get; } = blue;
 
     /// <summary>
     /// Returns a string representation of the ColorRGB instance.

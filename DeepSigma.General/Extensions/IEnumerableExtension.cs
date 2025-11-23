@@ -186,13 +186,12 @@ public static class IEnumerableExtension
     /// <param name="source"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="InvalidOperationException"></exception>
-    public static T ChooseRandomElement<T>(this IEnumerable<T> source)
+    public static T? ChooseRandomElement<T>(this IEnumerable<T> source)
     {
         ArgumentNullException.ThrowIfNull(source);
 
         IList<T> list = source as IList<T> ?? source.ToList();
-        if (list.Count == 0) throw new InvalidOperationException("Sequence contains no elements");
+        if (list.Count == 0) return default;
 
         return list[_random.Next(list.Count)];
     }
@@ -242,7 +241,6 @@ public static class IEnumerableExtension
     /// <returns></returns>
     public static string JoinAsString<TObject>(this IEnumerable<TObject> source, string separator = ", ") => string.Join(separator, source);
 
-
     /// <summary>
     /// Projects each element of an IEnumerable into a new form.
     /// </summary>
@@ -259,40 +257,6 @@ public static class IEnumerableExtension
     /// <param name="selector"></param>
     /// <returns></returns>
     public static IEnumerable<TResult> Map<TObject, TResult>(this IEnumerable<TObject> source, Func<TObject, TResult> selector) => source.Select(selector);
-
-    /// <summary>
-    /// Divides an IEnumerable into chunks of a specified size.
-    /// </summary>
-    /// <remarks>
-    /// <code>
-    /// // Example usage:
-    /// var numbers = new List&lt;int&gt; { 1, 2, 3, 4, 5 };
-    /// var chunks = numbers.ChunkBy(2); // Result: { {1, 2}, {3, 4}, {5} }
-    /// </code>
-    /// </remarks>
-    /// <typeparam name="TObject"></typeparam>
-    /// <param name="source"></param>
-    /// <param name="size"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static IEnumerable<IEnumerable<TObject>> ChunkBy<TObject>(this IEnumerable<TObject> source, int size)
-    {
-        if (size <= 0) throw new ArgumentException("Size must be greater than zero.", nameof(size));
-
-        List<TObject> chunk = new(size);
-        foreach (TObject item in source)
-        {
-            chunk.Add(item);
-            if (chunk.Count == size)
-            {
-                yield return chunk.ToList();
-                chunk.Clear();
-            }
-        }
-
-        if (chunk.Count != 0)
-            yield return chunk.ToList();
-    }
 
     /// <summary>
     /// Projects each element of an IEnumerable into a tuple containing the element and its index.

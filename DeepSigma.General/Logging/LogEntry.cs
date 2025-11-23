@@ -4,7 +4,7 @@ namespace DeepSigma.General.Logging;
 /// <summary>
 /// A class representing a log entry with various properties.
 /// </summary>
-public class LogEntry : IJSONSerializer<LogEntry>
+public class LogEntry
 {
     /// <summary>
     /// Log date and time in UTC.

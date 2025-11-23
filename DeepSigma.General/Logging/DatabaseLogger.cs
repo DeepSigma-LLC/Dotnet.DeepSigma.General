@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using DeepSigma.General.Extensions;
 
 namespace DeepSigma.General.Logging;
 
