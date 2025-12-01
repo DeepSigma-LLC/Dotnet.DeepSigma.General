@@ -14,7 +14,7 @@
     <Description>C# library for general utilities and language extensions.</Description>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <PackageIcon>DeepSigma.png</PackageIcon>
+    <PackageIcon>Assets\DeepSigma.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
