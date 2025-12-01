@@ -58,20 +58,35 @@ public static class DateTimeExtension
             // Calculate total days
             return (endYear * 360 + endMonth * 30 + endDay) - (startYear * 360 + startMonth * 30 + startDay);
         }
-
-        /// <summary>
-        /// Checks if the given date is the last day of February.
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        private static bool IsLastDayOfFebruary(DateTime date)
-        {
-            if (date.Month != 2) return false;
-
-            int last_day_of_february = DateTime.DaysInMonth(date.Year, 2);
-            return date.Day == last_day_of_february;
-        }
     }
+
+    /// <summary>
+    /// Checks if the given date is the last day of February.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static bool IsLastDayOfFebruary(DateTime date)
+    {
+        if (date.Month != 2) return false;
+
+        int last_day_of_february = DateTime.DaysInMonth(date.Year, 2);
+        return date.Day == last_day_of_february;
+    }
+
+    /// <summary>
+    /// Converts a DateTime to a DateOnly.
+    /// </summary>
+    /// <param name="date_time"></param>
+    /// <returns></returns>
+    public static DateOnly ToDateOnly(this DateTime date_time) => DateOnly.FromDateTime(date_time);
+
+
+    /// <summary>
+    /// Converts a DateOnly to a DateTime at midnight.
+    /// </summary>
+    /// <param name="date_only"></param>
+    /// <returns></returns>
+    public static DateTime ToDateTime(this DateOnly date_only) => date_only.ToDateTime(TimeOnly.MinValue);
 
 
     /// <summary>
@@ -79,30 +94,22 @@ public static class DateTimeExtension
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static bool IsLeapYear(this DateTime date)
-    {
-        return DateTime.IsLeapYear(date.Year);
-    }
+    public static bool IsLeapYear(this DateTime date) => DateTime.IsLeapYear(date.Year);
 
     /// <summary>
     /// Returns the number of days in the month of the given date.
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static int GetDaysInMonth(this DateTime date)
-    {
-        return DateTime.DaysInMonth(date.Year, date.Month);
-    }
+    public static int GetDaysInMonth(this DateTime date) => DateTime.DaysInMonth(date.Year, date.Month);
+
 
     /// <summary>
     /// Returns the number of days in the year of the given date.
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static int GetDaysInYear(this DateTime date)
-    {
-        return date.IsLeapYear() ? 366 : 365;
-    }
+    public static int GetDaysInYear(this DateTime date) => date.IsLeapYear() ? 366 : 365;
 
     /// <summary>
     /// Returns the total number of weekdays (Monday to Friday) in the year of the given date.
@@ -111,16 +118,13 @@ public static class DateTimeExtension
     /// <returns></returns>
     public static int TotalWeekdaysInYear(this DateTime date_time)
     {
-        DateTime startOfYear = new DateTime(date_time.Year, 1, 1);
-        DateTime endOfYear = new DateTime(date_time.Year, 12, 31);
+        DateTime startOfYear = new(date_time.Year, 1, 1);
+        DateTime endOfYear = new(date_time.Year, 12, 31);
         int count = 0;
 
         for (DateTime date = startOfYear; date <= endOfYear; date = date.AddDays(1))
         {
-            if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
-            {
-                count++;
-            }
+            if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday) count++;
         }
         return count;
     }
@@ -130,10 +134,7 @@ public static class DateTimeExtension
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static string ToStringFileFormat(this DateTime date)
-    {
-        return date.ToString(_dateStringFormat);
-    }
+    public static string ToStringFileFormat(this DateTime date) => date.ToString(_dateStringFormat);
 
     /// <summary>
     ///  Checks if date is weekend. If it is weekend it returne the prior or next weekeday based on specifi. This is good for applications where you need a date to be a weekday but you do not know what date will be selected.
@@ -145,15 +146,12 @@ public static class DateTimeExtension
     {
         if (MustBeWeekday == true)
         {
-            switch (date.DayOfWeek)
+            return date.DayOfWeek switch
             {
-                case DayOfWeek.Sunday:
-                    return date.NextWeekday();
-                case DayOfWeek.Saturday:
-                    return date.NextWeekday();
-                default:
-                    return date;
-            }
+                DayOfWeek.Sunday => date.NextWeekday(),
+                DayOfWeek.Saturday => date.NextWeekday(),
+                _ => date,
+            };
         }
         return date;
     }
@@ -168,15 +166,12 @@ public static class DateTimeExtension
     {
         if (MustBeWeekday == true)
         {
-            switch (date.DayOfWeek)
+            return date.DayOfWeek switch
             {
-                case DayOfWeek.Sunday:
-                    return date.PreviousWeekday();
-                case DayOfWeek.Saturday:
-                    return date.PreviousWeekday();
-                default:
-                    return date;
-            }
+                DayOfWeek.Sunday => date.PreviousWeekday(),
+                DayOfWeek.Saturday => date.PreviousWeekday(),
+                _ => date,
+            };
         }
         return date;
     }
@@ -195,20 +190,15 @@ public static class DateTimeExtension
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static DateTime PreviousWeekday(this DateTime date)
-    {
-        return date.AddWeekdays(-1);
-    }
+    public static DateTime PreviousWeekday(this DateTime date) => date.AddWeekdays(-1);
 
     /// <summary>
     /// Returns the next weekday of the date.
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static DateTime NextWeekday(this DateTime date)
-    {
-        return date.AddWeekdays(1);
-    }
+    public static DateTime NextWeekday(this DateTime date) => date.AddWeekdays(1);
+
 
     /// <summary>
     /// Adds a specified number of weekdays to the date.
@@ -242,17 +232,11 @@ public static class DateTimeExtension
     {
         for (int i = 0; i < 8; i++)
         {
-            if (date.DayOfWeek == dayOfWeek)
-            {
-                return date;
-            }
-            else
-            {
-                date = date.AddDays(1);
-            }
+            if (date.DayOfWeek == dayOfWeek) return date;
+            date = date.AddDays(1);
         }
         //Default value
-        return default(DateTime);
+        return default;
     }
 
     /// <summary>
@@ -265,13 +249,9 @@ public static class DateTimeExtension
     public static DateTime StartOfMonth(this DateTime date, int monthsToAdd = 0, bool weekday = false)
     {
         date = date.AddMonths(monthsToAdd);
-        DateTime startOfMonth = new DateTime(date.Year, date.Month, 1);
+        DateTime startOfMonth = new(date.Year, date.Month, 1);
 
-        if (weekday && startOfMonth.IsWeekday() == false)
-        {
-            startOfMonth.AddWeekdays(1);
-        }
-
+        if (weekday && startOfMonth.IsWeekday() == false) startOfMonth.AddWeekdays(1);
         return startOfMonth;
     }
 
@@ -286,7 +266,7 @@ public static class DateTimeExtension
     {
         date = date.AddMonths(monthsToAdd);
 
-        DateTime endOfMonth = new DateTime(date.Year,
+        DateTime endOfMonth = new(date.Year,
                                date.Month,
                                DateTime.DaysInMonth(date.Year, date.Month));
 
@@ -304,8 +284,7 @@ public static class DateTimeExtension
     /// <returns></returns>
     public static bool IsWeekday(this DateTime date)
     {
-        return (date.DayOfWeek != DayOfWeek.Saturday &
-               date.DayOfWeek != DayOfWeek.Sunday);
+        return (date.DayOfWeek != DayOfWeek.Saturday & date.DayOfWeek != DayOfWeek.Sunday);
     }
 
     /// <summary>
@@ -315,9 +294,7 @@ public static class DateTimeExtension
     /// <returns></returns>
     public static bool IsWeekend(this DateTime date)
     {
-        return (date.DayOfWeek == DayOfWeek.Saturday ||
-               date.DayOfWeek == DayOfWeek.Sunday);
-
+        return (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
     }
 
     /// <summary>
@@ -326,10 +303,8 @@ public static class DateTimeExtension
     /// <param name="date"></param>
     /// <param name="Date"></param>
     /// <returns></returns>
-    public static int WeekdaysFromDate(this DateTime date, DateTime Date)
-    {
-        return WeekdaysBetweenDates(date, Date);
-    }
+    public static int WeekdaysFromDate(this DateTime date, DateTime Date) => WeekdaysBetweenDates(date, Date);
+
 
     /// <summary>
     /// Returns the number of weekdays between two dates, excluding the start date.
@@ -352,7 +327,6 @@ public static class DateTimeExtension
             .Range(1, Math.Abs(dayDifference))
             .Select(x => date.AddDays(-x))
             .Count(x => x.DayOfWeek != DayOfWeek.Saturday && x.DayOfWeek != DayOfWeek.Sunday);
-
     }
 
     /// <summary>
@@ -360,14 +334,7 @@ public static class DateTimeExtension
     /// </summary>
     /// <param name="Date"></param>
     /// <returns></returns>
-    public static int HalfYear(this DateTime Date)
-    {
-        if (Date.Month <= 6)
-        {
-            return 1;
-        }
-        return 2;
-    }
+    public static int HalfYear(this DateTime Date) => Date.Month <= 6 ? 1 : 2;
 
     /// <summary>
     /// Returns the quarter of the year.

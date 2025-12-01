@@ -98,7 +98,7 @@ public static class ObjectExtension
     /// <returns></returns>
     public static Dictionary<string, object?> ToDictionary(this object obj)
     {
-        Dictionary<string, object?> dict = new();
+        Dictionary<string, object?> dict = [];
         PropertyInfo[] properties = obj.GetType().GetProperties();
         foreach (var prop in properties)
         {
