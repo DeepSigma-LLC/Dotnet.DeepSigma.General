@@ -1,4 +1,7 @@
 ﻿
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace DeepSigma.General.Extensions;
 
 /// <summary>
@@ -62,4 +65,40 @@ public static class DictionaryExtension
         return "{" + string.Join(", ", dict.Select(kvp => $"{kvp.Key}: {kvp.Value}")) + "}";
     }
 
+    /// <summary>
+    /// Gets the value associated with the specified key, or adds the key with the provided value if it does not exist.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static TValue? GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue? value)
+        where TKey : notnull
+    {
+        ref var val = ref CollectionsMarshal.GetValueRefOrAddDefault(dict, key, out var exists);
+        if(exists) return val;
+        val = value;
+        return val;
+    }
+
+    /// <summary>
+    /// Tries to update the value associated with the specified key in the dictionary. 
+    /// Returns true if the update was successful, false if the key does not exist.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+        where TKey : notnull
+    {
+        ref var val = ref CollectionsMarshal.GetValueRefOrNullRef(dict, key);
+        if (Unsafe.IsNullRef(ref val)) return false;
+        val = value;
+        return true;
+    }
 }
