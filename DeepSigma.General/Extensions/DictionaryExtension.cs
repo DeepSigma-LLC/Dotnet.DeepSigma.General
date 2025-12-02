@@ -68,6 +68,10 @@ public static class DictionaryExtension
     /// <summary>
     /// Gets the value associated with the specified key, or adds the key with the provided value if it does not exist.
     /// </summary>
+    /// <remarks>
+    /// This method uses a hyper-optimized approach with CollectionsMarshal and ref returns for performance.
+    /// The implementation improves performance by reducing overhead associated with traditional dictionary access methods.
+    /// </remarks>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="dict"></param>
@@ -87,6 +91,10 @@ public static class DictionaryExtension
     /// Tries to update the value associated with the specified key in the dictionary. 
     /// Returns true if the update was successful, false if the key does not exist.
     /// </summary>
+    /// <remarks>
+    /// This method uses a hyper-optimized approach with CollectionsMarshal and ref returns for performance.
+    /// The implementation improves performance by reducing overhead associated with traditional dictionary access methods.
+    /// </remarks>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="dict"></param>
