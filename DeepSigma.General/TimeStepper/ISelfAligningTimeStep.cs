@@ -6,7 +6,7 @@ namespace DeepSigma.General.TimeStepper;
 /// Interface for self-aligning time steps.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface ISelfAligningTimeStep<T> where T : struct, IEquatable<T>
+public interface ISelfAligningTimeStep<T> where T : struct, IComparable<T>
 {
     /// <summary>
     /// Gets a set of date times between the specified start and end dates.
