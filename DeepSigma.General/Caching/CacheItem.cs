@@ -14,7 +14,7 @@ public class CacheItem<T>
     public CacheItem(T Value, TimeSpan timeSpan)
     {
         this.Value = Value;
-        ExpirationTime = DateTime.UtcNow.Add(timeSpan);
+        ExpirationTimeUTC = DateTime.UtcNow.Add(timeSpan);
     }
 
     /// <summary>
@@ -25,15 +25,15 @@ public class CacheItem<T>
     /// <summary>
     /// The creation time of the cached item.
     /// </summary>
-    public DateTime CreateDateTime { get; private init; } = DateTime.UtcNow;
+    public DateTime CreateDateTimeUTC { get; private init; } = DateTime.UtcNow;
 
     /// <summary>
     /// The expiration time of the cached item.
     /// </summary>
-    public DateTime ExpirationTime { get; private init; }
+    public DateTime ExpirationTimeUTC { get; private init; }
 
     /// <summary>
     /// Indicates whether the cached item has expired.
     /// </summary>
-    public bool IsExpired => DateTime.UtcNow >= ExpirationTime;
+    public bool IsExpired => DateTime.UtcNow >= ExpirationTimeUTC;
 }
