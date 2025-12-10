@@ -61,4 +61,5 @@ public class ComparableReferenceType_Test
         hashSet.Add(three);
         Assert.Equal(2, hashSet.Count);
     }
+
 }
