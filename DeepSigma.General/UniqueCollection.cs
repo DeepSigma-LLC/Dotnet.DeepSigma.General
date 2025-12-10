@@ -38,6 +38,27 @@ public class UniqueCollection<T> : IEnumerable<T>
         items.ForEach(item => Add(item));
     }
 
+    /// <summary>
+    /// Clears all items from the collection.
+    /// </summary>
+    public void Clear() => Collection.Clear();
+
+    /// <summary>
+    /// Removes the specified item from the collection.
+    /// </summary>
+    /// <param name="item"></param>
+    public void Remove(T item) => Collection.Remove(item);
+
+    /// <summary>
+    /// Removes all items that match the given predicate.
+    /// </summary>
+    /// <param name="predicate"></param>
+    public void RemoveWhere(Func<T, bool> predicate)
+    {
+        List<T> items_to_remove = Collection.Where(predicate).ToList();
+        items_to_remove.ForEach(x => Collection.Remove(x));
+    }
+
     /// <inheritdoc/>
     public IEnumerator<T> GetEnumerator() => Collection.GetEnumerator();
     
