@@ -614,13 +614,13 @@ public static class IEnumerableExtension
     /// <param name="values"></param>
     /// <param name="decimalCount"></param>
     /// <returns></returns>
-    public static string ToSumDollarValue(this IEnumerable<decimal?> values, int decimalCount = 2)
+    public static string? ToSumDollarValue(this IEnumerable<decimal?> values, int decimalCount = 2)
     {
         if (values.Where(x => !x.HasValue).Count() >= 1)
         {
             return String.Empty;
         }
-        return values.Sum().ToDollarValue(decimalCount);
+        return values.Sum().ToStringDollarValue(decimalCount);
     }
 
     /// <summary>
@@ -629,8 +629,8 @@ public static class IEnumerableExtension
     /// <param name="values"></param>
     /// <param name="decimalCount"></param>
     /// <returns></returns>
-    public static string ToSumDollarValue(this IEnumerable<decimal> values, int decimalCount = 2)
+    public static string? ToSumDollarValue(this IEnumerable<decimal> values, int decimalCount = 2)
     {
-        return values.Sum().ToDollarValue(decimalCount);
+        return values.Sum().ToStringDollarValue(decimalCount);
     }
 }
