@@ -19,4 +19,20 @@ public static class INumberExtension
     {
         return T.Abs(value) < T.Abs(compareTo);
     }
+
+    /// <summary>
+    /// Returns the absolute value of a decimal number.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static T AbsoluteValue<T>(this T value) where T : struct, INumber<T>
+    {
+        return T.Abs(value);
+    }
+
+    /// <inheritdoc cref="AbsoluteValue{T}(T)"/>
+    public static T? AbsoluteValue<T>(this T? value) where T : struct, INumber<T>
+    {
+        return value.HasValue ? T.Abs(value.Value) : null;
+    }
 }

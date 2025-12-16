@@ -18,6 +18,30 @@ public abstract class ComparableReferenceType
         return UniqueId == other.UniqueId;
     }
 
+    /// <summary>
+    /// Equality operator overload.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
+    public static bool operator ==(ComparableReferenceType? left, ComparableReferenceType? right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Inequality operator overload.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns></returns>
+    public static bool operator !=(ComparableReferenceType? left, ComparableReferenceType? right)
+    {
+        return !(left == right);
+    }
+
     /// <inheritdoc/>
     public override int GetHashCode() => UniqueId.GetHashCode();
 }
