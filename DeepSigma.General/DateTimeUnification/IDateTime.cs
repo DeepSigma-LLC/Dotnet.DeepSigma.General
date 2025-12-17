@@ -6,6 +6,41 @@ namespace DeepSigma.General.DateTimeUnification;
 /// </summary>
 public interface IDateTime<T> where T : struct, IDateTime<T>
 {
+    /// <summary>
+    /// Implicit conversion from T to DateTime.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator DateTime(T dc);
+
+    /// <summary>
+    /// Implicit conversion from T to DateOnly.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator DateOnly(T dc);
+
+    /// <summary>
+    /// Implicit conversion from T to DateTimeOffset.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator DateTimeOffset(T dc);
+
+    /// <summary>
+    /// Implicit conversion from DateTime to T.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator T(DateTime dc);
+
+    /// <summary>
+    /// Implicit conversion from DateOnly to T.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator T(DateOnly dc);
+
+    /// <summary>
+    /// Implicit conversion from DateTimeOffset to T.
+    /// </summary>
+    /// <param name="dc"></param>
+    static abstract implicit operator T(DateTimeOffset dc);
 
     /// <summary>
     /// Determines whether one instance of the type is greater than another instance.

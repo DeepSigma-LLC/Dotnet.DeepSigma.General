@@ -16,8 +16,29 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     /// <inheritdoc cref="DateTimeCustom"/>
     public DateTimeCustom(int year, int month, int day, int hour, int minute, int second) : this(new DateTime(year, month, day, hour, minute, second)) { }
 
+    /// <inheritdoc cref="DateTimeCustom"/>
+    public DateTimeCustom(DateOnly date) : this(date.ToDateTime()) { }
+
     /// <inheritdoc/>
     public static DateTimeCustom Create(DateTime date_time) => new(date_time);
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeCustom(DateTime dt) => new(dt);
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeCustom(DateOnly d) => new(d);
+
+    /// <inheritdoc/>
+    public static implicit operator DateOnly(DateTimeCustom dc) => dc.DateOnly;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTime(DateTimeCustom dc) => dc.DateTime;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffset(DateTimeCustom dc) => dc.DateTimeOffset;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeCustom(DateTimeOffset dto) => new(dto.DateTime);
 
     /// <inheritdoc/>
     public DateOnly DateOnly => _dateTime.ToDateOnly();

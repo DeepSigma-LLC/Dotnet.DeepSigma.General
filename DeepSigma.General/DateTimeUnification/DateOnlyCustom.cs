@@ -1,14 +1,15 @@
 ﻿using DeepSigma.General.Extensions;
+using System;
 
 namespace DeepSigma.General.DateTimeUnification;
 
 /// <summary>
 /// Represents a custom date object that encapsulates a DateOnly value.
 /// </summary>
-/// <param name="date_time"></param>
-public readonly struct DateOnlyCustom(DateOnly date_time) : IDateTime<DateOnlyCustom>
+/// <param name="date_only"></param>
+public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCustom>
 {
-    private readonly DateOnly _dateTime = date_time;
+    private readonly DateOnly _date_only = date_only;
 
     /// <inheritdoc cref="DateOnlyCustom"/>
     public DateOnlyCustom(int year, int month, int day) : this(new DateOnly(year, month, day)) {}
@@ -20,22 +21,40 @@ public readonly struct DateOnlyCustom(DateOnly date_time) : IDateTime<DateOnlyCu
     public static DateOnlyCustom Create(DateTime date_time) => new(date_time);
 
     /// <inheritdoc/>
-    public DateTime DateTime => _dateTime.ToDateTime();
+    public static implicit operator DateOnlyCustom(DateTime dt) => new(dt);
+
+    /// <inheritdoc/>
+    public static implicit operator DateOnlyCustom(DateOnly d) => new(d);
+
+    /// <inheritdoc/>
+    public static implicit operator DateOnly(DateOnlyCustom dc) => dc._date_only;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTime(DateOnlyCustom dc) => dc.DateTime;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffset(DateOnlyCustom dc) => dc.DateTimeOffset;
+
+    /// <inheritdoc/>
+    public static implicit operator DateOnlyCustom(DateTimeOffset dto) => new(dto.DateTime);
+
+    /// <inheritdoc/>
+    public DateTime DateTime => _date_only.ToDateTime();
 
     /// <inheritdoc/>
     public DateTimeOffset DateTimeOffset => new(DateTime);
 
     /// <inheritdoc/>
-    public DateOnly DateOnly  => _dateTime;
+    public DateOnly DateOnly  => _date_only;
 
     /// <inheritdoc/>
-    public int Year => _dateTime.Year;
+    public int Year => _date_only.Year;
 
     /// <inheritdoc/>
-    public int Month => _dateTime.Month;
+    public int Month => _date_only.Month;
 
     /// <inheritdoc/>
-    public int Day => _dateTime.Day;
+    public int Day => _date_only.Day;
 
     /// <inheritdoc/>
     public static DateOnlyCustom MaxValue => new(DateOnly.MaxValue);
@@ -53,13 +72,13 @@ public readonly struct DateOnlyCustom(DateOnly date_time) : IDateTime<DateOnlyCu
     public static DateOnlyCustom Today => new(DateTime.Today);
 
     /// <inheritdoc/>
-    public DateOnly Date => _dateTime;
+    public DateOnly Date => _date_only;
 
     /// <inheritdoc/>
-    public DayOfWeek DayOfWeek => _dateTime.DayOfWeek;
+    public DayOfWeek DayOfWeek => _date_only.DayOfWeek;
 
     /// <inheritdoc/>
-    public int DayOfYear => _dateTime.DayOfYear;
+    public int DayOfYear => _date_only.DayOfYear;
 
     /// <inheritdoc/>
     public int DaysInMonth => DateTime.DaysInMonth(Year, Month);
@@ -77,57 +96,57 @@ public readonly struct DateOnlyCustom(DateOnly date_time) : IDateTime<DateOnlyCu
     public int HalfYear => DateTimeExtension.HalfYear(DateTime);
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddDays(int value) => new(_dateTime.AddDays(value));
+    public DateOnlyCustom AddDays(int value) => new(_date_only.AddDays(value));
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddMonths(int months) => new(_dateTime.AddMonths(months));
+    public DateOnlyCustom AddMonths(int months) => new(_date_only.AddMonths(months));
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddYears(int value) => new(_dateTime.AddYears(value));
+    public DateOnlyCustom AddYears(int value) => new(_date_only.AddYears(value));
 
     /// <inheritdoc/>
     public void Deconstruct(out int year, out int month, out int day)
     {
-        year = _dateTime.Year;
-        month = _dateTime.Month;
-        day = _dateTime.Day;
+        year = _date_only.Year;
+        month = _date_only.Month;
+        day = _date_only.Day;
     }
 
     /// <inheritdoc/>
     public static TimeSpan operator -(DateOnlyCustom dt, DateOnlyCustom cd) => dt.DateTime - cd.DateTime;
 
     /// <inheritdoc/>
-    public static bool operator >(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime > cd2._dateTime;
+    public static bool operator >(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only > cd2._date_only;
 
     /// <inheritdoc/>
-    public static bool operator <(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime < cd2._dateTime;
+    public static bool operator <(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only < cd2._date_only;
 
     /// <inheritdoc/>
-    public static bool operator >=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime >= cd2._dateTime;
+    public static bool operator >=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only >= cd2._date_only;
 
     /// <inheritdoc/>
-    public static bool operator <=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime <= cd2._dateTime;
+    public static bool operator <=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only <= cd2._date_only;
 
     /// <inheritdoc/>
-    public static bool operator ==(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime == cd2._dateTime;
+    public static bool operator ==(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only == cd2._date_only;
 
     /// <inheritdoc/>
-    public static bool operator !=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._dateTime != cd2._dateTime;
+    public static bool operator !=(DateOnlyCustom cd1, DateOnlyCustom cd2) => cd1._date_only != cd2._date_only;
 
     /// <summary>
     /// Returns the string representation of the date in "yyyy-MM-dd" format.
     /// </summary>
     /// <returns></returns>
-    public override string ToString() => _dateTime.ToString("yyyy-MM-dd");
+    public override string ToString() => _date_only.ToString("yyyy-MM-dd");
 
     /// <inheritdoc/>
-    public override int GetHashCode() => _dateTime.GetHashCode();
+    public override int GetHashCode() => _date_only.GetHashCode();
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
         if (obj is not DateOnlyCustom other) return false;
-        return _dateTime.Equals(other._dateTime);
+        return _date_only.Equals(other._date_only);
     }
 
     /// <inheritdoc/>

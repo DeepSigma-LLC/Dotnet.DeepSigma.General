@@ -15,6 +15,36 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
         _dateTimeOffset = dateTimeOffset;
     }
 
+    /// <inheritdoc cref="DateTimeOffsetCustom"/>
+    public DateTimeOffsetCustom(DateTime dateTime)
+    {
+        _dateTimeOffset = new DateTimeOffset(dateTime);
+    }
+
+    /// <inheritdoc cref="DateTimeOffsetCustom"/>
+    public DateTimeOffsetCustom(DateOnly dateOnly)
+    {
+        _dateTimeOffset = new DateTimeOffset(dateOnly.ToDateTime(TimeOnly.MinValue));
+    }
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffsetCustom(DateTime dt) => new(dt);
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffsetCustom(DateOnly d) => new(d);
+
+    /// <inheritdoc/>
+    public static implicit operator DateOnly(DateTimeOffsetCustom dc) => dc.DateOnly;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTime(DateTimeOffsetCustom dc) => dc.DateTime;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffset(DateTimeOffsetCustom dc) => dc.DateTimeOffset;
+
+    /// <inheritdoc/>
+    public static implicit operator DateTimeOffsetCustom(DateTimeOffset dto) => new(dto);
+
     /// <inheritdoc/>
     public static DateTimeOffsetCustom Create(DateTime date_time) => new(date_time);
 
