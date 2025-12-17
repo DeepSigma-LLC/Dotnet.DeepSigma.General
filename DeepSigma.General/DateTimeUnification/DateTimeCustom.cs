@@ -1,6 +1,6 @@
 ﻿using DeepSigma.General.Extensions;
 
-namespace DeepSigma.General.DateObjects;
+namespace DeepSigma.General.DateTimeUnification;
 
 /// <summary>
 /// Represents a custom date object that encapsulates a DateTime value. 

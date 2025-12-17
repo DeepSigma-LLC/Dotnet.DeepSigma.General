@@ -1,6 +1,6 @@
 ﻿using DeepSigma.General.Extensions; 
 
-namespace DeepSigma.General.DateObjects;
+namespace DeepSigma.General.DateTimeUnification;
 
 /// <summary>
 /// Represents a custom date object that encapsulates a DateTimeOffset value.
@@ -168,5 +168,15 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
     public static bool operator >=(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
     {
         return left >= right;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => _dateTimeOffset.GetHashCode();
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is not DateTimeOffsetCustom dto) return false;
+        return _dateTimeOffset.Equals(dto._dateTimeOffset);
     }
 }

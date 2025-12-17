@@ -1,5 +1,5 @@
 ﻿
-namespace DeepSigma.General.DateObjects;
+namespace DeepSigma.General.DateTimeUnification;
 
 /// <summary>
 /// Defines the interface for a custom date object.
