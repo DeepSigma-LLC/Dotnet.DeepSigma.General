@@ -49,10 +49,10 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     {
         if (MoveForward == true && IsValidYearEnd(SelectedDateTime) == false)
         {
-            return T.Create(new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday));
+            return new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday);
         }
         int YearScalar = GetDirectionScalar(MoveForward);
-        return T.Create(new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday));
+        return new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday);
     }
 
     private bool IsValidYearEnd(T SelectedDateTime)
@@ -69,10 +69,10 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     {
         if (MoveForward == true && IsValidMonthEnd(SelectedDateTime) == false)
         {
-            return T.Create(new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(0, MustBeWeekday));
+            return new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(0, MustBeWeekday);
         }
         int MonthScalar = GetDirectionScalar(MoveForward);
-        return T.Create(new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(MonthScalar, MustBeWeekday));
+        return new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(MonthScalar, MustBeWeekday);
     }
 
     private bool IsValidMonthEnd(T SelectedDateTime)
@@ -136,8 +136,8 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     {
         int Year = SelectedDateTime.Year;
         HashSet<T> SemiAnnualEndDates = [
-            T.Create(new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday)),
-            T.Create(new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
+            new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday),
+            new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday)
         ];
         if (SemiAnnualEndDates.Contains(SelectedDateTime)) return true;
         return false;
