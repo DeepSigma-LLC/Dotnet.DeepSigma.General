@@ -1,8 +1,6 @@
-﻿using DeepSigma.General.Enums;
+﻿using DeepSigma.General.DateObjects;
+using DeepSigma.General.Enums;
 using DeepSigma.General.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DeepSigma.General.TimeStepper;
 
@@ -11,7 +9,8 @@ namespace DeepSigma.General.TimeStepper;
 /// </summary>
 /// <param name="Periodicity"></param>
 /// <param name="MustBeWeekday"></param>
-public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool MustBeWeekday = true)
+public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, bool MustBeWeekday = true)
+    where T : struct, IDateTime<T>
 {
     private protected Periodicity Periodicity { get; init; } = Periodicity;
     private protected bool MustBeWeekday { get; init; } = MustBeWeekday;
@@ -20,10 +19,7 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
     /// Returns periodicity from object instance.
     /// </summary>
     /// <returns></returns>
-    public Periodicity GetPeriodicity()
-    {
-        return Periodicity;
-    }
+    public Periodicity GetPeriodicity() => Periodicity;
 
     /// <summary>
     /// Returns next day date time.
@@ -31,11 +27,11 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
     /// <param name="SelectedDateTime"></param>
     /// <param name="MoveForward"></param>
     /// <returns></returns>
-    private protected DateTime GetNextDay(DateTime SelectedDateTime, bool MoveForward = true)
+    private protected T GetNextDay(T SelectedDateTime, bool MoveForward = true)
     {
         int Scalar = GetDirectionScalar(MoveForward);
-        if (MustBeWeekday) return SelectedDateTime.Date.AddWeekdays(Scalar);
-        return SelectedDateTime.Date.AddDays(Scalar);
+        if (MustBeWeekday) return SelectedDateTime.AddWeekdays(Scalar);
+        return SelectedDateTime.AddDays(Scalar);
     }
 
     /// <summary>
@@ -49,46 +45,45 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
         return -1;
     }
 
-
-    private protected DateTime GetYearEndDateTime(DateTime SelectedDateTime, bool MoveForward)
+    private protected T GetYearEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         if (MoveForward == true && IsValidYearEnd(SelectedDateTime) == false)
         {
-            return new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday);
+            return T.Create(new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday));
         }
         int YearScalar = GetDirectionScalar(MoveForward);
-        return new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday);
+        return T.Create(new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday));
     }
 
-    private bool IsValidYearEnd(DateTime SelectedDateTime)
+    private bool IsValidYearEnd(T SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        if (SelectedDateTime.Date == new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
+        if (SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
         {
             return true;
         }
         return false;
     }
 
-    private protected DateTime GetMonthEndDateTime(DateTime SelectedDateTime, bool MoveForward)
+    private protected T GetMonthEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         if (MoveForward == true && IsValidMonthEnd(SelectedDateTime) == false)
         {
-            return new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(0, MustBeWeekday);
+            return T.Create(new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(0, MustBeWeekday));
         }
         int MonthScalar = GetDirectionScalar(MoveForward);
-        return new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(MonthScalar, MustBeWeekday);
+        return T.Create(new DateTime(SelectedDateTime.Year, SelectedDateTime.Month, 1).EndOfMonth(MonthScalar, MustBeWeekday));
     }
 
-    private bool IsValidMonthEnd(DateTime SelectedDateTime)
+    private bool IsValidMonthEnd(T SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
         int Month = SelectedDateTime.Month;
-        if (SelectedDateTime.Date == new DateTime(Year, Month, 1).EndOfMonth(0, MustBeWeekday)) return true;
+        if (SelectedDateTime.Date.ToDateTime() == new DateTime(Year, Month, 1).EndOfMonth(0, MustBeWeekday)) return true;
         return false;
     }
 
-    private protected static DateTime GetWeekEndDateTime(DateTime SelectedDateTime, bool MoveForward)
+    private protected static T GetWeekEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         if (MoveForward == true && IsValidWeekEnd(SelectedDateTime) == false)
         {
@@ -98,15 +93,15 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
         return SelectedDateTime.AddDays(7 * Scalar).NextDayOfWeekSpecified(DayOfWeek.Friday);
     }
 
-    private static bool IsValidWeekEnd(DateTime SelectedDateTime)
+    private static bool IsValidWeekEnd(T SelectedDateTime)
     {
         if (SelectedDateTime.DayOfWeek == DayOfWeek.Friday) return true;
         return false;
     }
 
-    private protected DateTime GetQuarterEndDateTime(DateTime SelectedDateTime, bool MoveForward)
+    private protected T GetQuarterEndDateTime(T SelectedDateTime, bool MoveForward)
     {
-        int startingMonths = 3 * SelectedDateTime.Quarter();
+        int startingMonths = 3 * SelectedDateTime.Quarter;
         int MonthsToValidEndDate = startingMonths - SelectedDateTime.Month;
         if (MoveForward == true && IsValidQuarterEnd(SelectedDateTime) == false)
         {
@@ -116,18 +111,18 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
         return SelectedDateTime.AddMonths(MonthsToValidEndDate).AddMonths(Scalar * 3).EndOfMonth(0, MustBeWeekday);
     }
 
-    private bool IsValidQuarterEnd(DateTime SelectedDateTime)
+    private bool IsValidQuarterEnd(T SelectedDateTime)
     {
-        if (SelectedDateTime.Month % 3 == 0 && SelectedDateTime.Date == SelectedDateTime.Date.EndOfMonth(0, MustBeWeekday))
+        if (SelectedDateTime.Month % 3 == 0 && SelectedDateTime.Date == SelectedDateTime.EndOfMonth(0, MustBeWeekday).Date)
         {
             return true;
         }
         return false;
     }
 
-    private protected DateTime GetSemiAnnualEndDateTime(DateTime SelectedDateTime, bool MoveForward)
+    private protected T GetSemiAnnualEndDateTime(T SelectedDateTime, bool MoveForward)
     {
-        int startingMonths = 6 * SelectedDateTime.HalfYear();
+        int startingMonths = 6 * SelectedDateTime.HalfYear;
         int MonthsToValidEndDate = startingMonths - SelectedDateTime.Month;
         if (MoveForward == true && IsValidSemiAnnualEnd(SelectedDateTime) == false)
         {
@@ -137,14 +132,14 @@ public abstract class AbstractSelfAligningTimeStep(Periodicity Periodicity, bool
         return SelectedDateTime.AddMonths(MonthsToValidEndDate).AddMonths(Scalar * 6).EndOfMonth(0, MustBeWeekday);
     }
 
-    private bool IsValidSemiAnnualEnd(DateTime SelectedDateTime)
+    private bool IsValidSemiAnnualEnd(T SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        HashSet<DateTime> SemiAnnualEndDates = [
-            new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday),
-            new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday)
+        HashSet<T> SemiAnnualEndDates = [
+            T.Create(new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday)),
+            T.Create(new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
         ];
-        if (SemiAnnualEndDates.Contains(SelectedDateTime.Date)) return true;
+        if (SemiAnnualEndDates.Contains(SelectedDateTime)) return true;
         return false;
     }
 }
