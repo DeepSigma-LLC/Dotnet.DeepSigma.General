@@ -1,6 +1,4 @@
-﻿using DeepSigma.General;
-
-namespace DeepSigma.General.Tests;
+﻿namespace DeepSigma.General.Tests.Models;
 
 public class UniqueTestReferenceType : ComparableReferenceType
 {

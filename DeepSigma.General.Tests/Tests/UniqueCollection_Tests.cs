@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using DeepSigma.General;
+using DeepSigma.General.Tests.Models;
 
 namespace DeepSigma.General.Tests.Tests;
 

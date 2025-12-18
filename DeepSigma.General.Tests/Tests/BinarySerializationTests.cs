@@ -1,4 +1,5 @@
 ﻿using DeepSigma.General.Serialization;
+using DeepSigma.General.Tests.Models;
 using System.IO;
 using Xunit;
 

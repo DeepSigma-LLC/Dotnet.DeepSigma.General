@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeepSigma.General.Tests
+namespace DeepSigma.General.Tests.Models
 {
     internal class Person
     {
