@@ -1,5 +1,4 @@
 ﻿using DeepSigma.General.Extensions;
-using System;
 
 namespace DeepSigma.General.DateTimeUnification;
 
@@ -42,7 +41,7 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
     public DateTime DateTime => _date_only.ToDateTime();
 
     /// <inheritdoc/>
-    public DateTimeOffset DateTimeOffset => new(DateTime);
+    public DateTimeOffset DateTimeOffset => DateTime;
 
     /// <inheritdoc/>
     public DateOnly DateOnly  => _date_only;
@@ -57,19 +56,19 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
     public int Day => _date_only.Day;
 
     /// <inheritdoc/>
-    public static DateOnlyCustom MaxValue => new(DateOnly.MaxValue);
+    public static DateOnlyCustom MaxValue => DateOnly.MaxValue;
 
     /// <inheritdoc/>
-    public static DateOnlyCustom MinValue => new(DateOnly.MinValue);
+    public static DateOnlyCustom MinValue => DateOnly.MinValue;
 
     /// <inheritdoc/>
-    public static DateOnlyCustom Now => new(DateTime.Today);
+    public static DateOnlyCustom Now => DateTime.Today;
 
     /// <inheritdoc/>
-    public static DateOnlyCustom NowUtc => new(DateTime.UtcNow);
+    public static DateOnlyCustom NowUtc => DateTime.UtcNow;
 
     /// <inheritdoc/>
-    public static DateOnlyCustom Today => new(DateTime.Today);
+    public static DateOnlyCustom Today => DateTime.Today;
 
     /// <inheritdoc/>
     public DateOnly Date => _date_only;
@@ -96,13 +95,13 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
     public int HalfYear => DateTimeExtension.HalfYear(DateTime);
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddDays(int value) => new(_date_only.AddDays(value));
+    public DateOnlyCustom AddDays(int value) => _date_only.AddDays(value);
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddMonths(int months) => new(_date_only.AddMonths(months));
+    public DateOnlyCustom AddMonths(int months) => _date_only.AddMonths(months);
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddYears(int value) => new(_date_only.AddYears(value));
+    public DateOnlyCustom AddYears(int value) => _date_only.AddYears(value);
 
     /// <inheritdoc/>
     public void Deconstruct(out int year, out int month, out int day)
@@ -152,36 +151,27 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
     /// <inheritdoc/>
     public DateOnlyCustom EndOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
-        return new(DateTimeExtension.EndOfMonth(DateTime, months_to_add, must_be_weekday));
+        return DateTimeExtension.EndOfMonth(DateTime, months_to_add, must_be_weekday);
     }
 
     /// <inheritdoc/>
     public DateOnlyCustom StartOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
-        return new(DateTimeExtension.StartOfMonth(DateTime, months_to_add, must_be_weekday));
+        return DateTimeExtension.StartOfMonth(DateTime, months_to_add, must_be_weekday);
     }
 
     /// <inheritdoc/>
-    public DateOnlyCustom AddWeekdays(int weekdays)
-    {
-        return new(DateTimeExtension.AddWeekdays(DateTime, weekdays));
-    }
+    public DateOnlyCustom AddWeekdays(int weekdays) => DateTimeExtension.AddWeekdays(DateTime, weekdays);
 
     /// <inheritdoc/>
-    public bool IsWeekday()
-    {
-        return DateTimeExtension.IsWeekday(DateTime);
-    }
-
+    public bool IsWeekday() => DateTimeExtension.IsWeekday(DateTime);
+    
     /// <inheritdoc/>
-    public bool IsWeekend()
-    {
-        return DateTimeExtension.IsWeekend(DateTime);
-    }
+    public bool IsWeekend() => DateTimeExtension.IsWeekend(DateTime);
 
     /// <inheritdoc/>
     public DateOnlyCustom NextDayOfWeekSpecified(DayOfWeek day_of_week)
     {
-        return new(DateTimeExtension.NextDayOfWeekSpecified(DateTime, day_of_week));
+        return DateTimeExtension.NextDayOfWeekSpecified(DateTime, day_of_week);
     }
 }

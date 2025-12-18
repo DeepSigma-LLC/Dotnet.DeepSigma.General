@@ -282,20 +282,15 @@ public static class DateTimeExtension
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static bool IsWeekday(this DateTime date)
-    {
-        return (date.DayOfWeek != DayOfWeek.Saturday & date.DayOfWeek != DayOfWeek.Sunday);
-    }
+    public static bool IsWeekday(this DateTime date) => !date.IsWeekend();
 
     /// <summary>
     /// Checks if the date is a weekend (Saturday or Sunday).
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    public static bool IsWeekend(this DateTime date)
-    {
-        return (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
-    }
+    public static bool IsWeekend(this DateTime date) => (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+    
 
     /// <summary>
     /// Returns the number of weekdays between two dates, excluding the start date.

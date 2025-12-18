@@ -49,19 +49,19 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
     public static DateTimeOffsetCustom Create(DateTime date_time) => new(date_time);
 
     /// <inheritdoc/>
-    public static DateTimeOffsetCustom MaxValue => new(DateTimeOffset.MaxValue);
+    public static DateTimeOffsetCustom MaxValue => DateTimeOffset.MaxValue;
 
     /// <inheritdoc/>
-    public static DateTimeOffsetCustom MinValue => new(DateTimeOffset.MinValue);
+    public static DateTimeOffsetCustom MinValue => DateTimeOffset.MinValue;
 
     /// <inheritdoc/>
-    public static DateTimeOffsetCustom Now => new(DateTimeOffset.Now);
+    public static DateTimeOffsetCustom Now => DateTimeOffset.Now;
 
     /// <inheritdoc/>
-    public static DateTimeOffsetCustom NowUtc => new(DateTimeOffset.UtcNow);
+    public static DateTimeOffsetCustom NowUtc => DateTimeOffset.UtcNow;
 
     /// <inheritdoc/>
-    public static DateTimeOffsetCustom Today => new(DateTimeOffset.Now.Date);
+    public static DateTimeOffsetCustom Today => DateTimeOffset.Now.Date;
 
     /// <inheritdoc/>
     public DateOnly Date => _dateTimeOffset.DateTime.ToDateOnly();
@@ -106,16 +106,13 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
     public int HalfYear => DateTimeExtension.HalfYear(DateTime);
 
     /// <inheritdoc/>
-    public DateTimeOffsetCustom AddDays(int value) => new(_dateTimeOffset.AddDays(value));
+    public DateTimeOffsetCustom AddDays(int value) => _dateTimeOffset.AddDays(value);
 
     /// <inheritdoc/>
-    public DateTimeOffsetCustom AddMonths(int months) => new(_dateTimeOffset.AddMonths(months));
+    public DateTimeOffsetCustom AddMonths(int months) => _dateTimeOffset.AddMonths(months);
 
     /// <inheritdoc/>
-    public DateTimeOffsetCustom AddWeekdays(int weekdays)
-    {
-        return new(_dateTimeOffset.DateTime.AddWeekdays(weekdays));
-    }
+    public DateTimeOffsetCustom AddWeekdays(int weekdays) => _dateTimeOffset.DateTime.AddWeekdays(weekdays);
 
     /// <inheritdoc/>
     public DateTimeOffsetCustom AddYears(int value) => new(_dateTimeOffset.AddYears(value));
@@ -135,70 +132,43 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
     }
 
     /// <inheritdoc/>
-    public bool IsWeekday()
-    {
-        return DateTimeExtension.IsWeekday(DateTime);
-    }
+    public bool IsWeekday() => DateTimeExtension.IsWeekday(DateTime);
 
     /// <inheritdoc/>
-    public bool IsWeekend()
-    {
-        return DateTimeExtension.IsWeekend(DateTime);
-    }
+    public bool IsWeekend() => DateTimeExtension.IsWeekend(DateTime);
 
     /// <inheritdoc/>
     public DateTimeOffsetCustom NextDayOfWeekSpecified(DayOfWeek day_of_week)
     {
-        return new(_dateTimeOffset.DateTime.NextDayOfWeekSpecified(day_of_week));
+        return _dateTimeOffset.DateTime.NextDayOfWeekSpecified(day_of_week);
     }
 
     /// <inheritdoc/>
     public DateTimeOffsetCustom StartOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
-        return new(_dateTimeOffset.DateTime.StartOfMonth(months_to_add, must_be_weekday));
+        return _dateTimeOffset.DateTime.StartOfMonth(months_to_add, must_be_weekday);
     }
 
     /// <inheritdoc/>
-    public static TimeSpan operator -(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left.DateTimeOffset - right.DateTimeOffset;
-    }
+    public static TimeSpan operator -(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left.DateTimeOffset - right.DateTimeOffset;
 
     /// <inheritdoc/>
-    public static bool operator ==(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left.Equals(right);
-    }
+    public static bool operator ==(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left.Equals(right);
 
     /// <inheritdoc/>
-    public static bool operator !=(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return !(left == right);
-    }
+    public static bool operator !=(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => !(left == right);
 
     /// <inheritdoc/>
-    public static bool operator <(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left < right;
-    }
+    public static bool operator <(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left < right;
 
     /// <inheritdoc/>
-    public static bool operator >(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left > right;
-    }
+    public static bool operator >(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left > right;
 
     /// <inheritdoc/>
-    public static bool operator <=(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left <= right;
-    }
+    public static bool operator <=(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left <= right;
 
     /// <inheritdoc/>
-    public static bool operator >=(DateTimeOffsetCustom left, DateTimeOffsetCustom right)
-    {
-        return left >= right;
-    }
+    public static bool operator >=(DateTimeOffsetCustom left, DateTimeOffsetCustom right) => left >= right;
 
     /// <inheritdoc/>
     public override int GetHashCode() => _dateTimeOffset.GetHashCode();

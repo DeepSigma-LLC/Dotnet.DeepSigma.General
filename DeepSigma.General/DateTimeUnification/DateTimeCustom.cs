@@ -62,13 +62,13 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     public int Year => _dateTime.Year;
 
     /// <inheritdoc/>
-    public static DateTimeCustom Now => new(DateTime.Now);
+    public static DateTimeCustom Now => DateTime.Now;
 
     /// <inheritdoc/>
-    public static DateTimeCustom Today => new(DateTime.Now.Date);
+    public static DateTimeCustom Today => DateTime.Now.Date;
 
     /// <inheritdoc/>
-    public static DateTimeCustom NowUtc => new(DateTime.UtcNow);
+    public static DateTimeCustom NowUtc => DateTime.UtcNow;
 
     /// <inheritdoc/>
     public DayOfWeek DayOfWeek => _dateTime.DayOfWeek;
@@ -77,10 +77,10 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     public int DayOfYear => _dateTime.DayOfYear;
 
     /// <inheritdoc/>
-    public static DateTimeCustom MinValue => new(DateTime.MinValue);
+    public static DateTimeCustom MinValue => DateTime.MinValue;
 
     /// <inheritdoc/>
-    public static DateTimeCustom MaxValue => new(DateTime.MaxValue);
+    public static DateTimeCustom MaxValue => DateTime.MaxValue;
 
     /// <inheritdoc/>
     public bool IsLeapYear => DateTime.IsLeapYear(Year);
@@ -98,13 +98,13 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     public int HalfYear => DateTimeExtension.HalfYear(DateTime);
 
     /// <inheritdoc/>
-    public DateTimeCustom AddDays(int value) => new(_dateTime.AddDays(value));
+    public DateTimeCustom AddDays(int value) => _dateTime.AddDays(value);
 
     /// <inheritdoc/>
-    public DateTimeCustom AddMonths(int months) => new(_dateTime.AddMonths(months));
+    public DateTimeCustom AddMonths(int months) => _dateTime.AddMonths(months);
     
     /// <inheritdoc/>
-    public DateTimeCustom AddYears(int value) => new(_dateTime.AddYears(value));
+    public DateTimeCustom AddYears(int value) => _dateTime.AddYears(value);
     
     /// <inheritdoc/>
     public void Deconstruct(out int year, out int month, out int day)
@@ -154,36 +154,27 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     /// <inheritdoc/>
     public DateTimeCustom EndOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
-        return new(DateTimeExtension.EndOfMonth(_dateTime, months_to_add, must_be_weekday));
+        return DateTimeExtension.EndOfMonth(_dateTime, months_to_add, must_be_weekday);
     }
 
     /// <inheritdoc/>
     public DateTimeCustom StartOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
-        return new(DateTimeExtension.StartOfMonth(_dateTime, months_to_add, must_be_weekday));
+        return DateTimeExtension.StartOfMonth(_dateTime, months_to_add, must_be_weekday);
     }
 
     /// <inheritdoc/>
-    public DateTimeCustom AddWeekdays(int weekdays)
-    {
-        return new(DateTimeExtension.AddWeekdays(_dateTime, weekdays));
-    }
+    public DateTimeCustom AddWeekdays(int weekdays) => DateTimeExtension.AddWeekdays(_dateTime, weekdays);
 
     /// <inheritdoc/>
-    public bool IsWeekday()
-    {
-        return DateTimeExtension.IsWeekday(_dateTime);
-    }
+    public bool IsWeekday() => DateTimeExtension.IsWeekday(_dateTime);
 
     /// <inheritdoc/>
-    public bool IsWeekend()
-    {
-        return DateTimeExtension.IsWeekend(_dateTime);
-    }
-
+    public bool IsWeekend() => DateTimeExtension.IsWeekend(_dateTime);
+    
     /// <inheritdoc/>
     public DateTimeCustom NextDayOfWeekSpecified(DayOfWeek day_of_week)
     {
-        return new(DateTimeExtension.NextDayOfWeekSpecified(_dateTime, day_of_week));
+        return DateTimeExtension.NextDayOfWeekSpecified(_dateTime, day_of_week);
     }
 }
