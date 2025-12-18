@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace DeepSigma.General;
 
@@ -10,6 +11,13 @@ namespace DeepSigma.General;
 /// </remarks>
 public sealed class AbsoluteValueImmutable<T> where T : INumber<T>
 {
+    /// <inheritdoc cref="AbsoluteValueImmutable{T}"/>
+    [SetsRequiredMembers]
+    public AbsoluteValueImmutable(T value)
+    {
+        Value = value;
+    }
+
     /// <summary>
     /// The value stored as an absolute value.
     /// </summary>
