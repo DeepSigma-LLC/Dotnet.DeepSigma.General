@@ -368,4 +368,37 @@ public static class StringExtension
         return String.Concat(Enumerable.Repeat(value, MultiplicationCount));
     }
 
+    /// <summary>
+    /// Parses string as given data type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="FormatException"></exception>
+    /// <exception cref="OverflowException"></exception>
+    public static T ParseAs<T>(this string input) where T : IParsable<T> => T.Parse(input, null);
+
+
+    /// <summary>
+    /// Tries to parse string as given data type.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="input"> Input string to parse.</param>
+    /// <param name="result"> Result of parsing if successful; otherwise, default value of T.</param>
+    /// <returns>Returns a tuple indicating success and any exception encountered.</returns>
+    public static (bool Success, Exception? Error) TryParseAs<T>(this string input, out T? result) 
+        where T : IParsable<T>
+    {
+        try
+        {
+            result = input.ParseAs<T>();
+            return (true, null);
+        }
+        catch(Exception ex)
+        {
+            result = default;
+            return (false, ex);
+        }
+    }
 }
