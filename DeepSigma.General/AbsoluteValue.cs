@@ -3,12 +3,9 @@
 namespace DeepSigma.General;
 
 /// <summary>
-/// A generic quantity class that stores the absolute value of a quantity.
+/// A generic quantity struct that stores the absolute value of a quantity.
 /// </summary>
-/// <remarks>
-/// Sealed to prevent inheritance. Favor composition over inheritance.
-/// </remarks>
-public sealed class AbsoluteValue<T>() where T : INumber<T>
+public readonly struct AbsoluteValue<T>() where T : INumber<T>
 {
     /// <inheritdoc cref="AbsoluteValue{T}"/>
     public AbsoluteValue(T value) : this()
@@ -22,6 +19,18 @@ public sealed class AbsoluteValue<T>() where T : INumber<T>
     public T Value
     {
         get => field;
-        set => field = T.Abs(value);
+        init => field = T.Abs(value);
     } = T.Zero;
+
+    /// <summary>
+    /// Implicit conversion to the underlying type.
+    /// </summary>
+    /// <param name="absoluteValue"></param>
+    public static implicit operator T(AbsoluteValue<T> absoluteValue) => absoluteValue.Value;
+
+    /// <summary>
+    /// Implicit conversion from the underlying type.
+    /// </summary>
+    /// <param name="value"></param>
+    public static implicit operator AbsoluteValue<T>(T value) => new(value);
 }
