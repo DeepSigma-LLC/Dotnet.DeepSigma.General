@@ -95,8 +95,22 @@ public static class DecimalExtensions
     /// <param name="value"></param>
     /// <param name="exponent"></param>
     /// <returns></returns>
-    public static decimal? PowerExact(this decimal? value, int exponent) => value.HasValue ? PowerExact(value.Value, exponent) : null;   
-    
+    public static decimal? PowerExact(this decimal? value, int exponent) => value.HasValue ? PowerExact(value.Value, exponent) : null;
+
+    /// <summary>
+    /// Calculates the complement of a decimal value (i.e., 1 - value).
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static decimal Complement(this decimal value) => 1 - value;
+
+    /// <summary>
+    /// Calculates the complement of a nullable decimal value (i.e., 1 - value).
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static decimal? Complement(this decimal? value) => value.HasValue ? value.Value.Complement() : null;
+
     /// <summary>
     /// Determines if a decimal value is a whole number (i.e., has no fractional part).
     /// </summary>
