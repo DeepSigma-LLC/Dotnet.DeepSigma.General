@@ -24,6 +24,37 @@ public static class DecimalExtensions
     public static double? ToDouble(this decimal? value) => value.HasValue ? value.Value.ToDouble() : null;
 
     /// <summary>
+    /// Calculates the square root of the specified decimal value.
+    /// </summary>
+    /// <remarks>If <paramref name="value"/> is less than zero, the result may not be meaningful, as square
+    /// roots of negative numbers are not defined for real numbers.</remarks>
+    /// <param name="value">The decimal number for which to calculate the square root. Must be non-negative.</param>
+    /// <returns>The non-negative square root of <paramref name="value"/> as a decimal.</returns>
+    public static decimal Sqrt(this decimal value) => Math.Sqrt(value.ToDouble()).ToDecimal();
+
+    /// <summary>
+    /// Calculates the square root of a nullable decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static decimal? Sqrt(this decimal? value) => value.HasValue ? value.Value.Sqrt() : null;
+
+    /// <summary>
+    /// Calculates the natural logarithm (base e) of a decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static decimal Logarithm(this decimal value) => Math.Log(value.ToDouble()).ToDecimal();
+
+
+    /// <summary>
+    /// Calculates the natural logarithm (base e) of a nullable decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static decimal? Logarithm(this decimal? value) => value.HasValue ? value.Value.Logarithm() : null;
+
+    /// <summary>
     /// Calculates the power of a decimal value raised to the specified exponent.
     /// </summary>
     /// <param name="value"></param>
@@ -39,6 +70,33 @@ public static class DecimalExtensions
     /// <returns></returns>
     public static decimal? Power(this decimal? value, decimal exponent) => value.HasValue ? (decimal?)value.Value.Power(exponent) : null;
 
+    /// <summary>
+    /// Calculates the power of a decimal value raised to the specified integer exponent exactly.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="exponent"></param>
+    /// <returns></returns>
+    public static decimal PowerExact(this decimal value, int exponent)
+    {
+        if (exponent == 0) return 1m;
+        if (exponent < 0) return 1m / PowerExact(value, -exponent);
+
+        decimal result = 1m;
+        for (int i = 0; i < exponent; i++)
+        {
+            result *= value;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Calculates the power of a decimal value raised to the specified integer exponent exactly.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="exponent"></param>
+    /// <returns></returns>
+    public static decimal? PowerExact(this decimal? value, int exponent) => value.HasValue ? PowerExact(value.Value, exponent) : null;   
+    
     /// <summary>
     /// Determines if a decimal value is a whole number (i.e., has no fractional part).
     /// </summary>
