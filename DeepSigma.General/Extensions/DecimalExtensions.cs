@@ -1,6 +1,5 @@
 ﻿using DeepSigma.General.Enums;
 using System.Globalization;
-using System.Numerics;
 
 namespace DeepSigma.General.Extensions;
 
@@ -24,35 +23,36 @@ public static class DecimalExtensions
     public static double? ToDouble(this decimal? value) => value.HasValue ? value.Value.ToDouble() : null;
 
     /// <summary>
-    /// Calculates the square root of the specified decimal value.
+    /// Calculates the square root of a decimal value.
     /// </summary>
-    /// <remarks>If <paramref name="value"/> is less than zero, the result may not be meaningful, as square
-    /// roots of negative numbers are not defined for real numbers.</remarks>
-    /// <param name="value">The decimal number for which to calculate the square root. Must be non-negative.</param>
-    /// <returns>The non-negative square root of <paramref name="value"/> as a decimal.</returns>
-    public static decimal Sqrt(this decimal value) => Math.Sqrt(value.ToDouble()).ToDecimal();
+    /// <param name="value"></param>
+    /// <param name="d"></param>
+    /// <returns></returns>
+    public static decimal Sqrt(this decimal value, decimal d) => value * Math.Sqrt(d);
+
+    /// <summary>
+    /// Calculates the square root of a decimal value.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="d"></param>
+    /// <returns></returns>
+    public static decimal Sqrt(this decimal value, int d) => value * Math.Sqrt(d).ToDecimal();
 
     /// <summary>
     /// Calculates the square root of a nullable decimal value.
     /// </summary>
     /// <param name="value"></param>
+    /// <param name="d"></param>
     /// <returns></returns>
-    public static decimal? Sqrt(this decimal? value) => value.HasValue ? value.Value.Sqrt() : null;
+    public static decimal? Sqrt(this decimal? value, decimal d) => value.HasValue ? value.Value.Sqrt(d) : null;
 
     /// <summary>
-    /// Calculates the natural logarithm (base e) of a decimal value.
+    /// Calculates the square root of a nullable decimal value.
     /// </summary>
     /// <param name="value"></param>
+    /// <param name="d"></param>
     /// <returns></returns>
-    public static decimal Logarithm(this decimal value) => Math.Log(value.ToDouble()).ToDecimal();
-
-
-    /// <summary>
-    /// Calculates the natural logarithm (base e) of a nullable decimal value.
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static decimal? Logarithm(this decimal? value) => value.HasValue ? value.Value.Logarithm() : null;
+    public static decimal? Sqrt(this decimal? value, int d) => value.HasValue ? value.Value.Sqrt(d) : null;
 
     /// <summary>
     /// Calculates the power of a decimal value raised to the specified exponent.
