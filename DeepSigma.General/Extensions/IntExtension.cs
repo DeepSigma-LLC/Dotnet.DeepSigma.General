@@ -42,14 +42,14 @@ public static class IntExtension
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static decimal Sqrt(this int value) => Math.Sqrt(value).ToDecimal();
+    public static decimal Sqrt(this int value, int d) => value * Math.Sqrt(d).ToDecimal();
 
     /// <summary>
     /// Calculates square root of nullable int value
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static decimal? Sqrt(this int? value) => value.HasValue ? value.Value.Sqrt() : null;
+    public static decimal? Sqrt(this int? value, int d) => value.HasValue ? value.Value.Sqrt(d) : null;
 
     /// <summary>
     /// Calculates natural logarithm of int value
