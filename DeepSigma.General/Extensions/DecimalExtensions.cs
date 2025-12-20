@@ -9,6 +9,49 @@ namespace DeepSigma.General.Extensions;
 /// </summary>
 public static class DecimalExtensions
 {
+    /// <summary>
+    /// Converts a decimal value to a double.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static double ToDouble(this decimal value) => (double)value;
+
+    /// <summary>
+    /// Converts a nullable decimal value to a nullable double.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static double? ToDouble(this decimal? value) => value.HasValue ? value.Value.ToDouble() : null;
+
+    /// <summary>
+    /// Calculates the power of a decimal value raised to the specified exponent.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="exponent"></param>
+    /// <returns></returns>
+    public static decimal Power(this decimal value, decimal exponent) => Math.Pow(value.ToDouble(), exponent.ToDouble()).ToDecimal();
+
+    /// <summary>
+    /// Calculates the power of a nullable decimal value raised to the specified exponent.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="exponent"></param>
+    /// <returns></returns>
+    public static decimal? Power(this decimal? value, decimal exponent) => value.HasValue ? (decimal?)value.Value.Power(exponent) : null;
+
+    /// <summary>
+    /// Determines if a decimal value is a whole number (i.e., has no fractional part).
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool IsWholeNumber(this decimal value) => value % 1 == 0;
+
+    /// <summary>
+    /// Determines if a nullable decimal value is a whole number (i.e., has no fractional part).
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool IsWholeNumber(this decimal? value) => value.HasValue ? value.Value.IsWholeNumber() : false;
 
     /// <summary>
     /// Calculates the percentage of a value relative to a total.
