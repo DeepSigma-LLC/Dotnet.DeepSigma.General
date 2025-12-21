@@ -204,7 +204,7 @@ public static class DateOnlyExtension
     /// <param name="date"></param>
     /// <param name="weekday"></param>
     /// <returns></returns>
-    public static DateOnly StartOfQuater(this DateOnly date, bool weekday = false)
+    public static DateOnly StartOfQuarter(this DateOnly date, bool weekday = false)
     {
         int month = (date.Quarter() - 1) * 3 + 1;
         DateOnly startOfQuarter = new(date.Year, month, 1);
@@ -217,7 +217,7 @@ public static class DateOnlyExtension
     /// <param name="date"></param>
     /// <param name="weekday"></param>
     /// <returns></returns>
-    public static DateOnly EndOfQuater(this DateOnly date, bool weekday = false)
+    public static DateOnly EndOfQuarter(this DateOnly date, bool weekday = false)
     {
         int month = (date.Quarter() * 3);
         DateOnly endOfQuarter = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));

@@ -314,7 +314,7 @@ public static class DateTimeExtension
     /// <param name="date"></param>
     /// <param name="weekday"></param>
     /// <returns></returns>
-    public static DateTime StartOfQuater(this DateTime date, bool weekday = false)
+    public static DateTime StartOfQuarter(this DateTime date, bool weekday = false)
     {
         int month = (date.Quarter() - 1) * 3 + 1;
         DateTime startOfQuarter = new(date.Year, month, 1);
@@ -327,7 +327,7 @@ public static class DateTimeExtension
     /// <param name="date"></param>
     /// <param name="weekday"></param>
     /// <returns></returns>
-    public static DateTime EndOfQuater(this DateTime date, bool weekday = false)
+    public static DateTime EndOfQuarter(this DateTime date, bool weekday = false)
     {
         int month = (date.Quarter() * 3);
         DateTime endOfQuarter = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
