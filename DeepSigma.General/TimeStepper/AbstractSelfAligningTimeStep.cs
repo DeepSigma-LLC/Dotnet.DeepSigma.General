@@ -30,8 +30,7 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     private protected T GetNextDay(T SelectedDateTime, bool MoveForward = true)
     {
         int Scalar = GetDirectionScalar(MoveForward);
-        if (MustBeWeekday) return SelectedDateTime.AddWeekdays(Scalar);
-        return SelectedDateTime.AddDays(Scalar);
+        return MustBeWeekday ? SelectedDateTime.AddWeekdays(Scalar) : SelectedDateTime.AddDays(Scalar);
     }
 
     /// <summary>
@@ -39,12 +38,8 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     /// </summary>
     /// <param name="MoveForward"></param>
     /// <returns></returns>
-    private static sbyte GetDirectionScalar(bool MoveForward = true)
-    {
-        if (MoveForward) return 1;
-        return -1;
-    }
-
+    private static sbyte GetDirectionScalar(bool MoveForward = true) => MoveForward ? (sbyte)1 : (sbyte)-1;
+    
     private protected T GetYearEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         if (MoveForward == true && IsValidYearEnd(SelectedDateTime) == false)
@@ -59,16 +54,8 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
 
     private bool IsValidYearEnd(T SelectedDateTime)
     {
-        int Year = SelectedDateTime.Year;
-        if (MustBeWeekday && SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31).WeekdayOrPrevious())
-        {
-            return true;
-        }
-        else if (MustBeWeekday == false && SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31))
-        {
-            return true;
-        }
-        return false;
+        DateTime datetime = new(SelectedDateTime.Year, 12, 31);
+        return MustBeWeekday ? SelectedDateTime.Date.ToDateTime() == datetime.WeekdayOrPrevious() : SelectedDateTime.Date.ToDateTime() == datetime;
     }
 
     private protected T GetMonthEndDateTime(T SelectedDateTime, bool MoveForward)
@@ -85,8 +72,7 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     {
         int Year = SelectedDateTime.Year;
         int Month = SelectedDateTime.Month;
-        if (SelectedDateTime.Date.ToDateTime() == new DateTime(Year, Month, 1).EndOfMonth(0, MustBeWeekday)) return true;
-        return false;
+        return SelectedDateTime.Date.ToDateTime() == new DateTime(Year, Month, 1).EndOfMonth(0, MustBeWeekday);
     }
 
     private protected static T GetWeekEndDateTime(T SelectedDateTime, bool MoveForward)
@@ -99,11 +85,7 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
         return SelectedDateTime.AddDays(7 * Scalar).NextDayOfWeekSpecified(DayOfWeek.Friday);
     }
 
-    private static bool IsValidWeekEnd(T SelectedDateTime)
-    {
-        if (SelectedDateTime.DayOfWeek == DayOfWeek.Friday) return true;
-        return false;
-    }
+    private static bool IsValidWeekEnd(T SelectedDateTime) => SelectedDateTime.DayOfWeek == DayOfWeek.Friday;
 
     private protected T GetQuarterEndDateTime(T SelectedDateTime, bool MoveForward)
     {
@@ -117,14 +99,8 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
         return SelectedDateTime.AddMonths(MonthsToValidEndDate).AddMonths(Scalar * 3).EndOfMonth(0, MustBeWeekday);
     }
 
-    private bool IsValidQuarterEnd(T SelectedDateTime)
-    {
-        if (SelectedDateTime.Month % 3 == 0 && SelectedDateTime.Date == SelectedDateTime.EndOfMonth(0, MustBeWeekday).Date)
-        {
-            return true;
-        }
-        return false;
-    }
+    private bool IsValidQuarterEnd(T SelectedDateTime) => SelectedDateTime.Month % 3 == 0 && 
+        SelectedDateTime.Date == SelectedDateTime.EndOfMonth(0, MustBeWeekday).Date;
 
     private protected T GetSemiAnnualEndDateTime(T SelectedDateTime, bool MoveForward)
     {

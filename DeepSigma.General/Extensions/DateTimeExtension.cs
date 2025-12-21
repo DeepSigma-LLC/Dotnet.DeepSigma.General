@@ -283,4 +283,80 @@ public static class DateTimeExtension
     {
         return Convert.ToInt32(Math.Ceiling((decimal)Date.Month / 3));
     }
+
+    /// <summary>
+    /// Returns the start of the year for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime StartOfYear(this DateTime date, bool weekday = false)
+    {
+        DateTime startOfYear = new(date.Year, 1, 1);
+        return weekday ? startOfYear.WeekdayOrNext() : startOfYear;
+    }
+
+    /// <summary>
+    /// Returns the end of the year for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime EndOfYear(this DateTime date, bool weekday = false)
+    {
+        DateTime endOfYear = new(date.Year, 12, 31);
+        return weekday ? endOfYear.WeekdayOrPrevious() : endOfYear;
+    }
+
+    /// <summary>
+    /// Returns the start of the quarter for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime StartOfQuater(this DateTime date, bool weekday = false)
+    {
+        int month = (date.Quarter() - 1) * 3 + 1;
+        DateTime startOfQuarter = new(date.Year, month, 1);
+        return weekday ? startOfQuarter.WeekdayOrNext() : startOfQuarter;
+    }
+
+    /// <summary>
+    /// Returns the end of the quarter for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime EndOfQuater(this DateTime date, bool weekday = false)
+    {
+        int month = (date.Quarter() * 3);
+        DateTime endOfQuarter = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
+        return weekday ? endOfQuarter.WeekdayOrPrevious() : endOfQuarter;
+    }
+
+    /// <summary>
+    /// Returns the start of the half-year for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime StartOfHalfYear(this DateTime date, bool weekday = false)
+    {
+        int month = (date.HalfYear() - 1) * 6 + 1;
+        DateTime startOfHalfYear = new(date.Year, month, 1);
+        return weekday ? startOfHalfYear.WeekdayOrNext() : startOfHalfYear;
+    }
+
+    /// <summary>
+    /// Returns the end of the half-year for the given date, optionally ensuring it is a weekday.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="weekday"></param>
+    /// <returns></returns>
+    public static DateTime EndOfHalfYear(this DateTime date, bool weekday = false)
+    {
+        int month = date.HalfYear() * 6;
+        DateTime endOfHalfYear = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
+        return weekday ? endOfHalfYear.WeekdayOrPrevious() : endOfHalfYear;
+    }
 }
