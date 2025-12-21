@@ -359,4 +359,17 @@ public static class DateTimeExtension
         DateTime endOfHalfYear = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
         return weekday ? endOfHalfYear.WeekdayOrPrevious() : endOfHalfYear;
     }
+
+
+    /// <summary>
+    /// Counts the occurrences of a specific day of the week between two dates.
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <param name="day_of_week"></param>
+    /// <returns></returns>
+    public static int CountDaysOfWeekBetweenDates(this DateTime start, DateTime end, DayOfWeek day_of_week)
+    {
+        return DateOnlyExtension.CountDaysOfWeekBetweenDates(start.ToDateOnly(), end.ToDateOnly(), day_of_week);
+    }
 }

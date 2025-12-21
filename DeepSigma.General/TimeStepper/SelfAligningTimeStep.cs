@@ -6,10 +6,9 @@ namespace DeepSigma.General.TimeStepper;
 /// <summary>
 /// Self-aligning time step for DateOnly.
 /// </summary>
-/// <param name="Periodicity"></param>
-/// <param name="MustBeWeekday"></param>
-public class SelfAligningTimeStep<T>(Periodicity Periodicity, bool MustBeWeekday = true) 
-    : AbstractSelfAligningTimeStep<T>(Periodicity, MustBeWeekday)
+/// <param name="PeriodicityConfig"></param>
+public class SelfAligningTimeStep<T>(PeriodicityConfiguration PeriodicityConfig) 
+    : AbstractSelfAligningTimeStep<T>(PeriodicityConfig)
     where T : struct, IDateTime<T>
 {
     /// <inheritdoc/>
@@ -44,15 +43,11 @@ public class SelfAligningTimeStep<T>(Periodicity Periodicity, bool MustBeWeekday
     }
 
     /// <inheritdoc/>
-    public bool IsValidTimeStep(T EvaluationDateTime)
-    {
-        if (EvaluationDateTime == CalculateTimeStep(EvaluationDateTime, false)) return true;
-        return false;
-    }
-
+    public bool IsValidTimeStep(T EvaluationDateTime) => EvaluationDateTime == CalculateTimeStep(EvaluationDateTime, false);
+    
     private T CalculateTimeStep(T SelectedDateTime, bool MoveForward = true)
     {
-        T result = Periodicity switch
+        T result = PeriodicityConfig.Periodicity switch
         {
             Periodicity.Daily => GetNextDay(SelectedDateTime, MoveForward),
             Periodicity.Monthly => GetMonthEndDateTime(SelectedDateTime, MoveForward),
@@ -60,7 +55,6 @@ public class SelfAligningTimeStep<T>(Periodicity Periodicity, bool MustBeWeekday
             Periodicity.Quarterly => GetQuarterEndDateTime(SelectedDateTime, MoveForward),
             Periodicity.Annually => GetYearEndDateTime(SelectedDateTime, MoveForward),
             Periodicity.SemiAnnual => GetSemiAnnualEndDateTime(SelectedDateTime, MoveForward),
-            Periodicity.Intraday => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
         };
         return result;

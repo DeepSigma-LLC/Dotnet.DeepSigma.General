@@ -22,11 +22,7 @@ public static class PeriodicityUtilities
     private static bool DoesDailyAnnualizationIncludeWeekends(DateTime[] DateTimes)
     {
         TimeSpan averageTimeSpanDifference = CalculateAverageTimeDifference(DateTimes);
-        if (averageTimeSpanDifference.Days == 1)
-        {
-            return true;
-        }
-        return false;
+        return averageTimeSpanDifference.Days == 1;
     }
 
     /// <summary>
@@ -49,10 +45,7 @@ public static class PeriodicityUtilities
             case (Periodicity.Weekly):
                 return 52;
             case (Periodicity.Daily):
-                if (include_weekends == true)
-                {
-                    return 360;
-                }
+                if (include_weekends == true) return 360;
                 return 255;
             default:
                 throw new NotImplementedException();
@@ -67,14 +60,11 @@ public static class PeriodicityUtilities
     public static Periodicity GetSmallestTimeStepPeriodicity(HashSet<Periodicity> Periodicities)
     {
         //Must be ordered
-        Periodicity[] periodicitiesSmallestToLarest = { Periodicity.Intraday, Periodicity.Daily, Periodicity.Weekly,
+        Periodicity[] periodicitiesSmallestToLarest = { Periodicity.Daily, Periodicity.Weekly,
                 Periodicity.Monthly, Periodicity.Quarterly, Periodicity.SemiAnnual, Periodicity.Annually};
         foreach (Periodicity selectedPeriodicity in periodicitiesSmallestToLarest)
         {
-            if (Periodicities.Contains(selectedPeriodicity) == true)
-            {
-                return selectedPeriodicity;
-            }
+            if (Periodicities.Contains(selectedPeriodicity) == true) return selectedPeriodicity;
         }
         throw new NotImplementedException();
     }
@@ -93,10 +83,7 @@ public static class PeriodicityUtilities
             TimeInterval.Min_90, TimeInterval.Min_120, TimeInterval.Min_180};
         foreach (TimeInterval selectedTimeInterval in timeIntervalSmallestToLarest)
         {
-            if (TimeIntervals.Contains(selectedTimeInterval) == true)
-            {
-                return selectedTimeInterval;
-            }
+            if (TimeIntervals.Contains(selectedTimeInterval) == true)  return selectedTimeInterval;
         }
         throw new NotImplementedException();
     }
@@ -131,13 +118,9 @@ public static class PeriodicityUtilities
         {
             return Periodicity.Weekly;
         }
-        else if (averageDifference.Days >= 1)
-        {
-            return Periodicity.Daily;
-        }
         else
         {
-            return Periodicity.Intraday;
+            return Periodicity.Daily;
         }
     }
 
@@ -145,7 +128,7 @@ public static class PeriodicityUtilities
     {
         TimeSpan[] totalDifferences = CalculateTimeDifferences(DateTimes);
         TimeSpan totalDifference = totalDifferences.Aggregate((total, current) => total + current);
-        TimeSpan averageDifference = new TimeSpan(totalDifference.Ticks / totalDifferences.Length);
+        TimeSpan averageDifference = new(totalDifference.Ticks / totalDifferences.Length);
         return averageDifference;
     }
 

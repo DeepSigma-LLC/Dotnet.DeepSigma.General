@@ -30,8 +30,4 @@ public enum Periodicity
     /// Annually periodicity.
     /// </summary>
     Annually = 5,
-    /// <summary>
-    /// Intraday periodicity, typically used for high-frequency trading or minute-by-minute data.
-    /// </summary>
-    Intraday = 6,
 }

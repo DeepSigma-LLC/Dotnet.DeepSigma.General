@@ -7,19 +7,18 @@ namespace DeepSigma.General.TimeStepper;
 /// <summary>
 /// Abstract class for self-aligning time step functionality.
 /// </summary>
-/// <param name="Periodicity"></param>
-/// <param name="MustBeWeekday"></param>
-public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, bool MustBeWeekday = true)
+/// <param name="PeriodicityConfig"></param>
+public abstract class AbstractSelfAligningTimeStep<T>(PeriodicityConfiguration PeriodicityConfig)
     where T : struct, IDateTime<T>
 {
-    private protected Periodicity Periodicity { get; init; } = Periodicity;
-    private protected bool MustBeWeekday { get; init; } = MustBeWeekday;
+    private protected PeriodicityConfiguration PeriodicityConfig { get; init; } = PeriodicityConfig;
+    private protected bool MustBeWeekday { get; init; } = PeriodicityConfig.DayType == DaySelectionType.WeekdaysOnly;
 
     /// <summary>
     /// Returns periodicity from object instance.
     /// </summary>
     /// <returns></returns>
-    public Periodicity GetPeriodicity() => Periodicity;
+    public PeriodicityConfiguration GetPeriodicityConfiguration() => PeriodicityConfig;
 
     /// <summary>
     /// Returns next day date time.

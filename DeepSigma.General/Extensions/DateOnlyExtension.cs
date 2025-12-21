@@ -143,7 +143,6 @@ public static class DateOnlyExtension
         return Convert.ToInt32(Math.Ceiling((decimal)Date.Month / 3));
     }
 
-
     /// <summary>
     /// Returns the number of weekdays between two dates, excluding the start date.
     /// </summary>
@@ -249,5 +248,31 @@ public static class DateOnlyExtension
         int month = date.HalfYear() * 6;
         DateOnly endOfHalfYear = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
         return weekday ? endOfHalfYear.WeekdayOrPrevious() : endOfHalfYear;
+    }
+
+    /// <summary>
+    /// Counts the occurrences of a specific day of the week between two dates, inclusive.
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <param name="day_of_week"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static int CountDaysOfWeekBetweenDates(this DateOnly start, DateOnly end, DayOfWeek day_of_week)
+    {
+        if (end < start) throw new ArgumentException("End date must be >= start date.");
+
+        // Find the first DayOfWeek on or after start
+        int daysUntilDayOfWeek = ((int)day_of_week - (int)start.DayOfWeek + 7) % 7;
+        DateOnly firstDayOfWeek = start.AddDays(daysUntilDayOfWeek);
+
+        if (firstDayOfWeek > end) return 0;
+
+        // Find the last DayOfWeek on or before end
+        int daysSinceDayOfWeek = ((int)end.DayOfWeek - (int)day_of_week + 7) % 7;
+        DateOnly lastDayOfWeek = end.AddDays(-daysSinceDayOfWeek);
+
+        int daysBetweenLastAndFirst = lastDayOfWeek.DayNumber - firstDayOfWeek.DayNumber;
+        return (daysBetweenLastAndFirst / 7) + 1;
     }
 }
