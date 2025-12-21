@@ -49,16 +49,22 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     {
         if (MoveForward == true && IsValidYearEnd(SelectedDateTime) == false)
         {
-            return new DateTime(SelectedDateTime.Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday);
+            DateTime result = new(SelectedDateTime.Year, 12, 31);
+            return MustBeWeekday ? result.WeekdayOrPrevious() : result;
         }
         int YearScalar = GetDirectionScalar(MoveForward);
-        return new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar).MustBeWeekdayElseMoveBackward(MustBeWeekday);
+        DateTime output = new DateTime(SelectedDateTime.Year, 12, 31).AddYears(YearScalar);
+        return MustBeWeekday ? output.WeekdayOrPrevious() : output;
     }
 
     private bool IsValidYearEnd(T SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        if (SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday))
+        if (MustBeWeekday && SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31).WeekdayOrPrevious())
+        {
+            return true;
+        }
+        else if (MustBeWeekday == false && SelectedDateTime.Date.ToDateTime() == new DateTime(Year, 12, 31))
         {
             return true;
         }
@@ -135,11 +141,12 @@ public abstract class AbstractSelfAligningTimeStep<T>(Periodicity Periodicity, b
     private bool IsValidSemiAnnualEnd(T SelectedDateTime)
     {
         int Year = SelectedDateTime.Year;
-        HashSet<T> SemiAnnualEndDates = [
-            new DateTime(Year, 6, 30).MustBeWeekdayElseMoveBackward(MustBeWeekday),
-            new DateTime(Year, 12, 31).MustBeWeekdayElseMoveBackward(MustBeWeekday)
-        ];
-        if (SemiAnnualEndDates.Contains(SelectedDateTime)) return true;
-        return false;
+        HashSet<T> SemiAnnualEndDates = [new DateTime(Year, 6, 30),  new DateTime(Year, 12, 31)];
+
+        HashSet<T> FinalDates = MustBeWeekday ? 
+            SemiAnnualEndDates.Select(d => (T)d.DateTime.WeekdayOrPrevious()).ToHashSet() 
+            : SemiAnnualEndDates;
+
+        return FinalDates.Contains(SelectedDateTime);
     }
 }

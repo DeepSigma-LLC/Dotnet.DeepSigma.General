@@ -41,13 +41,15 @@ public static class IntExtension
     /// Calculates square root of int value
     /// </summary>
     /// <param name="value"></param>
+    /// <param name="d"></param>
     /// <returns></returns>
     public static decimal Sqrt(this int value, int d) => value * Math.Sqrt(d).ToDecimal();
 
     /// <summary>
-    /// Calculates square root of nullable int value
+    /// Calculates square root of nullable int value.
     /// </summary>
     /// <param name="value"></param>
+    /// <param name="d"></param>
     /// <returns></returns>
     public static decimal? Sqrt(this int? value, int d) => value.HasValue ? value.Value.Sqrt(d) : null;
 
