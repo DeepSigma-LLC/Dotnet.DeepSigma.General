@@ -7,7 +7,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// Represents a custom date object that encapsulates a DateTime value. 
 /// </summary>
 /// <param name="date_time"></param>
-public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCustom>, IComparable<DateTimeCustom>
+public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCustom>
 {
     private DateTime _dateTime { get; } = date_time;
 
@@ -181,4 +181,7 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
 
     /// <inheritdoc/>
     public int CompareTo(DateTimeCustom other) => _dateTime.CompareTo(other._dateTime);
+
+    /// <inheritdoc/>
+    public int CompareTo(object? obj) => _dateTime.CompareTo(obj);
 }

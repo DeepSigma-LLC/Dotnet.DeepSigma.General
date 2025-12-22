@@ -5,7 +5,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// <summary>
 /// Represents a custom date object that encapsulates a DateTimeOffset value.
 /// </summary>
-public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>, IComparable<DateTimeOffsetCustom>
+public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
 {
     private readonly DateTimeOffset _dateTimeOffset;
 
@@ -182,4 +182,7 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>, I
 
     /// <inheritdoc/>
     public int CompareTo(DateTimeOffsetCustom other) => _dateTimeOffset.CompareTo(other._dateTimeOffset);
+
+    /// <inheritdoc/>
+    public int CompareTo(object? obj) => (_dateTimeOffset as IComparable).CompareTo(obj);
 }

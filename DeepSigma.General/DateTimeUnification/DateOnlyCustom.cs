@@ -6,7 +6,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// Represents a custom date object that encapsulates a DateOnly value.
 /// </summary>
 /// <param name="date_only"></param>
-public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCustom>, IComparable<DateOnlyCustom>
+public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCustom>
 {
     private readonly DateOnly _date_only = date_only;
 
@@ -177,4 +177,7 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
 
     /// <inheritdoc/>
     public int CompareTo(DateOnlyCustom other) => _date_only.CompareTo(other._date_only);
+
+    /// <inheritdoc/>
+    public int CompareTo(object? obj) => _date_only.CompareTo(obj);
 }

@@ -4,7 +4,10 @@ namespace DeepSigma.General.DateTimeUnification;
 /// <summary>
 /// Defines the interface for a custom date object.
 /// </summary>
-public interface IDateTime<T> where T : struct, IDateTime<T>, IComparable<T>
+public interface IDateTime<T> :
+    IComparable,
+    IComparable<T>
+    where T : struct, IDateTime<T>
 {
     /// <summary>
     /// Implicit conversion from T to DateTime.
@@ -241,4 +244,5 @@ public interface IDateTime<T> where T : struct, IDateTime<T>, IComparable<T>
     /// <param name="month"></param>
     /// <param name="day"></param>
     void Deconstruct(out int year, out int month, out int day);
+
 }
