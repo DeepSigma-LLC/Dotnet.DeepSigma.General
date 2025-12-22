@@ -4,7 +4,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// <summary>
 /// Defines the interface for a custom date object.
 /// </summary>
-public interface IDateTime<T> where T : struct, IDateTime<T>
+public interface IDateTime<T> where T : struct, IDateTime<T>, IComparable<T>
 {
     /// <summary>
     /// Implicit conversion from T to DateTime.

@@ -9,7 +9,7 @@ namespace DeepSigma.General.TimeStepper;
 /// <param name="PeriodicityConfig"></param>
 public class SelfAligningTimeStep<T>(PeriodicityConfiguration PeriodicityConfig) 
     : AbstractSelfAligningTimeStep<T>(PeriodicityConfig)
-    where T : struct, IDateTime<T>
+    where T : struct, IDateTime<T>, IComparable<T>
 {
     /// <inheritdoc/>
     public HashSet<T> GetDateTimes(T StartDate, T EndDate, bool IncludeStartAndEndDates = true) 

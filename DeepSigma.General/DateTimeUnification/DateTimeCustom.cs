@@ -1,4 +1,5 @@
 ﻿using DeepSigma.General.Extensions;
+using System;
 
 namespace DeepSigma.General.DateTimeUnification;
 
@@ -6,7 +7,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// Represents a custom date object that encapsulates a DateTime value. 
 /// </summary>
 /// <param name="date_time"></param>
-public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCustom>
+public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCustom>, IComparable<DateTimeCustom>
 {
     private DateTime _dateTime { get; } = date_time;
 
@@ -177,4 +178,7 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
     {
         return DateTimeExtension.NextDayOfWeekSpecified(_dateTime, day_of_week);
     }
+
+    /// <inheritdoc/>
+    public int CompareTo(DateTimeCustom other) => _dateTime.CompareTo(other._dateTime);
 }

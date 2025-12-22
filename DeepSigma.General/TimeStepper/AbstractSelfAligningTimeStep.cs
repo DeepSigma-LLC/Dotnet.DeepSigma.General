@@ -9,7 +9,7 @@ namespace DeepSigma.General.TimeStepper;
 /// </summary>
 /// <param name="PeriodicityConfig"></param>
 public abstract class AbstractSelfAligningTimeStep<T>(PeriodicityConfiguration PeriodicityConfig)
-    where T : struct, IDateTime<T>
+    where T : struct, IDateTime<T>, IComparable<T>
 {
     private protected PeriodicityConfiguration PeriodicityConfig { get; init; } = PeriodicityConfig;
     private protected bool MustBeWeekday { get; init; } = PeriodicityConfig.DayType == DaySelectionType.WeekdaysOnly;
