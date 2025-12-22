@@ -134,6 +134,13 @@ public interface IDateTime<T> :
     /// <returns></returns>
     static abstract T Create(DateTime date);
 
+    /// <summary>
+    /// Creates an instance of T from a DateOnly value.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
+    static abstract T Parse(string s);
+
     /// <inheritdoc cref="DateTime.Date"/>
     DateOnly Date { get; }
 

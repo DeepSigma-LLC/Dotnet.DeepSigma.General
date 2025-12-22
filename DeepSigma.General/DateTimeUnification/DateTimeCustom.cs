@@ -1,5 +1,6 @@
 ﻿using DeepSigma.General.Extensions;
 using System;
+using System.ComponentModel;
 
 namespace DeepSigma.General.DateTimeUnification;
 
@@ -7,6 +8,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// Represents a custom date object that encapsulates a DateTime value. 
 /// </summary>
 /// <param name="date_time"></param>
+[TypeConverter(typeof(CustomDateTypeConverter<DateTimeCustom>))]
 public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCustom>
 {
     private DateTime _dateTime { get; } = date_time;
@@ -184,4 +186,9 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
 
     /// <inheritdoc/>
     public int CompareTo(object? obj) => _dateTime.CompareTo(obj);
+
+
+    /// <inheritdoc cref="DateTime.Parse(string)"/>
+    public static DateTimeCustom Parse(string s) => new(DateTime.Parse(s));
 }
+

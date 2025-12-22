@@ -1,4 +1,5 @@
 ﻿using DeepSigma.General.Extensions;
+using System.ComponentModel;
 
 namespace DeepSigma.General.DateTimeUnification;
 
@@ -6,6 +7,7 @@ namespace DeepSigma.General.DateTimeUnification;
 /// Represents a custom date object that encapsulates a DateOnly value.
 /// </summary>
 /// <param name="date_only"></param>
+[TypeConverter(typeof(CustomDateTypeConverter<DateOnlyCustom>))]
 public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCustom>
 {
     private readonly DateOnly _date_only = date_only;
@@ -180,4 +182,8 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
 
     /// <inheritdoc/>
     public int CompareTo(object? obj) => _date_only.CompareTo(obj);
+
+
+    /// <inheritdoc cref="DateOnly.Parse(string)"/>
+    public static DateOnlyCustom Parse(string s) => new(DateOnly.Parse(s));
 }

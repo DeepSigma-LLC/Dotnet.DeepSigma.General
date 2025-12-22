@@ -1,10 +1,12 @@
 ﻿using DeepSigma.General.Extensions; 
+using System.ComponentModel;
 
 namespace DeepSigma.General.DateTimeUnification;
 
 /// <summary>
 /// Represents a custom date object that encapsulates a DateTimeOffset value.
 /// </summary>
+[TypeConverter(typeof(CustomDateTypeConverter<DateTimeOffsetCustom>))]
 public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
 {
     private readonly DateTimeOffset _dateTimeOffset;
@@ -185,4 +187,7 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
 
     /// <inheritdoc/>
     public int CompareTo(object? obj) => (_dateTimeOffset as IComparable).CompareTo(obj);
+
+    /// <inheritdoc cref="DateTimeOffset.Parse(string)"/>
+    public static DateTimeOffsetCustom Parse(string s) => new(DateTimeOffset.Parse(s));
 }
