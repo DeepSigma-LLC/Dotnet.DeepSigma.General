@@ -83,6 +83,10 @@ public static class IEnumerableExtension
     /// // Example usage:
     /// var numbers = new List&lt;int&gt; { 1, 2, 3 };
     /// bool noneGreaterThanThree = numbers.None(n => n > 3); // Result: true
+    /// 
+    /// // Empty sequence case:
+    /// var emptyList = new List&lt;int&gt;();
+    /// bool noneInEmpty = emptyList.None(); // Result: true
     /// </code>
     /// </remarks>
     /// <typeparam name="T"></typeparam>
@@ -90,6 +94,14 @@ public static class IEnumerableExtension
     /// <param name="predicate"></param>
     /// <returns></returns>
     public static bool None<T>(this IEnumerable<T> source, Func<T, bool>? predicate = null) => predicate == null ? !source.Any() : !source.Any(predicate);
+
+    /// <summary>
+    /// Determines whether the IEnumerable is empty.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static bool Empty<T>(this IEnumerable<T> source) => !source.Any();
 
     /// <summary>
     /// Gets the most common element from a collection.
