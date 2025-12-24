@@ -37,10 +37,7 @@ public abstract class ComparableReferenceType
     /// <param name="left"></param>
     /// <param name="right"></param>
     /// <returns></returns>
-    public static bool operator !=(ComparableReferenceType? left, ComparableReferenceType? right)
-    {
-        return !(left == right);
-    }
+    public static bool operator !=(ComparableReferenceType? left, ComparableReferenceType? right) => !(left == right);
 
     /// <inheritdoc/>
     public override int GetHashCode() => UniqueId.GetHashCode();
