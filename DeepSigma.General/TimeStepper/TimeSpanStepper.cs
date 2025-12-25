@@ -14,15 +14,30 @@ public class TimeSpanStepper<T>
     /// <inheritdoc cref="TimeSpanStepper{T}"/>
     public TimeSpanStepper(TimeInterval time_interval)
     {
-        _time_span_step = time_interval.ToTimeSpan();
+        TimeSpan span = time_interval.ToTimeSpan();
+        Validate(span);
+        _time_span_step = span;
     }
 
     /// <inheritdoc cref="TimeSpanStepper{T}"/>
-    public TimeSpanStepper(int Hours = 0, int Minutes = 0, int Seconds = 0, int Milliseconds = 0)
+    public TimeSpanStepper(int days = 0, int Hours = 0, int Minutes = 0, int Seconds = 0, int Milliseconds = 0)
     {
-        TimeSpan step = new(0, Hours, Minutes, Seconds, Milliseconds);
-        if(_time_span_step.TotalMilliseconds == 0) throw new ArgumentException("Time step must be greater than zero.");
+        TimeSpan step = new(days, Hours, Minutes, Seconds, Milliseconds);
+        Validate(step);
         _time_span_step = step;
+    }
+
+    /// <inheritdoc cref="TimeSpanStepper{T}"/>
+    public TimeSpanStepper(TimeSpan time_span_step)
+    {
+        Validate(time_span_step);
+        _time_span_step = time_span_step;
+    }
+
+    
+    private void Validate(TimeSpan span)
+    {
+        if (span.TotalMilliseconds == 0) throw new InvalidOperationException("Time step must be greater than zero.");
     }
 
     /// <summary>
