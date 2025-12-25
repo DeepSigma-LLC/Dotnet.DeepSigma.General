@@ -6,6 +6,72 @@ namespace DeepSigma.General.Extensions;
 /// </summary>
 public static class DateOnlyExtension
 {
+
+    extension(DateTime)
+    {
+        /// <summary>
+        /// Calculates the number of days between two dates using the 360-day year convention (30-day months).
+        /// </summary>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <param name="methodEu">True for European method, false for US (NASD) method.</param>
+        /// <returns>The number of days between the two dates based on a 360-day year.</returns>
+        public static int Days360(DateOnly startDate, DateOnly endDate, bool methodEu = false)
+        {
+            int startDay = startDate.Day;
+            int startMonth = startDate.Month;
+            int startYear = startDate.Year;
+
+            int endDay = endDate.Day;
+            int endMonth = endDate.Month;
+            int endYear = endDate.Year;
+
+            // Apply rules for the start date
+            if (startDay == 31 || (!methodEu && IsLastDayOfFebruary(startDate)))
+            {
+                startDay = 30;
+            }
+
+            // Apply rules for the end date
+            if (endDay == 31)
+            {
+                if (!methodEu && startDay != 30)
+                {
+                    endDay = 1;
+                    if (endMonth == 12)
+                    {
+                        endYear++;
+                        endMonth = 1;
+                    }
+                    else
+                    {
+                        endMonth++;
+                    }
+                }
+                else
+                {
+                    endDay = 30;
+                }
+            }
+
+            // Calculate total days
+            return (endYear * 360 + endMonth * 30 + endDay) - (startYear * 360 + startMonth * 30 + startDay);
+        }
+    }
+
+    /// <summary>
+    /// Checks if the given date is the last day of February.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    private static bool IsLastDayOfFebruary(DateOnly date)
+    {
+        if (date.Month != 2) return false;
+        int last_day_of_february = DateTime.DaysInMonth(date.Year, 2);
+        return date.Day == last_day_of_february;
+    }
+
+
     /// <summary>
     /// Converts a DateOnly to a DateTime at midnight.
     /// </summary>
@@ -33,6 +99,24 @@ public static class DateOnlyExtension
     /// <param name="date"></param>
     /// <returns></returns>
     public static bool IsLeapYear(this DateOnly date) => DateTime.IsLeapYear(date.Year);
+
+    /// <summary>
+    /// Returns the total number of weekdays in the year of the given date.
+    /// </summary>
+    /// <param name="date_time"></param>
+    /// <returns></returns>
+    public static int TotalWeekdaysInYear(this DateOnly date_time)
+    {
+        DateOnly startOfYear = new(date_time.Year, 1, 1);
+        DateOnly endOfYear = new(date_time.Year, 12, 31);
+        int count = 0;
+
+        for (DateOnly date = startOfYear; date <= endOfYear; date = date.AddDays(1))
+        {
+            if (date.IsWeekday()) count++;
+        }
+        return count;
+    }
 
     /// <summary>
     /// Returns the number of days in the month of the given date.
@@ -85,9 +169,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly StartOfMonth(this DateOnly date, int months_to_add = 0, bool weekday = false)
     {
-        date = date.AddMonths(months_to_add);
-        DateOnly result = new(date.Year, date.Month, 1);
-        return weekday ? result.WeekdayOrNext() : result;
+        return DateTimeExtension.StartOfMonth(date.ToDateTime(), months_to_add, weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -99,11 +181,9 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly EndOfMonth(this DateOnly date, int months_to_add = 0, bool weekday = false)
     {
-        date = date.AddMonths(months_to_add);
-        DateOnly result = new(date.Year, date.Month, date.GetDaysInMonth());
-        return weekday ? result.WeekdayOrPrevious() : result;
+        return DateTimeExtension.EndOfMonth(date.ToDateTime(), months_to_add, weekday).ToDateOnly();
     }
-    
+
     /// <summary>
     /// Adds a specified number of weekdays to the date.
     /// </summary>
@@ -112,18 +192,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly AddWeekdays(this DateOnly date, int Days)
     {
-        int AbsoluteValueOfDays = Math.Abs(Days);
-        int DaysToAdd = Days / AbsoluteValueOfDays;
-        for (int i = 0; i < AbsoluteValueOfDays; i++)
-        {
-            do
-            {
-                date = date.AddDays(DaysToAdd);
-            }
-            while (date.IsWeekend() == true);
-            i++;
-        }
-        return date;
+        return DateTimeExtension.AddWeekdays(date.ToDateTime(), Days).ToDateOnly();
     }
 
     /// <summary>
@@ -182,8 +251,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly StartOfYear(this DateOnly date, bool weekday = false)
     {
-        DateOnly startOfYear = new(date.Year, 1, 1);
-        return weekday ? startOfYear.WeekdayOrNext() : startOfYear;
+        return DateTimeExtension.StartOfYear(date.ToDateTime(), weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -194,8 +262,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly EndOfYear(this DateOnly date, bool weekday = false)
     {
-        DateOnly endOfYear = new(date.Year, 12, 31);
-        return weekday ? endOfYear.WeekdayOrPrevious() : endOfYear;
+        return DateTimeExtension.EndOfYear(date.ToDateTime(), weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -206,9 +273,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly StartOfQuarter(this DateOnly date, bool weekday = false)
     {
-        int month = (date.Quarter() - 1) * 3 + 1;
-        DateOnly startOfQuarter = new(date.Year, month, 1);
-        return weekday ? startOfQuarter.WeekdayOrNext() : startOfQuarter;
+        return DateTimeExtension.StartOfQuarter(date.ToDateTime(), weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -219,9 +284,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly EndOfQuarter(this DateOnly date, bool weekday = false)
     {
-        int month = (date.Quarter() * 3);
-        DateOnly endOfQuarter = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
-        return weekday ? endOfQuarter.WeekdayOrPrevious() : endOfQuarter;
+        return DateTimeExtension.EndOfQuarter(date.ToDateTime(), weekday).ToDateOnly(); 
     }
 
     /// <summary>
@@ -232,9 +295,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly StartOfHalfYear(this DateOnly date, bool weekday = false)
     {
-        int month = (date.HalfYear() - 1) * 6 + 1;
-        DateOnly startOfHalfYear = new(date.Year, month, 1);
-        return weekday ? startOfHalfYear.WeekdayOrNext() : startOfHalfYear;
+        return DateTimeExtension.StartOfHalfYear(date.ToDateTime(), weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -245,9 +306,7 @@ public static class DateOnlyExtension
     /// <returns></returns>
     public static DateOnly EndOfHalfYear(this DateOnly date, bool weekday = false)
     {
-        int month = date.HalfYear() * 6;
-        DateOnly endOfHalfYear = new(date.Year, month, DateTime.DaysInMonth(date.Year, month));
-        return weekday ? endOfHalfYear.WeekdayOrPrevious() : endOfHalfYear;
+        return DateTimeExtension.EndOfHalfYear(date.ToDateTime(), weekday).ToDateOnly();
     }
 
     /// <summary>
@@ -260,19 +319,69 @@ public static class DateOnlyExtension
     /// <exception cref="ArgumentException"></exception>
     public static int CountDaysOfWeekBetweenDates(this DateOnly start, DateOnly end, DayOfWeek day_of_week)
     {
-        if (end < start) throw new ArgumentException("End date must be >= start date.");
+        return DateTimeExtension.CountDaysOfWeekBetweenDates(start.ToDateTime(), end.ToDateTime(), day_of_week);
+    }
 
-        // Find the first DayOfWeek on or after start
-        int daysUntilDayOfWeek = ((int)day_of_week - (int)start.DayOfWeek + 7) % 7;
-        DateOnly firstDayOfWeek = start.AddDays(daysUntilDayOfWeek);
+    /// <summary>
+    /// Returns the next specified day of the week from the given date. If the date is already the specified day, it returns the next occurrence.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="dayOfWeek"></param>
+    /// <returns></returns>
+    public static DateOnly NextDayOfWeekSpecified(this DateOnly date, DayOfWeek dayOfWeek)
+    {
+        return DateTimeExtension.NextDayOfWeekSpecified(date.ToDateTime(), dayOfWeek).ToDateOnly();
+    }
 
-        if (firstDayOfWeek > end) return 0;
+    /// <summary>
+    /// Returns the previous specified day of the week from the given date. If the date is already the specified day, it returns the previous occurrence.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="dayOfWeek"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static DateOnly PreviousDayOfWeekSpecified(this DateOnly date, DayOfWeek dayOfWeek)
+    {
+        return DateTimeExtension.PreviousDayOfWeekSpecified(date.ToDateTime(), dayOfWeek).ToDateOnly();
+    }
 
-        // Find the last DayOfWeek on or before end
-        int daysSinceDayOfWeek = ((int)end.DayOfWeek - (int)day_of_week + 7) % 7;
-        DateOnly lastDayOfWeek = end.AddDays(-daysSinceDayOfWeek);
+    /// <summary>
+    /// Returns the next weekend day from the given date.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static DateOnly NextWeekendDay(this DateOnly date) => date.AddWeekendDays(1);
 
-        int daysBetweenLastAndFirst = lastDayOfWeek.DayNumber - firstDayOfWeek.DayNumber;
-        return (daysBetweenLastAndFirst / 7) + 1;
+    /// <summary>
+    /// Returns the previous weekend day from the given date.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static DateOnly PreviousWeekendDay(this DateOnly date) => date.AddWeekendDays(-1);
+
+    /// <summary>
+    /// Returns the date itself if it's a weekend; otherwise, returns the previous weekend day.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static DateOnly WeekendOrPrevious(this DateOnly date) => date.IsWeekend() ? date : date.PreviousWeekendDay();
+
+    /// <summary>
+    /// Returns the date itself if it's a weekend; otherwise, returns the next weekend day.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public static DateOnly WeekendOrNext(this DateOnly date) => date.IsWeekend() ? date : date.NextWeekendDay();
+
+    /// <summary>
+    /// Adds days to the date until a weekend is reached.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <param name="days"></param>
+    /// <returns></returns>
+    public static DateOnly AddWeekendDays(this DateOnly date, int days)
+    {
+        return DateTimeExtension.AddWeekendDays(date.ToDateTime(), days).ToDateOnly();
     }
 }
+

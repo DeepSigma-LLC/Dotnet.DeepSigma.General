@@ -31,16 +31,12 @@ public class SelfAligningTimeStep<T>(PeriodicityConfiguration PeriodicityConfig)
     }
 
     /// <inheritdoc/>
-    public T GetNextTimeStep(T SelectedDateTime)
-    {
-        return CalculateTimeStep(SelectedDateTime, true);
-    }
+    public T GetNextTimeStep(T SelectedDateTime) => CalculateTimeStep(SelectedDateTime, true);
+    
 
     /// <inheritdoc/>
-    public T GetPreviousTimeStep(T SelectedDateTime)
-    {
-        return CalculateTimeStep(SelectedDateTime, false);
-    }
+    public T GetPreviousTimeStep(T SelectedDateTime) => CalculateTimeStep(SelectedDateTime, false);
+    
 
     /// <inheritdoc/>
     public bool IsValidTimeStep(T EvaluationDateTime) => EvaluationDateTime == CalculateTimeStep(EvaluationDateTime, false);

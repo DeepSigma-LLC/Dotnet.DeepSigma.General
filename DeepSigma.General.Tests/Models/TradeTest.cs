@@ -2,11 +2,6 @@
 
 internal class TradeTest()
 {
-    private readonly AbsoluteValue<decimal> _quantity = new();
+    public AbsoluteValue<decimal> Quantity { get; set; }
 
-    internal decimal Quantity
-    {
-        get => _quantity.Value;
-        set => _quantity.Value = value;
-    }
 }

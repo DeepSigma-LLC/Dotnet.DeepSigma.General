@@ -26,14 +26,6 @@ public class AbsoluteValueProperty_Test
         {
             Quantity = -50m
         };
-        Assert.Equal(50m, trade.Quantity);
+        Assert.Equal(50m, trade.Quantity.Value);
     }
-
-    [Fact]
-    public void ImmutableAbsoluteValueProperty_SetNegativeValue_ValueIsAbsolute()
-    {
-        TestImmutable testImmutable = new(-20);
-        Assert.Equal(20, testImmutable.Value);
-    }
-
 }

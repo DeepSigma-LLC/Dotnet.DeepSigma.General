@@ -12,7 +12,7 @@ public abstract class AbstractSelfAligningTimeStep<T>(PeriodicityConfiguration P
     where T : struct, IDateTime<T>, IComparable<T>
 {
     private protected PeriodicityConfiguration PeriodicityConfig { get; init; } = PeriodicityConfig;
-    private protected bool MustBeWeekday { get; init; } = PeriodicityConfig.DayType == DaySelectionType.WeekdaysOnly;
+    private protected bool MustBeWeekday { get; init; } = PeriodicityConfig.DayType == DaySelectionType.Weekday;
 
     /// <summary>
     /// Returns periodicity from object instance.

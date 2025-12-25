@@ -7,16 +7,20 @@ namespace DeepSigma.General.Enums;
 public enum DaySelectionType
 {
     /// <summary>
+    /// Day selection is not specified.
+    /// </summary>
+    Any,
+    /// <summary>
     /// Day selection must be a weekday.
     /// </summary>
-    WeekdaysOnly,
+    Weekday,
     /// <summary>
     /// Day selection must be a weekend day.
     /// </summary>
-    WeekendsOnly,
+    Weekend,
     /// <summary>
-    /// Day selection is not specified.
+    /// Day selection must be a specific day of the week.
     /// </summary>
-    AnyDay,
+    SpecificDayOfWeek
 }
 

@@ -177,6 +177,12 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
         return DateTimeExtension.NextDayOfWeekSpecified(DateTime, day_of_week);
     }
 
+    /// <inheritdoc />
+    public DateOnlyCustom PreviousDayOfWeekSpecified(DayOfWeek day_of_week)
+    {
+        return DateTimeExtension.NextDayOfWeekSpecified(DateTime, day_of_week);
+    }
+
     /// <inheritdoc/>
     public int CompareTo(DateOnlyCustom other) => _date_only.CompareTo(other._date_only);
 
@@ -186,4 +192,10 @@ public readonly struct DateOnlyCustom(DateOnly date_only) : IDateTime<DateOnlyCu
 
     /// <inheritdoc cref="DateOnly.Parse(string)"/>
     public static DateOnlyCustom Parse(string s) => new(DateOnly.Parse(s));
+
+    /// <inheritdoc/>
+    public DateOnlyCustom AddWeekendDays(int weekend_days)
+    {
+        return DateOnlyExtension.AddWeekendDays(DateOnly, weekend_days);
+    }
 }

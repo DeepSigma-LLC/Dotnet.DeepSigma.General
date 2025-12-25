@@ -59,3 +59,36 @@ public enum TimeInterval
     /// </summary>
     Min_180 = 180
 }
+
+/// <summary>
+/// Provides extension methods for the TimeInterval enum.
+/// </summary>
+public static class TimeIntervalExtensions
+{
+    /// <summary>
+    /// Converts the TimeInterval enum value to its equivalent TimeSpan representation.
+    /// </summary>
+    /// <param name="timeInterval">The TimeInterval enum value.</param>
+    /// <returns>A TimeSpan representing the time interval.</returns>
+    public static TimeSpan ToTimeSpan(this TimeInterval timeInterval)
+    {
+        int minutes = timeInterval switch
+        {
+            TimeInterval.Min_1 => 1,
+            TimeInterval.Min_2 => 2,
+            TimeInterval.Min_3 => 3,
+            TimeInterval.Min_5 => 5,
+            TimeInterval.Min_10 => 10,
+            TimeInterval.Min_15 => 15,
+            TimeInterval.Min_20 => 20,
+            TimeInterval.Min_30 => 30,
+            TimeInterval.Min_45 => 45,
+            TimeInterval.Min_60 => 60,
+            TimeInterval.Min_90 => 90,
+            TimeInterval.Min_120 => 120,
+            TimeInterval.Min_180 => 180,
+            _ => throw new ArgumentOutOfRangeException(nameof(timeInterval), timeInterval, null),
+        };
+        return TimeSpan.FromMinutes((int)timeInterval);
+    }
+}

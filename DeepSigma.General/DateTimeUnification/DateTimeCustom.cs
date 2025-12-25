@@ -181,6 +181,12 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
         return DateTimeExtension.NextDayOfWeekSpecified(_dateTime, day_of_week);
     }
 
+    /// <inheritdoc />
+    public DateTimeCustom PreviousDayOfWeekSpecified(DayOfWeek day_of_week)
+    {
+        return DateTimeExtension.NextDayOfWeekSpecified(DateTime, day_of_week);
+    }
+
     /// <inheritdoc/>
     public int CompareTo(DateTimeCustom other) => _dateTime.CompareTo(other._dateTime);
 
@@ -190,5 +196,11 @@ public readonly struct DateTimeCustom(DateTime date_time) : IDateTime<DateTimeCu
 
     /// <inheritdoc cref="DateTime.Parse(string)"/>
     public static DateTimeCustom Parse(string s) => new(DateTime.Parse(s));
+
+    /// <inheritdoc/>
+    public DateTimeCustom AddWeekendDays(int weekend_days)
+    {
+        return DateTimeExtension.AddWeekendDays(_dateTime, weekend_days);
+    }
 }
 

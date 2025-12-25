@@ -145,6 +145,12 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
         return _dateTimeOffset.DateTime.NextDayOfWeekSpecified(day_of_week);
     }
 
+    /// <inheritdoc />
+    public DateTimeOffsetCustom PreviousDayOfWeekSpecified(DayOfWeek day_of_week)
+    {
+        return _dateTimeOffset.DateTime.PreviousDayOfWeekSpecified(day_of_week);
+    }
+
     /// <inheritdoc/>
     public DateTimeOffsetCustom StartOfMonth(int months_to_add = 0, bool must_be_weekday = false)
     {
@@ -190,4 +196,11 @@ public readonly struct DateTimeOffsetCustom : IDateTime<DateTimeOffsetCustom>
 
     /// <inheritdoc cref="DateTimeOffset.Parse(string)"/>
     public static DateTimeOffsetCustom Parse(string s) => new(DateTimeOffset.Parse(s));
+
+    /// <inheritdoc/>
+    public DateTimeOffsetCustom AddWeekendDays(int weekend_days)
+    {
+        return _dateTimeOffset.DateTime.AddWeekendDays(weekend_days);
+    }
+
 }

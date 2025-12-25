@@ -217,6 +217,13 @@ public interface IDateTime<T> :
     T AddWeekdays(int weekdays);
 
     /// <summary>
+    /// Adds the specified number of weekend days to the current instance.
+    /// </summary>
+    /// <param name="weekend_days"></param>
+    /// <returns></returns>
+    T AddWeekendDays(int weekend_days);
+
+    /// <summary>
     /// Determines whether the current instance falls on a weekday.
     /// </summary>
     /// <returns></returns>
@@ -234,6 +241,13 @@ public interface IDateTime<T> :
     /// <param name="day_of_week"></param>
     /// <returns></returns>
     T NextDayOfWeekSpecified(DayOfWeek day_of_week);
+
+    /// <summary>
+    /// Returns the next occurrence of the specified day of the week.
+    /// </summary>
+    /// <param name="day_of_week"></param>
+    /// <returns></returns>
+    T PreviousDayOfWeekSpecified(DayOfWeek day_of_week);
 
     /// <inheritdoc cref="DateTime.AddDays(double)"/>
     T AddDays(int value);
