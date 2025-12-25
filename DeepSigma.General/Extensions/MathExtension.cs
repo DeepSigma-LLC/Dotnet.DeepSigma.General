@@ -10,6 +10,23 @@ public static class MathExtension
     extension(Math)
     {
         /// <summary>
+        /// Calculates the power of a decimal value raised to another decimal value.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+
+        public static decimal Pow(decimal x, decimal y) => Math.Pow(x.ToDouble(), y.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the power of a nullable decimal value raised to another nullable decimal value.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static decimal? Pow(decimal? x, decimal? y) => (x.HasValue && y.HasValue) ? Pow(x.Value, y.Value) : null;
+
+        /// <summary>
         /// Calculates the square root of a decimal value.
         /// </summary>
         /// <param name="value"></param>
