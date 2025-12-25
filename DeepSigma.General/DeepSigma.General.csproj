@@ -6,10 +6,10 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>DeepSigma.General</Title>
-    <Version>2.3.1.0</Version>
+    <Version>2.3.2.0</Version>
     <Authors>DeepSigma LLC</Authors>
-    <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General.git</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.General</RepositoryUrl>
     <FileVersion>$(Version)</FileVersion>
     <Description>C# library for general utilities and language extensions.</Description>
     <AssemblyVersion>$(Version)</AssemblyVersion>

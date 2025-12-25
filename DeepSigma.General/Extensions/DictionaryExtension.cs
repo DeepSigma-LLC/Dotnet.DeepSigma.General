@@ -1,4 +1,6 @@
 ﻿
+using DeepSigma.General.Utilities;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -20,6 +22,51 @@ public static class DictionaryExtension
     {
         return new SortedDictionary<T, Z>(dictionary);
     }
+
+
+    /// <summary>
+    /// Retrieves a single series of data from the data set based on a specified target property.
+    /// For example, if <typeparamref name="TDataModel"/> has a property named "Price", you can retrieve a series of prices by passing an expression that points to that property.
+    /// 
+    /// <code>
+    /// Dictionary&lt;DateTime, decimal?&gt; priceSeries = dataSet.GetExtractedPropertyAsSeries(x => x.Price);
+    /// // Or for a sorted series:
+    /// SortedDictionary&lt;DateTime, decimal?&gt; priceSeries = dataSet.GetExtractedPropertyAsSeriesSorted(x => x.Price);
+    /// </code>
+    /// </summary>
+    /// <remarks>
+    /// Note: This method uses expressions to specify the target property, allowing for strong typing and compile-time checking of property names.
+    /// This method will create a new Dictionary containing the keys from the original data set and the values obtained by evaluating the target property on each <typeparamref name="TDataModel"/> instance.
+    /// </remarks>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TDataModel"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="data"></param>
+    /// <param name="target_property"></param>
+    /// <returns></returns>
+    public static Dictionary<TKey, TResult?> GetExtractedPropertyAsSeries<TKey, TDataModel, TResult>(this IDictionary<TKey, TDataModel> data, Expression<Func<TDataModel, TResult>> target_property)
+    where TKey : notnull, IComparable<TKey>
+    {
+        Func<TDataModel, TResult?> compiled_function = ObjectUtilities.ExpressionToExecutableFunction(target_property);
+
+        return data.ToDictionary(
+            kvp => kvp.Key,
+            kvp => compiled_function(kvp.Value));
+    }
+
+    /// <inheritdoc cref="GetExtractedPropertyAsSeries{TKey, TDataModel, TResult}(IDictionary{TKey, TDataModel}, Expression{Func{TDataModel, TResult}})"/>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TDataModel"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="data"></param>
+    /// <param name="target_property"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TResult?> GetExtractedPropertyAsSeriesSorted<TKey, TDataModel, TResult>(this IDictionary<TKey, TDataModel> data, Expression<Func<TDataModel, TResult>> target_property)
+    where TKey : notnull, IComparable<TKey>
+    {
+        return data.GetExtractedPropertyAsSeries(target_property).ToSortedDictionary();
+    }
+
 
     /// <summary>
     /// Tries to get a value from the dictionary.
