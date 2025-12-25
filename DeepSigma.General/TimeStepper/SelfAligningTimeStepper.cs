@@ -5,15 +5,49 @@ using DeepSigma.General.Extensions;
 namespace DeepSigma.General.TimeStepper;
 
 /// <summary>
-/// Self-aligning time stepper is a utility to calculate time steps based on periodicity configuration.
+/// Self-aligning time stepper <see cref="SelfAligningTimeStepper{T}"/> is a used to calculate time steps based on periodicity configuration.
 /// The goal of this class is to provide time steps that align with specific periodicity rules, such as month-end or quarter-end dates.
-/// This class supports various periodicities including daily, weekly, monthly, quarterly, semi-annual, and annual.
+/// This class supports various periodicities including intraday, daily, weekly, monthly, quarterly, semi-annual, and annual.
 /// </summary>
 /// <remarks>
-/// The type parameter T must implement IDateTime{T} IComparable{T} to ensure compatibility with date-time operations and comparisons.
+/// The type parameter T must implement <see cref="IDateTime{T}"/> to ensure compatibility with date-time operations.
 /// The goal is to provide a flexible and reusable component for time step calculations in scheduling or time series applications.
+/// <para>The method enforces the following rules:</para>
+/// <list type="number">
+///   <item>
+///     <description>
+///     <b>DateOnlyCustom cannot be used with a time component.</b><br/>
+///     If the generic type <c>T</c> is <see cref="DateOnlyCustom"/> and the configuration 
+///     includes a time value, the setup is invalid because <see cref="DateOnlyCustom"/> 
+///     does not support time-based intervals.
+///     </description>
+///   </item>
+///
+///   <item>
+///     <description>
+///     <b>A required day of week must be provided for weekly schedules.</b><br/>
+///     When the periodicity is weekly, a specific <see cref="DayOfWeek"/> value must be supplied.
+///     </description>
+///   </item>
+///
+///   <item>
+///     <description>
+///     <b>A required day of week must be provided when using 
+///     <see cref="DaySelectionType.SpecificDayOfWeek"/>.</b><br/>
+///     If alignment depends on a specific day of the week, that day must be specified.
+///     </description>
+///   </item>
+///
+///   <item>
+///     <description>
+///     <b>A required day of week must not be provided unless it is needed.</b><br/>
+///     Only weekly periodicity or <see cref="DaySelectionType.SpecificDayOfWeek"/> 
+///     should include a day-of-week value.  
+///     For all other configurations, the day-of-week parameter must be <c>null</c>.
+///     </description>
+///   </item>
+/// </list>
 /// </remarks>
-/// <typeparam name="T"></typeparam>
 public class SelfAligningTimeStepper<T>
     where T : struct, IDateTime<T>, IComparable<T>
 {

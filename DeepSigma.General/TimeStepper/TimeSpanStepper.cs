@@ -4,8 +4,15 @@ using DeepSigma.General.Enums;
 namespace DeepSigma.General.TimeStepper;
 
 /// <summary>
-/// Time span stepper for DateTime.
+/// Provides functionality to step through <see cref="IDateTime{T}"/> values based on a specified TimeSpan interval.
 /// </summary>
+/// <remarks>
+/// For example, you can create a <see cref="TimeSpanStepper{T}"/> with a 15-minute interval and use it to get the next or previous time steps from a given <see cref="IDateTime{T}"/> value.
+/// Alternatively, you can retrieve all time steps between two <see cref="IDateTime{T}"/> values either including or excluding the bounds in the case where you want to generate a series of time points at regular intervals.
+/// The class supports backward and forward stepping through time and the ability to handle different time intervals specified via <see cref="TimeInterval"/> enum or custom <see cref="TimeSpan"/> values which allows for flexible time manipulation and custom time steps as needed.
+/// For example, you can create a stepper with a 21-minute and 13 second interval by using the <see cref="TimeSpanStepper{T}(TimeSpan)"/> constructor.
+/// If you need to work with different date periodicities such as daily, weekly, monthly, quaterly, semi-annual, or annual intervals, consider using the <see cref="SelfAligningTimeStepper{T}"/> which is designed to handle such scenarios.
+/// </remarks>
 public class TimeSpanStepper<T> 
     where T : struct, IDateTime<T>
 {
