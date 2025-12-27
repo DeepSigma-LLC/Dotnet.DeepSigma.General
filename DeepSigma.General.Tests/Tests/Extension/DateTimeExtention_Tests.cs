@@ -1,7 +1,7 @@
 ﻿using DeepSigma.General.Extensions;
 using Xunit;
 
-namespace DeepSigma.General.Tests.Tests
+namespace DeepSigma.General.Tests.Tests.Extension
 {
     public class DateTimeExtention_Tests
     {

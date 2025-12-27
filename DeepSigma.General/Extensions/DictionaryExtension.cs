@@ -1,4 +1,6 @@
 ﻿
+using DeepSigma.General.DateTimeUnification;
+using DeepSigma.General.TimeStepper;
 using DeepSigma.General.Utilities;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
@@ -18,9 +20,71 @@ public static class DictionaryExtension
     /// <typeparam name="Z"></typeparam>
     /// <param name="dictionary"></param>
     /// <returns></returns>
-    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this IDictionary<T, Z> dictionary) where T : notnull
+    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this IDictionary<T, Z> dictionary) 
+        where T : notnull
     {
         return new SortedDictionary<T, Z>(dictionary);
+    }
+
+    /// <summary>
+    /// Rolls forward the last known value to fill missing dates in the time series. Required dates determined from periodicity time stepper.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="TimeStep"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TDate, TValue?> FillMissingValuesByRolling<TDate, TValue>(this SortedDictionary<TDate, TValue?> Data, SelfAligningTimeStepper<TDate> TimeStep)
+        where TDate : struct, IDateTime<TDate>
+    {
+        SortedDictionary<TDate, TValue?> results = [];
+        TDate StartDate = Data.Keys.Min();
+        TDate EndDate = Data.Keys.Max();
+        TDate selectedDateTime = StartDate;
+        TValue? lastKnownValue = default;
+        while (selectedDateTime <= EndDate)
+        {
+            bool found = Data.TryGetValue(selectedDateTime, out TValue? new_value);
+            if (found)
+            {
+                lastKnownValue = new_value;
+            }
+            results.Add(selectedDateTime, lastKnownValue);
+            selectedDateTime = TimeStep.GetNextTimeStep(selectedDateTime);
+        }
+
+        //Add final value if not added
+        if (!results.ContainsKey(EndDate))
+        {
+            results.Add(EndDate, Data[EndDate]);
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// Fills missing dates required by the time step with null if no data exists for that date.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="TimeStep"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TDate, TValue?> FillMissingValuesWithNull<TDate, TValue>(this SortedDictionary<TDate, TValue?> Data, SelfAligningTimeStepper<TDate> TimeStep)
+        where TDate : struct, IDateTime<TDate>
+    {
+        SortedDictionary<TDate, TValue?> results = [];
+        TDate StartDate = Data.Keys.Min();
+        TDate EndDate = Data.Keys.Max();
+        TDate selectedDateTime = StartDate;
+        while (selectedDateTime <= EndDate)
+        {
+            bool found = Data.TryGetValue(selectedDateTime, out TValue? value);
+            results.Add(selectedDateTime, value);
+            selectedDateTime = TimeStep.GetNextTimeStep(selectedDateTime);
+        }
+
+        //Add final value if not added
+        if (!results.ContainsKey(EndDate))
+        {
+            results.Add(EndDate, Data[EndDate]);
+        }
+        return results;
     }
 
 
@@ -53,20 +117,6 @@ public static class DictionaryExtension
             kvp => kvp.Key,
             kvp => compiled_function(kvp.Value));
     }
-
-    /// <inheritdoc cref="GetExtractedPropertyAsSeries{TKey, TDataModel, TResult}(IDictionary{TKey, TDataModel}, Expression{Func{TDataModel, TResult}})"/>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TDataModel"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <param name="data"></param>
-    /// <param name="target_property"></param>
-    /// <returns></returns>
-    public static SortedDictionary<TKey, TResult?> GetExtractedPropertyAsSeriesSorted<TKey, TDataModel, TResult>(this IDictionary<TKey, TDataModel> data, Expression<Func<TDataModel, TResult>> target_property)
-    where TKey : notnull, IComparable<TKey>
-    {
-        return data.GetExtractedPropertyAsSeries(target_property).ToSortedDictionary();
-    }
-
 
     /// <summary>
     /// Tries to get a value from the dictionary.
