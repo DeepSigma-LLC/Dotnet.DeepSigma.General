@@ -63,14 +63,24 @@ public class SelfAligningTimeStepper<T>
     /// For example, if a date falls on a weekend and this is true, it will adjust to the next weekday (assuming weekdays are required).
     /// If false, it will adjust to the previous weekday.
     /// </remarks>
-    private protected bool AdjustmentDirectionIsForward { get; init; }
+    private protected DateAdjustmentType AdjustmentType { get; init; }
 
     /// <summary>
-    /// Returns +1 when Move forward = true and -1 when Move foward = false.
+    /// Gets move direction scalar based on AdjustmentType and MoveForward flag.
     /// </summary>
     /// <param name="MoveForward"></param>
     /// <returns></returns>
-    private int GetMoveDirectionScalar(bool MoveForward = true) => MoveForward ? 1 : -1;
+    /// <exception cref="NotImplementedException"></exception>
+    private int GetAdjustmentDirectionScalar(bool MoveForward)
+    {
+        return AdjustmentType switch
+        {
+            DateAdjustmentType.MoveForward => 1,
+            DateAdjustmentType.MoveBackward => -1,
+            DateAdjustmentType.MoveInDirectionOfTimeStep => MoveForward ? 1 : -1,
+            _ => throw new NotImplementedException(),
+        };
+    }
 
     /// <summary>
     /// Time span stepper for intraday time step calculations.
@@ -89,12 +99,12 @@ public class SelfAligningTimeStepper<T>
             : null; // Ensures value is only set when DayType is SpecificDayOfWeek or Periodicity is Weekly
     }
 
-    /// <inheritdoc cref="SelfAligningTimeStepper{T}(PeriodicityConfiguration, bool, DayOfWeek?)"/>
-    public SelfAligningTimeStepper(PeriodicityConfiguration PeriodicityConfig, bool AdjustmentDirectionForward = true, DayOfWeek? required_day_of_week = null)
+    /// <inheritdoc cref="SelfAligningTimeStepper{T}(PeriodicityConfiguration, DateAdjustmentType, DayOfWeek?)"/>
+    public SelfAligningTimeStepper(PeriodicityConfiguration periodicity_config, DateAdjustmentType adjustment_type = DateAdjustmentType.MoveInDirectionOfTimeStep, DayOfWeek? required_day_of_week = null)
     {
-        ValidateDaySelection(PeriodicityConfig, required_day_of_week);
-        this.PeriodicityConfig = PeriodicityConfig;
-        this.AdjustmentDirectionIsForward = AdjustmentDirectionForward;
+        ValidateDaySelection(periodicity_config, adjustment_type, required_day_of_week);
+        this.PeriodicityConfig = periodicity_config;
+        this.AdjustmentType = adjustment_type;
         this.RequiredDayOfWeek = required_day_of_week;
 
         if(PeriodicityConfig.Time is not null)
@@ -108,11 +118,16 @@ public class SelfAligningTimeStepper<T>
     /// </summary>
     /// <param name="config"></param>
     /// <param name="required_day_of_week"></param>
+    /// <param name="adjustment_type"></param>
     /// <exception cref="ArgumentException"></exception>
-    private void ValidateDaySelection(PeriodicityConfiguration config, DayOfWeek? required_day_of_week)
+    private void ValidateDaySelection(PeriodicityConfiguration config, DateAdjustmentType adjustment_type, DayOfWeek? required_day_of_week)
     {
         if (typeof(T) == typeof(DateOnlyCustom) && config.Time is not null)
             throw new ArgumentException($"Time interval is not supported for {nameof(DateOnlyCustom)} type.");
+
+        if (config.Periodicity == Periodicity.Daily && adjustment_type != DateAdjustmentType.MoveInDirectionOfTimeStep)
+            throw new ArgumentException("Adjustment type must be MoveInDirectionOfTimeStep for daily periodicities to prevent looping. " +
+                "We always move in the direction of the time step for daily periodicities.");
 
         if (config.Periodicity == Periodicity.Weekly && required_day_of_week is null) 
             throw new ArgumentException("Required day of week must be provided for weekly periodicity.");
@@ -127,7 +142,13 @@ public class SelfAligningTimeStepper<T>
             throw new ArgumentException("Required day of week should be null unless day selection is specific day of week or periodicity is weekly.");
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Generates a set of date-times between StartDate and EndDate based on the periodicity configuration.
+    /// </summary>
+    /// <param name="StartDate"></param>
+    /// <param name="EndDate"></param>
+    /// <param name="IncludeStartAndEndDates"></param>
+    /// <returns></returns>
     public HashSet<T> GetDateTimes(T StartDate, T EndDate, bool IncludeStartAndEndDates = true)
     {
         HashSet<T> results = [];
@@ -146,10 +167,18 @@ public class SelfAligningTimeStepper<T>
         return results;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Calculates the next time step based on the periodicity configuration.
+    /// </summary>
+    /// <param name="SelectedDateTime"></param>
+    /// <returns></returns>
     public T GetNextTimeStep(T SelectedDateTime) => CalculateTimeStep(SelectedDateTime, true);
-    
-    /// <inheritdoc/>
+
+    /// <summary>
+    /// Calculates the previous time step based on the periodicity configuration.
+    /// </summary>
+    /// <param name="SelectedDateTime"></param>
+    /// <returns></returns>
     public T GetPreviousTimeStep(T SelectedDateTime) => CalculateTimeStep(SelectedDateTime, false);
 
     /// <summary>
@@ -198,61 +227,69 @@ public class SelfAligningTimeStepper<T>
         T new_date = MoveForward ?
             SelectedDateTime.NextDayOfWeekSpecified(RequiredDayOfWeek.Value)
             : SelectedDateTime.PreviousDayOfWeekSpecified(RequiredDayOfWeek.Value);
-        return AdjustDateIfNeeded(new_date);
+        return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
     private T GetMonthEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         DateTime eom_date = SelectedDateTime.DateTime.EndOfMonth();
-        int months_to_add = GetMoveDirectionScalar(MoveForward);
 
-        (bool found, T new_date) = ValidDateFound(SelectedDateTime, MoveForward, eom_date);
+        (bool found, T new_date) = FindNextValidDate(SelectedDateTime, MoveForward, eom_date);
         if (found) return new_date;
 
+        int months_to_add = MoveForward ? 1 : -1;
         new_date = eom_date.AddMonths(months_to_add).EndOfMonth();
-        return AdjustDateIfNeeded(new_date);
+        return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
     private T GetQuarterEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         DateTime eoq_date = SelectedDateTime.DateTime.EndOfQuarter();
-        int months_to_add = GetMoveDirectionScalar(MoveForward) * 3;
-
-        (bool found, T new_date) = ValidDateFound(SelectedDateTime, MoveForward, eoq_date);
+       
+        (bool found, T new_date) = FindNextValidDate(SelectedDateTime, MoveForward, eoq_date);
         if (found) return new_date;
 
+        int months_to_add = MoveForward ? 3 : -3;
         new_date = eoq_date.AddMonths(months_to_add).EndOfQuarter();
-        return AdjustDateIfNeeded(new_date);
+        return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
     private T GetSemiAnnualEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         DateTime eos_date = SelectedDateTime.DateTime.EndOfHalfYear();
-        int months_to_add = GetMoveDirectionScalar(MoveForward) * 6;
-
-        (bool found, T new_date) = ValidDateFound(SelectedDateTime, MoveForward, eos_date);
+       
+        (bool found, T new_date) = FindNextValidDate(SelectedDateTime, MoveForward, eos_date);
         if (found) return new_date;
-        
+
+        int months_to_add = (MoveForward ? 6 : -6);
         new_date = eos_date.AddMonths(months_to_add).EndOfHalfYear();
-        return AdjustDateIfNeeded(new_date);
+        return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
     private T GetYearEndDateTime(T SelectedDateTime, bool MoveForward)
     {
         DateTime eoy_date = SelectedDateTime.DateTime.EndOfYear();
-        int years_to_add = GetMoveDirectionScalar(MoveForward);
 
-        (bool found, T new_date) = ValidDateFound(SelectedDateTime, MoveForward, eoy_date);
+        (bool found, T new_date) = FindNextValidDate(SelectedDateTime, MoveForward, eoy_date);
         if (found) return new_date;
-        
+
+        int years_to_add = MoveForward ? 1 : -1;
         new_date = new_date.AddYears(years_to_add);
-        return AdjustDateIfNeeded(new_date);
+        return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
-    private (bool found, T value) ValidDateFound(T SelectedDateTime, bool MoveForward, DateTime new_date)
+    /// <summary>
+    /// Checks if a valid date is found based on the movement direction and selected date.
+    /// If valid, returns the valid, new date.
+    /// </summary>
+    /// <param name="SelectedDateTime"></param>
+    /// <param name="MoveForwardInTime"></param>
+    /// <param name="new_date"></param>
+    /// <returns></returns>
+    private (bool found, T value) FindNextValidDate(T SelectedDateTime, bool MoveForwardInTime, DateTime new_date)
     {
-        new_date = AdjustDateIfNeeded(new_date);
-        return MoveForward switch
+        new_date = AdjustDateIfNeeded(new_date, MoveForwardInTime);
+        return MoveForwardInTime switch
         {
             true
                 when new_date > SelectedDateTime.DateTime => (found: true, value: new_date),
@@ -266,14 +303,37 @@ public class SelfAligningTimeStepper<T>
     /// Adjusts the SelectedDateTime until it matches the required day type as per PeriodicityConfig.
     /// </summary>
     /// <param name="SelectedDateTime"></param>
-    /// <param name="adjust_forward"></param>
+    /// <param name="moving_forward_in_time"></param>
     /// <returns></returns>
-    private T AdjustDateIfNeeded(T SelectedDateTime, bool? adjust_forward = null)
+    private T AdjustDateIfNeeded(T SelectedDateTime, bool moving_forward_in_time)
     {
         return IsValidDayOfWeek(SelectedDateTime) 
             ? SelectedDateTime
             // Use provided adjust_forward if not null, otherwise use the class-level AdjustmentDirectionForward
-            : AdjustDate(SelectedDateTime, adjust_forward ?? AdjustmentDirectionIsForward); 
+            : AdjustDate(SelectedDateTime, moving_forward_in_time); 
+    }
+
+    /// <summary>
+    /// Adjusts the SelectedDateTime to the next valid date based on the DaySelectionType in PeriodicityConfig.
+    /// </summary>
+    /// <param name="SelectedDateTime"></param>
+    /// <param name="MovingForwardInTime"></param>
+    /// <returns></returns>
+    /// <exception cref="NotSupportedException"></exception>
+    private T AdjustDate(T SelectedDateTime, bool MovingForwardInTime)
+    {
+        int days_to_add = GetAdjustmentDirectionScalar(MovingForwardInTime);
+        return PeriodicityConfig.DayType switch
+        {
+            DaySelectionType.Any => SelectedDateTime.AddDays(days_to_add),
+            DaySelectionType.Weekday => SelectedDateTime.AddWeekdays(days_to_add),
+            DaySelectionType.Weekend => SelectedDateTime.AddWeekendDays(days_to_add),
+            // null-forgiving operator is safe here due to validation in constructor
+            DaySelectionType.SpecificDayOfWeek => AdjustmentType == DateAdjustmentType.MoveForward
+                ? SelectedDateTime.NextDayOfWeekSpecified(RequiredDayOfWeek!.Value)
+                : SelectedDateTime.PreviousDayOfWeekSpecified(RequiredDayOfWeek!.Value), 
+            _ => throw new NotSupportedException($"Day selection type {PeriodicityConfig.DayType} is not supported."),
+        };
     }
 
     /// <summary>
@@ -290,29 +350,6 @@ public class SelfAligningTimeStepper<T>
             DaySelectionType.Weekday => SelectedDateTime.DayOfWeek.IsWeekday(),
             DaySelectionType.Weekend => SelectedDateTime.DayOfWeek.IsWeekend(),
             DaySelectionType.SpecificDayOfWeek => SelectedDateTime.DayOfWeek == RequiredDayOfWeek,
-            _ => throw new NotSupportedException($"Day selection type {PeriodicityConfig.DayType} is not supported."),
-        };
-    }
-
-    /// <summary>
-    /// Adjusts the SelectedDateTime to the next valid date based on the DaySelectionType in PeriodicityConfig.
-    /// </summary>
-    /// <param name="SelectedDateTime"></param>
-    /// <param name="adjust_forward"></param>
-    /// <returns></returns>
-    /// <exception cref="NotSupportedException"></exception>
-    private T AdjustDate(T SelectedDateTime, bool adjust_forward)
-    {
-        int days_to_add = GetMoveDirectionScalar(adjust_forward);
-        return PeriodicityConfig.DayType switch
-        {
-            DaySelectionType.Any => SelectedDateTime.AddDays(days_to_add),
-            DaySelectionType.Weekday => SelectedDateTime.AddWeekdays(days_to_add),
-            DaySelectionType.Weekend => SelectedDateTime.AddWeekendDays(days_to_add),
-            // null-forgiving operator is safe here due to validation in constructor
-            DaySelectionType.SpecificDayOfWeek => AdjustmentDirectionIsForward
-                ? SelectedDateTime.NextDayOfWeekSpecified(RequiredDayOfWeek!.Value)
-                : SelectedDateTime.PreviousDayOfWeekSpecified(RequiredDayOfWeek!.Value), 
             _ => throw new NotSupportedException($"Day selection type {PeriodicityConfig.DayType} is not supported."),
         };
     }

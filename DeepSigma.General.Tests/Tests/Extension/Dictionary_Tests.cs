@@ -7,6 +7,60 @@ namespace DeepSigma.General.Tests.Tests.Extension;
 
 public class Dictionary_Tests
 {
+
+    [Fact]
+    public void Test_RemoveNullValues()
+    {
+        // Arrange
+        SortedDictionary<DateOnlyCustom, decimal?> dict = new()
+        {
+            { new DateOnlyCustom(2025, 12, 10), 100.0m },
+            { new DateOnlyCustom(2025, 12, 11), null },
+            { new DateOnlyCustom(2025, 12, 12), 200.0m },
+            { new DateOnlyCustom(2025, 12, 13), null },
+            { new DateOnlyCustom(2025, 12, 14), 300.0m }
+        };
+        // Act
+        var result = dict.RemoveNulls();
+        // Assert
+        Assert.Equal(3, result.Count);
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 10)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 12)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 14)));
+    }
+
+    [Fact]
+    public void RemoveInvalidDates()
+    {
+
+        // Arrange
+        SortedDictionary<DateOnlyCustom, decimal?> dict = new()
+        {
+            { new DateOnlyCustom(2025, 12, 10), 100.0m },
+            { new DateOnlyCustom(2025, 12, 11), null },
+            { new DateOnlyCustom(2025, 12, 12), 200.0m },
+            { new DateOnlyCustom(2025, 12, 13), null },
+            { new DateOnlyCustom(2025, 12, 14), 300.0m },
+            { new DateOnlyCustom(2025, 12, 15), null  },
+            { new DateOnlyCustom(2025, 12, 16), null  }
+        };
+
+        SelfAligningTimeStepper<DateOnlyCustom> timeStepper = new(
+            new PeriodicityConfiguration(Enums.Periodicity.Daily, Enums.DaySelectionType.Weekday)
+        );
+
+        // Act
+        var result = dict.RemoveInvalidDates(timeStepper);
+        // Assert
+        Assert.Equal(5, result.Count);
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 10)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 11)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 12)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 15)));
+        Assert.True(result.ContainsKey(new DateOnlyCustom(2025, 12, 16)));
+    }
+
+
     [Fact]
     public void Test_SortedDictionary_Roll()
     {

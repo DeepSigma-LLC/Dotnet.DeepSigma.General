@@ -11,7 +11,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Monthly_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Monthly, Enums.DaySelectionType.Any);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward);
 
         DateTimeCustom expected = new DateTime(2024, 3, 31);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
@@ -39,7 +39,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Annual_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Annually, Enums.DaySelectionType.Any);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward);
 
         DateTimeCustom expected = new DateTime(2024, 12, 31);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
@@ -67,7 +67,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_SemiAnnual_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.SemiAnnual, Enums.DaySelectionType.Any);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward);
 
         DateTimeCustom expected = new DateTime(2024, 6, 30);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
@@ -95,7 +95,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Weekly_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Weekly, Enums.DaySelectionType.Any);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false, DayOfWeek.Friday);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward, DayOfWeek.Friday);
 
         DateTimeCustom expected = new DateTime(2025, 12, 5);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -122,7 +122,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Daily_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Daily, Enums.DaySelectionType.Any);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveInDirectionOfTimeStep);
 
         DateTimeCustom expected = new DateTime(2025, 12, 2);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -149,7 +149,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Daily_WeekdaysOnly_Steps()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Daily, Enums.DaySelectionType.Weekday);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveInDirectionOfTimeStep);
 
         DateTimeCustom expected = new DateTime(2025, 12, 2);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -176,7 +176,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Daily_Intraday()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Daily, Enums.DaySelectionType.Any, Enums.TimeInterval.Min_30);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveInDirectionOfTimeStep);
 
         DateTimeCustom expected = new DateTime(2025, 12, 1, hour:0, minute:30, second:0);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -203,7 +203,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Daily_Intraday_WeekdaysOnly()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Daily, Enums.DaySelectionType.Weekday, Enums.TimeInterval.Min_30);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveInDirectionOfTimeStep);
 
         DateTimeCustom expected = new DateTime(2025, 12, 5, hour: 23, minute: 30, second: 0);
         DateTimeCustom next1 = stepper.GetNextTimeStep(new DateTime(2025, 12, 5, hour: 23, minute: 0, second: 0));
@@ -231,7 +231,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Daily_WeekdaysOnly_Steps_WithAdjustmentDirectionBackward_Should_Still_MoveForward()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Daily, Enums.DaySelectionType.Weekday);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, AdjustmentDirectionForward: false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveInDirectionOfTimeStep);
 
         DateTimeCustom expected = new DateTime(2025, 12, 2);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -259,7 +259,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Weekly_Steps_Target_Thursday()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Weekly, Enums.DaySelectionType.SpecificDayOfWeek);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false, required_day_of_week: DayOfWeek.Thursday);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward, required_day_of_week: DayOfWeek.Thursday);
 
         DateTimeCustom expected = new DateTime(2025, 12, 4);
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2025-12-01"));
@@ -287,7 +287,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Monthly_Steps_WeekdaysOnly()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Monthly, Enums.DaySelectionType.Weekday);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward);
 
         DateTimeCustom expected = new DateTime(2024, 3, 31).WeekdayOrPrevious();
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
@@ -314,7 +314,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Monthly_Steps_WeekendsOnly()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Monthly, Enums.DaySelectionType.Weekend);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, false);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveBackward);
 
         DateTimeCustom expected = new DateTime(2024, 3, 31).WeekendOrPrevious();
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
@@ -341,7 +341,7 @@ public class NewSelfAligningTimeStepper_Tests
     public void Test_Monthly_Steps_WeekendsOnly_AdjustForward()
     {
         PeriodicityConfiguration configuration = new(Enums.Periodicity.Monthly, Enums.DaySelectionType.Weekend);
-        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, AdjustmentDirectionForward: true);
+        SelfAligningTimeStepper<DateTimeCustom> stepper = new(configuration, DateAdjustmentType.MoveForward);
 
         DateTimeCustom expected = new DateTime(2024, 3, 31).WeekendOrNext();
         DateTimeCustom next1 = stepper.GetNextTimeStep(DateTimeCustom.Parse("2024-03-15"));
