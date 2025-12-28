@@ -182,6 +182,19 @@ public class SelfAligningTimeStepper<T>
     public T GetPreviousTimeStep(T SelectedDateTime) => CalculateTimeStep(SelectedDateTime, false);
 
     /// <summary>
+    /// Checks if the SelectedDateTime aligns with the defined time steps.
+    /// Said another way, this method checks if the SelectedDateTime is a valid time step.
+    /// </summary>
+    /// <param name="SelectedDateTime"></param>
+    /// <returns></returns>
+    public bool IsTimeStepAligned(T SelectedDateTime)
+    {
+        T nextDateTime = GetNextTimeStep(SelectedDateTime);
+        T previousDateTime = GetPreviousTimeStep(nextDateTime);
+        return SelectedDateTime == previousDateTime;
+    }
+
+    /// <summary>
     /// Calculates the next or previous time step based on the periodicity configuration.
     /// </summary>
     /// <param name="SelectedDateTime"></param>

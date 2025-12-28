@@ -5,7 +5,7 @@ using DeepSigma.General.Extensions;
 
 namespace DeepSigma.General.Tests.Tests;
 
-public class NewSelfAligningTimeStepper_Tests
+public class SelfAligningTimeStepper_Tests
 {
     [Fact]
     public void Test_Monthly_Steps()
