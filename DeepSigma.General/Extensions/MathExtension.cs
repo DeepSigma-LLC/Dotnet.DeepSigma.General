@@ -82,5 +82,67 @@ public static class MathExtension
         /// <returns></returns>
         public static decimal? Log10(decimal? value) => value.HasValue ? Log10(value.Value) : null;
 
+        /// <summary>
+        /// Returns the smaller of two decimal values.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static decimal Min(decimal a, decimal b) => a < b ? a : b;
+
+        /// <summary>
+        /// Returns the smaller of two nullable decimal values.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static decimal? Min(decimal? a, decimal? b)
+        {
+            if (a.HasValue && b.HasValue)
+            {
+                return Min(a.Value, b.Value);
+            }
+            else if (a.HasValue)
+            {
+                return a.Value;
+            }
+            else if (b.HasValue)
+            {
+                return b.Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the larger of two decimal values.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static decimal Max(decimal a, decimal b) => a > b ? a : b;
+
+        /// <summary>
+        /// Returns the larger of two nullable decimal values.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static decimal? Max(decimal? a, decimal? b)
+        {
+            if (a.HasValue && b.HasValue)
+            {
+                return Max(a.Value, b.Value);
+            }
+            else if (a.HasValue)
+            {
+                return a.Value;
+            }
+            else if (b.HasValue)
+            {
+                return b.Value;
+            }
+            return null;
+        }
+
     }
 }

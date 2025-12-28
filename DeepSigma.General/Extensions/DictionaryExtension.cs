@@ -1,5 +1,6 @@
 ﻿
 using DeepSigma.General.DateTimeUnification;
+using DeepSigma.General.Enums;
 using DeepSigma.General.TimeStepper;
 using DeepSigma.General.Utilities;
 using System.Linq.Expressions;
@@ -20,7 +21,7 @@ public static class DictionaryExtension
     /// <typeparam name="Z"></typeparam>
     /// <param name="dictionary"></param>
     /// <returns></returns>
-    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this IDictionary<T, Z> dictionary) 
+    public static SortedDictionary<T, Z> ToSortedDictionary<T, Z>(this Dictionary<T, Z> dictionary) 
         where T : notnull
     {
         return new SortedDictionary<T, Z>(dictionary);
@@ -33,11 +34,11 @@ public static class DictionaryExtension
     /// <typeparam name="V"></typeparam>
     /// <param name="dictionary"></param>
     /// <returns></returns>
-    public static IDictionary<K, V?> RemoveNulls<K, V>(this IDictionary<K, V?> dictionary)
-        where K : notnull
+    public static Dictionary<K, V?> RemoveNulls<K, V>(this IDictionary<K, V?> dictionary)
+    where K : notnull
     {
         return dictionary.Where(kvp => kvp.Value is not null)
-                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                          .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     /// <summary>
@@ -152,6 +153,65 @@ public static class DictionaryExtension
         // Now retain any excess dates that were originally in the data
         Data.ForEach(x => results.TryAdd(x.Key, x.Value));
         return results;
+    }
+
+    /// <summary>
+    /// Gets lagged time series.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="DaysToLag"></param>
+    /// <param name="daySelection"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public static SortedDictionary<TDate, TValue?> LagByDays<TDate, TValue>(this SortedDictionary<TDate, TValue?> Data, int DaysToLag, DaySelectionType daySelection = DaySelectionType.Any)
+        where TDate : struct, IDateTime<TDate>
+    {
+        return daySelection switch
+        {
+            (DaySelectionType.Any) => AddDaysToDateTimes(Data, -DaysToLag),
+            (DaySelectionType.Weekday) => AddBusinessDaysToDateTimes(Data, -DaysToLag),
+            (DaySelectionType.Weekend) => AddWeekendDaysToDateTimes(Data, -DaysToLag),
+            _ => throw new NotImplementedException(),
+        };
+    }
+
+    /// <summary>
+    /// Adds days to time series date times.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="DaysToAdd"></param>
+    /// <returns></returns>
+    private static SortedDictionary<TDate, TValue> AddDaysToDateTimes<TDate, TValue>(SortedDictionary<TDate, TValue> Data, int DaysToAdd)
+        where TDate : struct, IDateTime<TDate>
+    {
+        return DaysToAdd == 0 ? Data :
+            Data.ToDictionary(x => x.Key.AddDays(DaysToAdd), x => x.Value).ToSortedDictionary();
+    }
+
+    /// <summary>
+    /// Adds business days to time series date times.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="BusinessDaysToAdd"></param>
+    /// <returns></returns>
+    private static SortedDictionary<TDate, TValue> AddBusinessDaysToDateTimes<TDate, TValue>(SortedDictionary<TDate, TValue> Data, int BusinessDaysToAdd)
+        where TDate : struct, IDateTime<TDate>
+    {
+        return BusinessDaysToAdd == 0 ? Data :
+             Data.ToDictionary(x => x.Key.AddWeekdays(BusinessDaysToAdd), x => x.Value).ToSortedDictionary();
+    }
+
+    /// <summary>
+    /// Adds business days to time series date times.
+    /// </summary>
+    /// <param name="Data"></param>
+    /// <param name="WeekendDaysToAdd"></param>
+    /// <returns></returns>
+    private static SortedDictionary<TDate, TValue> AddWeekendDaysToDateTimes<TDate, TValue>(SortedDictionary<TDate, TValue> Data, int WeekendDaysToAdd)
+        where TDate : struct, IDateTime<TDate>
+    {
+        return WeekendDaysToAdd == 0 ? Data :
+             Data.ToDictionary(x => x.Key.AddWeekendDays(WeekendDaysToAdd), x => x.Value).ToSortedDictionary();
     }
 
 
