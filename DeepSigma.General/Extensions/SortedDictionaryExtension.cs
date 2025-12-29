@@ -10,6 +10,59 @@ namespace DeepSigma.General.Extensions;
 public static class SortedDictionaryExtension
 {
     /// <summary>
+    /// Gets a windowed series with a specified method applied over the observation window.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="Data"> The data series to process.</param>
+    /// <param name="Transform"> The method to apply over the observation window.</param>
+    /// <param name="ObservationWindowCount"> The size of the observation window.</param>
+    /// <param name="fillSelector"> A function to provide fill values for initial entries where the window is not full.</param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> GetWindowedSeriesWithMethodApplied<TKey, TValue>(this SortedDictionary<TKey, TValue> Data, Func<IEnumerable<TValue>, TValue> Transform, int ObservationWindowCount = 20, Func<TValue>? fillSelector = null)
+        where TKey : notnull, IComparable<TKey>
+    {
+        SortedDictionary<TKey, TValue> results = [];
+        fillSelector ??= () => default;
+
+        // Fill initial values with nulls
+        for (int i = 0; i < ObservationWindowCount - 1; i++)
+        {
+            results.Add(Data.FirstOrDefault().Key, fillSelector());
+        }
+
+        for (int i_to_skip = 0; i_to_skip <= Data.Count - ObservationWindowCount; i_to_skip++)
+        {
+            IEnumerable<TValue> subset = Data.Skip(i_to_skip).Take(ObservationWindowCount).Select(x => x.Value);
+            TValue result = Transform(subset);
+            int index = ObservationWindowCount + i_to_skip - 1;
+            results.Add(Data.ElementAt(index).Key, result);
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// Gets an expanding windowed series with a specified method applied over the observation window.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="Data"></param>
+    /// <param name="Transform"> The method to apply over the expanding window.</param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> GetExpandingWindowedSeriesWithMethodApplied<TKey, TValue>(this SortedDictionary<TKey, TValue> Data, Func<IEnumerable<TValue>, TValue> Transform)
+    where TKey : notnull, IComparable<TKey>
+    {
+        SortedDictionary<TKey, TValue> results = [];
+        for (int i = 0; i <= Data.Count - 1; i++)
+        {
+            IEnumerable<TValue> subset = Data.Take(i + 1).Select(x => x.Value);
+            TValue result = Transform(subset);
+            results.Add(Data.ElementAt(i).Key, result);
+        }
+        return results;
+    }
+
+    /// <summary>
     /// Removed invalid dates from dictionary. Dates that do not 
     /// </summary>
     /// <typeparam name="TDate"></typeparam>
@@ -119,6 +172,7 @@ public static class SortedDictionaryExtension
         Data.ForEach(x => results.TryAdd(x.Key, x.Value));
         return results;
     }
+
     /// <summary>
     /// Gets lagged time series.
     /// </summary>
