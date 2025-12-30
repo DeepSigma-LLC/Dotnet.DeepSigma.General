@@ -1,4 +1,5 @@
-﻿
+﻿using DeepSigma.General.Extensions;
+
 namespace DeepSigma.General.Enums;
 
 
@@ -16,7 +17,7 @@ public static class PeriodicityUtilities
     {
         Periodicity estimatedPeriodicity = GetEstimatedPeriodicityUsingFuzzyLogic(DateTimes);
         bool IncludeWeekends = DoesDailyAnnualizationIncludeWeekends(DateTimes);
-        return (decimal)System.Math.Sqrt(GetPeriodsPerYear(estimatedPeriodicity, IncludeWeekends));
+        return Math.Sqrt(GetPeriodsPerYear(estimatedPeriodicity, IncludeWeekends).ToDecimal());
     }
 
     private static bool DoesDailyAnnualizationIncludeWeekends(DateTime[] DateTimes)
@@ -30,9 +31,11 @@ public static class PeriodicityUtilities
     /// </summary>
     /// <param name="periodicity"></param>
     /// <param name="include_weekends"></param>
+    /// <param name="days_in_year"></param>
+    /// <param name="trading_days_in_year"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static int GetPeriodsPerYear(Periodicity periodicity, bool include_weekends = false)
+    public static int GetPeriodsPerYear(Periodicity periodicity, bool include_weekends = false, int days_in_year = 365, int trading_days_in_year = 255)
     {
         switch (periodicity)
         {
@@ -45,8 +48,8 @@ public static class PeriodicityUtilities
             case (Periodicity.Weekly):
                 return 52;
             case (Periodicity.Daily):
-                if (include_weekends == true) return 360;
-                return 255;
+                if (include_weekends == true) return days_in_year;
+                return trading_days_in_year;
             default:
                 throw new NotImplementedException();
         }
