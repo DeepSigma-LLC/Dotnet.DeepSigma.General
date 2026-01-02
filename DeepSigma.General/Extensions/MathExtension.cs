@@ -91,6 +91,20 @@ public static class MathExtension
         public static decimal Min(decimal a, decimal b) => a < b ? a : b;
 
         /// <summary>
+        /// Returns the absolute value of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Abs(decimal value) => value < 0 ? -value : value;
+
+        /// <summary>
+        /// Returns the absolute value of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Abs(decimal? value) => value.HasValue ? Abs(value.Value) : null;
+
+        /// <summary>
         /// Returns the smaller of two nullable decimal values.
         /// </summary>
         /// <param name="a"></param>
@@ -142,7 +156,80 @@ public static class MathExtension
                 return b.Value;
             }
             return null;
+
         }
 
+        /// <summary>
+        /// Calculates the sine of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Sin(decimal value) => Math.Sin(value.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the sine of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Sin(decimal? value) => value.HasValue ? Sin(value.Value) : null;
+
+        public static decimal Asin(decimal value) => Math.Asin(value.ToDouble()).ToDecimal();
+        public static decimal? Asin(decimal? value) => value.HasValue ? Asin(value.Value) : null;
+
+        /// <summary>
+        /// Calculates the cosine of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Cos(decimal value) => Math.Cos(value.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the cosine of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Cos(decimal? value) => value.HasValue ? Cos(value.Value) : null;
+
+        /// <summary>
+        /// Calculates the arccosine of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Acos(decimal value) => Math.Acos(value.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the arccosine of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Acos(decimal? value) => value.HasValue ? Acos(value.Value) : null;
+
+        /// <summary>
+        /// Calculates the tangent of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Tan(decimal value) => Math.Tan(value.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the tangent of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Tan(decimal? value) => value.HasValue ? Tan(value.Value) : null;
+
+        /// <summary>
+        /// Calculates the arctangent of a decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal Atan(decimal value) => Math.Atan(value.ToDouble()).ToDecimal();
+
+        /// <summary>
+        /// Calculates the arctangent of a nullable decimal value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static decimal? Atan(decimal? value) => value.HasValue ? Atan(value.Value) : null;
     }
 }
