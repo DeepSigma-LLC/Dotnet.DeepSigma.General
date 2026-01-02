@@ -63,6 +63,26 @@ public static class SortedDictionaryExtension
     }
 
     /// <summary>
+    /// Gets a series with a specified method applied to each point value.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="Data"></param>
+    /// <param name="Transform"></param>
+    /// <returns></returns>
+    public static SortedDictionary<TKey, TValue> GetSeriesWithMethodApplied<TKey, TValue>(this SortedDictionary<TKey, TValue> Data, Func<TValue, TValue> Transform)
+    where TKey : notnull, IComparable<TKey>
+    {
+        SortedDictionary<TKey, TValue> results = [];
+        foreach(var item in Data)
+        {
+            TValue result = Transform(item.Value);
+            results.Add(item.Key, result);
+        }
+        return results;
+    }
+
+    /// <summary>
     /// Removed invalid dates from dictionary. Dates that do not 
     /// </summary>
     /// <typeparam name="TDate"></typeparam>
