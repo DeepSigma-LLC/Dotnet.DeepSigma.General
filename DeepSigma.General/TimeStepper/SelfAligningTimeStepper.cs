@@ -52,18 +52,9 @@ public class SelfAligningTimeStepper<T>
     where T : struct, IDateTime<T>, IComparable<T>
 {
     /// <summary>
-    /// Periodicity configuration that defines how time steps are calculated.
+    /// Configuration for time stepping operations.
     /// </summary>
-    private protected PeriodicityConfiguration PeriodicityConfig { get; init; }
-
-    /// <summary>
-    /// Indicates whether adjustments should be made forward in time (true) or backward in time (false).
-    /// </summary>
-    /// <remarks>
-    /// For example, if a date falls on a weekend and this is true, it will adjust to the next weekday (assuming weekdays are required).
-    /// If false, it will adjust to the previous weekday.
-    /// </remarks>
-    private protected DateAdjustmentType AdjustmentType { get; init; }
+    private TimeStepperConfiguration Configuration {  get; set; }
 
     /// <summary>
     /// Gets move direction scalar based on AdjustmentType and MoveForward flag.
@@ -73,7 +64,7 @@ public class SelfAligningTimeStepper<T>
     /// <exception cref="NotImplementedException"></exception>
     private int GetAdjustmentDirectionScalar(bool MoveForward)
     {
-        return AdjustmentType switch
+        return Configuration.AdjustmentType switch
         {
             DateAdjustmentType.MoveForward => 1,
             DateAdjustmentType.MoveBackward => -1,
@@ -87,57 +78,41 @@ public class SelfAligningTimeStepper<T>
     /// </summary>
     private TimeSpanStepper<T>? TimeSpanStepper { get; init; }
 
-    /// <summary>
-    /// Gets the required day of the week for weekly periodicity.
-    /// </summary>
-    private protected DayOfWeek? RequiredDayOfWeek
+    /// <inheritdoc cref="SelfAligningTimeStepper{TimeStepperConfiguration}"/>
+    public SelfAligningTimeStepper(TimeStepperConfiguration configuration)
     {
-        get => field;
-        init => field = 
-            (PeriodicityConfig.DayType == DaySelectionType.SpecificDayOfWeek || PeriodicityConfig.Periodicity == Periodicity.Weekly) 
-            ? value 
-            : null; // Ensures value is only set when DayType is SpecificDayOfWeek or Periodicity is Weekly
-    }
+        ValidateDaySelection(configuration);
+        this.Configuration = configuration;
 
-    /// <inheritdoc cref="SelfAligningTimeStepper{T}(PeriodicityConfiguration, DateAdjustmentType, DayOfWeek?)"/>
-    public SelfAligningTimeStepper(PeriodicityConfiguration periodicity_config, DateAdjustmentType adjustment_type = DateAdjustmentType.MoveInDirectionOfTimeStep, DayOfWeek? required_day_of_week = null)
-    {
-        ValidateDaySelection(periodicity_config, adjustment_type, required_day_of_week);
-        this.PeriodicityConfig = periodicity_config;
-        this.AdjustmentType = adjustment_type;
-        this.RequiredDayOfWeek = required_day_of_week;
-
-        if(PeriodicityConfig.Time is not null)
+        if(configuration.PeriodicityConfig.Time is not null)
         {
-            this.TimeSpanStepper = new(PeriodicityConfig.Time.Value);
+            this.TimeSpanStepper = new(configuration.PeriodicityConfig.Time.Value);
         }
     }
 
     /// <summary>
     /// Validates the day selection configuration.
     /// </summary>
-    /// <param name="config"></param>
-    /// <param name="required_day_of_week"></param>
-    /// <param name="adjustment_type"></param>
+    /// <param name="configuration"></param>
     /// <exception cref="ArgumentException"></exception>
-    private void ValidateDaySelection(PeriodicityConfiguration config, DateAdjustmentType adjustment_type, DayOfWeek? required_day_of_week)
+    private void ValidateDaySelection(TimeStepperConfiguration configuration)
     {
-        if (typeof(T) == typeof(DateOnlyCustom) && config.Time is not null)
+        if (typeof(T) == typeof(DateOnlyCustom) && configuration.PeriodicityConfig.Time is not null)
             throw new ArgumentException($"Time interval is not supported for {nameof(DateOnlyCustom)} type.");
 
-        if (config.Periodicity == Periodicity.Daily && adjustment_type != DateAdjustmentType.MoveInDirectionOfTimeStep)
+        if (configuration.PeriodicityConfig.Periodicity == Periodicity.Daily && configuration.AdjustmentType != DateAdjustmentType.MoveInDirectionOfTimeStep)
             throw new ArgumentException("Adjustment type must be MoveInDirectionOfTimeStep for daily periodicities to prevent looping. " +
                 "We always move in the direction of the time step for daily periodicities.");
 
-        if (config.Periodicity == Periodicity.Weekly && required_day_of_week is null) 
+        if (configuration.PeriodicityConfig.Periodicity == Periodicity.Weekly && configuration.RequiredDayOfWeek is null) 
             throw new ArgumentException("Required day of week must be provided for weekly periodicity.");
 
-        if (config.DayType == DaySelectionType.SpecificDayOfWeek && required_day_of_week is null)
+        if (configuration.PeriodicityConfig.DayType == DaySelectionType.SpecificDayOfWeek && configuration.RequiredDayOfWeek is null)
             throw new ArgumentException("Required day of week must be provided when day selection is specific day of week.");
 
         if (
-            !(config.DayType == DaySelectionType.SpecificDayOfWeek || config.Periodicity == Periodicity.Weekly)
-            && required_day_of_week is not null
+            !(configuration.PeriodicityConfig.DayType == DaySelectionType.SpecificDayOfWeek || configuration.PeriodicityConfig.Periodicity == Periodicity.Weekly)
+            && configuration.RequiredDayOfWeek is not null
             )
             throw new ArgumentException("Required day of week should be null unless day selection is specific day of week or periodicity is weekly.");
     }
@@ -203,7 +178,7 @@ public class SelfAligningTimeStepper<T>
     /// <exception cref="NotImplementedException"></exception>
     private T CalculateTimeStep(T SelectedDateTime, bool step_forward)
     {
-        T result = PeriodicityConfig.Periodicity switch
+        T result = Configuration. PeriodicityConfig.Periodicity switch
         {
             Periodicity.Daily => IsIntraday() ? GetNextIntradayDateTime(SelectedDateTime, step_forward) :
                 AdjustDate(SelectedDateTime, step_forward),
@@ -217,8 +192,8 @@ public class SelfAligningTimeStepper<T>
         return result;
     }
 
-    private bool IsIntraday() => PeriodicityConfig.Periodicity == Periodicity.Daily
-        && PeriodicityConfig.Time is not null;
+    private bool IsIntraday() => Configuration.PeriodicityConfig.Periodicity == Periodicity.Daily
+        && Configuration.PeriodicityConfig.Time is not null;
 
     private T GetNextIntradayDateTime(T SelectedDateTime, bool step_forward)
     {
@@ -235,11 +210,11 @@ public class SelfAligningTimeStepper<T>
 
     private T GetWeekEndDateTime(T SelectedDateTime, bool MoveForward)
     {
-        if (RequiredDayOfWeek is null) throw new InvalidOperationException("RequiredDayOfWeek must be set for weekly periodicity.");
+        if (Configuration.RequiredDayOfWeek is null) throw new InvalidOperationException("RequiredDayOfWeek must be set for weekly periodicity.");
 
         T new_date = MoveForward ?
-            SelectedDateTime.NextDayOfWeekSpecified(RequiredDayOfWeek.Value)
-            : SelectedDateTime.PreviousDayOfWeekSpecified(RequiredDayOfWeek.Value);
+            SelectedDateTime.NextDayOfWeekSpecified(Configuration.RequiredDayOfWeek.Value)
+            : SelectedDateTime.PreviousDayOfWeekSpecified(Configuration.RequiredDayOfWeek.Value);
         return AdjustDateIfNeeded(new_date, MoveForward);
     }
 
@@ -336,16 +311,16 @@ public class SelfAligningTimeStepper<T>
     private T AdjustDate(T SelectedDateTime, bool MovingForwardInTime)
     {
         int days_to_add = GetAdjustmentDirectionScalar(MovingForwardInTime);
-        return PeriodicityConfig.DayType switch
+        return Configuration.PeriodicityConfig.DayType switch
         {
             DaySelectionType.Any => SelectedDateTime.AddDays(days_to_add),
             DaySelectionType.Weekday => SelectedDateTime.AddWeekdays(days_to_add),
             DaySelectionType.Weekend => SelectedDateTime.AddWeekendDays(days_to_add),
             // null-forgiving operator is safe here due to validation in constructor
-            DaySelectionType.SpecificDayOfWeek => AdjustmentType == DateAdjustmentType.MoveForward
-                ? SelectedDateTime.NextDayOfWeekSpecified(RequiredDayOfWeek!.Value)
-                : SelectedDateTime.PreviousDayOfWeekSpecified(RequiredDayOfWeek!.Value), 
-            _ => throw new NotSupportedException($"Day selection type {PeriodicityConfig.DayType} is not supported."),
+            DaySelectionType.SpecificDayOfWeek => Configuration.AdjustmentType == DateAdjustmentType.MoveForward
+                ? SelectedDateTime.NextDayOfWeekSpecified(Configuration.RequiredDayOfWeek!.Value)
+                : SelectedDateTime.PreviousDayOfWeekSpecified(Configuration.RequiredDayOfWeek!.Value), 
+            _ => throw new NotSupportedException($"Day selection type {Configuration.PeriodicityConfig.DayType} is not supported."),
         };
     }
 
@@ -357,13 +332,13 @@ public class SelfAligningTimeStepper<T>
     /// <exception cref="NotSupportedException"></exception>
     private bool IsValidDayOfWeek(T SelectedDateTime)
     {
-        return PeriodicityConfig.DayType switch
+        return Configuration.PeriodicityConfig.DayType switch
         {
             DaySelectionType.Any => true,
             DaySelectionType.Weekday => SelectedDateTime.DayOfWeek.IsWeekday(),
             DaySelectionType.Weekend => SelectedDateTime.DayOfWeek.IsWeekend(),
-            DaySelectionType.SpecificDayOfWeek => SelectedDateTime.DayOfWeek == RequiredDayOfWeek,
-            _ => throw new NotSupportedException($"Day selection type {PeriodicityConfig.DayType} is not supported."),
+            DaySelectionType.SpecificDayOfWeek => SelectedDateTime.DayOfWeek == Configuration.RequiredDayOfWeek,
+            _ => throw new NotSupportedException($"Day selection type {Configuration.PeriodicityConfig.DayType} is not supported."),
         };
     }
 }
