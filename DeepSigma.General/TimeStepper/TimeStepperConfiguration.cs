@@ -1,5 +1,6 @@
 ﻿
 using DeepSigma.General.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DeepSigma.General.TimeStepper;
 
@@ -11,7 +12,7 @@ public class TimeStepperConfiguration
     /// <summary>
     /// Configuration defining the periodicity of the time steps.
     /// </summary>
-    public PeriodicityConfiguration PeriodicityConfig {  get; init; }
+    public required PeriodicityConfiguration PeriodicityConfig {  get; init; }
 
     /// <summary>
     /// Defines how to adjust dates that do not align with the specified periodicity.
@@ -31,12 +32,17 @@ public class TimeStepperConfiguration
     }
 
     /// <inheritdoc cref="TimeStepperConfiguration"/>
+    public TimeStepperConfiguration(){ }
+
+    /// <inheritdoc cref="TimeStepperConfiguration"/>
+    [SetsRequiredMembers]
     public TimeStepperConfiguration(PeriodicityConfiguration periodicityConfiguration)
     {
         this.PeriodicityConfig = periodicityConfiguration;
     }
 
     /// <inheritdoc cref="TimeStepperConfiguration"/>
+    [SetsRequiredMembers]
     public TimeStepperConfiguration(PeriodicityConfiguration periodicityConfiguration, DateAdjustmentType adjustmentType = DateAdjustmentType.MoveInDirectionOfTimeStep, DayOfWeek? requiredDayOfWeek = null)
     {
         this.PeriodicityConfig = periodicityConfiguration;
