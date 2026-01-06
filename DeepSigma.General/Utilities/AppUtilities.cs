@@ -18,18 +18,14 @@ public static class AppUtilities
     /// Returns the current directory of this application.
     /// </summary>
     /// <returns></returns>
-    public static string GetCurrentDirectory()
-    {
-        return AppDomain.CurrentDomain.BaseDirectory;
-    }
-
+    public static string GetCurrentDirectory() => AppDomain.CurrentDomain.BaseDirectory;
+    
     /// <summary>
     /// Returns assembly version of the application.
     /// </summary>
     /// <returns></returns>
     public static string GetAppVersion()
     {
-        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        return version?.ToString() ?? "Unknown";
+        return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
     }
 }
