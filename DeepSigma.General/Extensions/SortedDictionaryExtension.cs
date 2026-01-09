@@ -9,6 +9,7 @@ namespace DeepSigma.General.Extensions;
 /// </summary>
 public static class SortedDictionaryExtension
 {
+
     /// <summary>
     /// Gets a windowed series with a specified method applied over the observation window.
     /// </summary>

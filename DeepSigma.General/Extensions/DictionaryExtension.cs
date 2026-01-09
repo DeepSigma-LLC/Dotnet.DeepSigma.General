@@ -11,6 +11,56 @@ namespace DeepSigma.General.Extensions;
 public static class DictionaryExtension
 {
     /// <summary>
+    /// Gets the first key in the dictionary.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <returns></returns>
+    public static TKey? FirstKey<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+    {
+        return dict.Keys.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the last key in the dictionary.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <returns></returns>
+    public static TKey? LastKey<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+    {
+        return dict.Keys.LastOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the first value in the dictionary.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <returns></returns>
+    public static TValue? FirstValue<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+
+    {
+        return dict.Values.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the last value in the dictionary.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="dict"></param>
+    /// <returns></returns>
+    public static TValue? LastValue<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+    where TKey : notnull
+    {
+        return dict.Values.LastOrDefault();
+    }
+
+    /// <summary>
     /// Converts a Dictionary to a SortedDictionary.
     /// </summary>
     /// <typeparam name="T"></typeparam>
