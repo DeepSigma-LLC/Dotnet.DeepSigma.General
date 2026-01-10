@@ -1,63 +1,58 @@
-﻿namespace DeepSigma.General.Inventory;
+﻿using DeepSigma.General.Extensions;
+
+namespace DeepSigma.General.Inventory;
 
 /// <summary>
 /// Implementation of custom inventory collection to achieve Last-In-First-Out functionality under a consistent interface to an inventory queue.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class InventoryStackCollection<T> : InventoryCollectionAbstract<T>
+public sealed class InventoryStackCollection<T> : InventoryCollectionAbstract<T>
 {
     /// <inheritdoc cref="InventoryStackCollection{T}"/>
     internal InventoryStackCollection() { }
 
-    /// <summary>
-    /// Adds range of elements to the inventory collection.
-    /// </summary>
+    /// <inheritdoc/>
     /// <param name="Items"></param>
-    public override void Add(IEnumerable<T> Items)
+    public sealed override void Add(IEnumerable<T> Items)
     {
-        foreach (var item in Items)
-        {
-            Add(item);
-        }
+        Items.ForEach(item => Add(item));
     }
 
-    /// <summary>
-    /// Adds element to the inventory collection.
-    /// </summary>
+    /// <inheritdoc/>
     /// <param name="item"></param>
-    public override void Add(T item)
+    public sealed override void Add(T item)
     {
         Collection.AddFirst(item);
     }
 
-    /// <summary>
-    /// Adds an item to the front of the inventory collection.
-    /// </summary>
+    /// <inheritdoc/>
     /// <param name="item"></param>
-    public override void AddToFront(T item)
+    public sealed override void AddToFront(T item)
     {
         Collection.AddFirst(item);
     }
 
-    /// <summary>
-    /// Returns the next item in the inventory collection without removing it.
-    /// </summary>
+    /// <inheritdoc/>
+    /// <param name="item"></param>
+    public sealed override void AddToBack(T item)
+    {
+        Collection.AddLast(item);
+    }
+
+    /// <inheritdoc/>
     /// <returns></returns>
-    public override T? Peek()
+    public sealed override T? Peek()
     {
         T? result = Collection.FirstOrDefault();
-        if (result is null) { return default; }
-        return result;
+        return (result is null) ? default : result;
     }
 
-    /// <summary>
-    /// Removes and returns the next item from the inventory collection.
-    /// </summary>
+    /// <inheritdoc/>
     /// <returns></returns>
-    public override T? Pop()
+    public sealed override T? Pop()
     {
         T? item = Collection.FirstOrDefault();
-        if (item is null) { return default; }
+        if (item is null) return default;
         Collection.Remove(item);
         return item;
     }

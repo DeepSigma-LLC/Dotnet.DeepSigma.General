@@ -13,5 +13,9 @@ public enum AccountingCostMethodology
     /// <summary>
     /// Last In, First Out (LIFO) accounting method.
     /// </summary>
-    LastInLastOut
+    LastInLastOut,
+    /// <summary>
+    /// Average Cost accounting method.
+    /// </summary>
+    AverageCost,
 }

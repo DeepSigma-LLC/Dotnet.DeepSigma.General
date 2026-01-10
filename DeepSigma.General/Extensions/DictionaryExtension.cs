@@ -18,6 +18,7 @@ public static class DictionaryExtension
     /// <param name="dict"></param>
     /// <returns></returns>
     public static TKey? FirstKey<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+        where TKey : notnull
     {
         return dict.Keys.FirstOrDefault();
     }
@@ -30,6 +31,7 @@ public static class DictionaryExtension
     /// <param name="dict"></param>
     /// <returns></returns>
     public static TKey? LastKey<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+        where TKey : notnull
     {
         return dict.Keys.LastOrDefault();
     }
@@ -42,7 +44,7 @@ public static class DictionaryExtension
     /// <param name="dict"></param>
     /// <returns></returns>
     public static TValue? FirstValue<TKey, TValue>(this IDictionary<TKey, TValue> dict)
-
+        where TKey : notnull
     {
         return dict.Values.FirstOrDefault();
     }
